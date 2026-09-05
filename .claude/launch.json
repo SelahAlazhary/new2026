@@ -4,8 +4,19 @@
     {
       "name": "arabic-platform",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "local-isolated",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/start-local.mjs"
+      ],
+      "port": 3300
     }
   ]
 }

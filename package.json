@@ -12,7 +12,8 @@
     "start:local": "node scripts/start-local.mjs",
     "dev:local": "node scripts/start-local.mjs dev",
     "test:tenancy": "node scripts/test-tenancy.mjs",
-    "migrate:tenants": "node scripts/migrate-to-tenants.mjs"
+    "migrate:tenants": "node scripts/migrate-to-tenants.mjs",
+    "test:hub": "node scripts/test-hub.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

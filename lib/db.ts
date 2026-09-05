@@ -15,7 +15,8 @@ import { dropActivity } from "./activity-store";
 import { firebaseConfigured, fbClaimOnce } from "./firebase";
 import { pushConfigured } from "./push";
 import { ensureStore, peek, commit, flushStore, storeState, invalidate, readLocal } from "./store";
-import { bindTenant, tenantPath } from "./hub/context";
+import { bindTenant, tenantPath, tryCurrentTenant } from "./hub/context";
+import { sectionHidden } from "./hub/sections";
 
 /**
  * مخزن محلي بسيط على هيئة ملف JSON.
@@ -709,7 +710,24 @@ function scopeSubjectForStudent(s: Subject, me: User | undefined): Subject {
 export function getScopedDB(session: Scope): PublicDB {
   const db = getDB();
 
-  if (session?.role === "admin") return getPublicDB();
+  /*
+    المشرفُ يأخذ كلَّ شيءٍ **إلّا ما أُخفي عن منصّته**.
+    والإخفاءُ هنا تقليلٌ للحمولة لا حمايةٌ وحدَه (الحمايةُ في `tenantRoute`
+    و`PUT /api/content`): لا يُرسَل إلى المتصفّح ما لا شاشةَ له.
+  */
+  if (session?.role === "admin") {
+    const pub = getPublicDB();
+    const tenant = tryCurrentTenant()?.tenant;
+    if (!tenant?.hiddenSections?.length) return pub;
+    const out = { ...pub };
+    if (sectionHidden(tenant, "youtube")) out.youtube = undefined;
+    if (sectionHidden(tenant, "payments")) out.payments = [];
+    if (sectionHidden(tenant, "codes")) out.codes = [];
+    if (sectionHidden(tenant, "exams")) out.exams = [];
+    if (sectionHidden(tenant, "support") || sectionHidden(tenant, "supportChat")) out.tickets = [];
+    if (sectionHidden(tenant, "security")) out.security = { events: [], bans: [] };
+    return out;
+  }
 
   if (session?.role === "student") {
     const me = db.users.find((u) => u.id === session.uid);

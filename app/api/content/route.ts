@@ -3,6 +3,8 @@ import { getScopedDB, getPublicDB, getDB, patchDB, publicIntegrations, loadDB, f
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import { can, permForDbKey, permForContentKeys } from "@/lib/perms";
+import { currentTenant } from "@/lib/hub/context";
+import { sectionForDbKey, sectionHidden } from "@/lib/hub/sections";
 import type { DB } from "@/lib/types";
 import { tenantRoute } from "@/lib/hub/context";
 
@@ -45,6 +47,24 @@ async function PUT_impl(req: Request) {
   if (missing.length) {
     await recordEvent("perm_denied", `تعديل بلا صلاحية: ${missing.join("، ")}`, { userId: me?.id, username: me?.username });
     return NextResponse.json({ error: "ليست لديك صلاحية تعديل هذا القسم" }, { status: 403 });
+  }
+
+  /*
+    القسمُ المخفيُّ لا يُعدَّل ولو أُرسل المسارُ يدوياً.
+    إخفاءُ الرابط في اللوحة ليس حماية: من فتح «عناصر المطوّر» أرسل
+    `PUT /api/content` مباشرةً. فالفحصُ هنا هو الفحصُ الحقيقيّ.
+  */
+  const { tenant } = currentTenant();
+  const hidden = touched.filter((k) => {
+    const section = sectionForDbKey(k);
+    return section ? sectionHidden(tenant, section) : false;
+  });
+  if (hidden.length) {
+    await recordEvent("perm_denied", `تعديل قسم مخفيّ: ${hidden.join("، ")}`, { userId: me?.id, username: me?.username });
+    return NextResponse.json(
+      { error: "هذا القسم غير متاح في هذه المنصّة", code: "section_hidden" },
+      { status: 403 }
+    );
   }
   // منع تعديل المستخدمين والتكاملات عبر هذا المسار (لهما مساراتهما الخاصة)
   delete (patch as Record<string, unknown>).users;

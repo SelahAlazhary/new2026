@@ -2610,6 +2610,36 @@ body {
   animation: mo-in var(--mo-dur, 0.55s) var(--mo-ease, ease) both;
 }
 
+/* ============================================================
+   هبوطُ الأقسام
+   ------------------------------------------------------------
+   القسمُ كلُّه ينزل من فوقٍ ويستقرّ حين تبلغه العين — لا عند تحميل
+   الصفحة. الوقتُ يضبطه `components/brand/descend.tsx` بمراقب التقاطع،
+   وهذه القاعدةُ ترسم الحركةَ وحدَها.
+
+   **وكلُّها داخل `scripting: enabled`**: القاعدةُ تبدأ بإخفاء القسم،
+   ولا يُظهره إلّا الجافاسكربت. فلو لم يعمل — أو حُجب — لبقيت الصفحةُ
+   بيضاء. والاستعلامُ يجعل المتصفّحَ بلا سكربتٍ لا يرى الإخفاءَ أصلاً.
+
+   ولا تعمل مع «بلا دخول» ولا مع «الفوري/السكون»: من اختار سكوناً في
+   اللوحة لا يُفاجأ بحركةٍ جديدةٍ لم يخترها.
+   ============================================================ */
+@media (scripting: enabled) {
+  [class*="mo-enter-"]:not(.mo-enter-none):not(.mo-speed-instant) .descend {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--mo-drop, 30px) * -1), 0) scale(0.992);
+    transition:
+      opacity var(--mo-dur, 0.55s) var(--mo-ease, ease) var(--descend-delay, 0ms),
+      transform calc(var(--mo-dur, 0.55s) * 1.2) var(--mo-ease, ease) var(--descend-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [class*="mo-enter-"]:not(.mo-enter-none):not(.mo-speed-instant) .descend.is-in {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}
+
 /* المرور */
 .mo-hover-lift .sx-card,
 .mo-hover-lift .plan-card,

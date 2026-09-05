@@ -22,7 +22,13 @@ export type MoSpeed = "calm" | "normal" | "brisk" | "instant";
 export type MoEase = "smooth" | "spring" | "sharp" | "linear";
 
 /** كيف تدخل العناصر عند التمرير إليها. */
-export type MoEnter = "rise" | "fade" | "scale" | "slide" | "none";
+/**
+ * طريقةُ دخول العنصر.
+ * و«الهبوط» (`drop`) عكسُ «الصعود»: ينزل العنصرُ من فوقٍ ويستقرّ. وهو
+ * أنسبُ لصفحةٍ يُقرأ فيها من أعلى إلى أسفل — فالعينُ تسبق المحتوى إلى
+ * موضعه، ثمّ يبلغه المحتوى.
+ */
+export type MoEnter = "rise" | "drop" | "fade" | "scale" | "slide" | "none";
 
 /** ما يحدث عند مرور الفأرة. */
 export type MoHover = "lift" | "glow" | "tilt" | "none";
@@ -69,6 +75,10 @@ export const MOTION_STYLES: MotionStyle[] = [
   mo("staticGlow", "الساكن المتوهّج", "بلا دخول وتوهّج عند المرور", "normal", "smooth", "none", "glow", "soft"),
   mo("instantAll", "الفوري", "بلا انتظار — كل شيء حاضر", "instant", "linear", "none", "none", "none"),
   mo("still", "السكون", "بلا حركة إطلاقاً — أخفّ على الأجهزة الضعيفة", "instant", "linear", "none", "none", "none"),
+  /* الهبوط — الأقسامُ والبطاقاتُ تنزل من أعلى وتستقرّ في مواضعها */
+  mo("dropSettle", "الهبوط", "الأقسام تهبط من أعلى وتستقرّ", "normal", "smooth", "drop", "lift", "soft"),
+  mo("dropSpring", "الهبوط النابض", "هبوطٌ ينتهي بارتدادةٍ خفيفة", "normal", "spring", "drop", "lift", "full"),
+  mo("dropCalm", "الهبوط المتمهّل", "هبوطٌ بطيءٌ هادئ بلا حركة خلفية", "calm", "smooth", "drop", "none", "none"),
 ];
 
 export const DEFAULT_MOTION = MOTION_STYLES[0].id;
@@ -102,9 +112,14 @@ export function motionVars(x: MotionStyle): React.CSSProperties {
     "--mo-dur": DUR[x.speed],
     "--mo-ease": EASE[x.ease],
     "--mo-lift": x.hover === "lift" ? "-4px" : "0px",
-    "--mo-rise": still || x.enter === "none" ? "0px" : x.enter === "rise" ? "22px" : "0px",
+    /* الهبوطُ قيمةٌ سالبة: العنصرُ يبدأ فوق موضعه فينزل إليه */
+    "--mo-rise": still || x.enter === "none" ? "0px" : x.enter === "rise" ? "22px" : x.enter === "drop" ? "-26px" : "0px",
     "--mo-slide": still || x.enter !== "slide" ? "0px" : "34px",
-    "--mo-scale": still || x.enter !== "scale" ? "1" : "0.94",
+    /* الهبوطُ يصغّر قليلاً جدّاً — يكفي ليُحسّ بالاستقرار ولا يُرى تكبيراً */
+    "--mo-scale":
+      still || x.enter === "none" ? "1" : x.enter === "scale" ? "0.94" : x.enter === "drop" ? "0.985" : "1",
+    /* مسافةُ هبوط الأقسام الكبيرة — أوسعُ من مسافة البطاقة فيُرى الفرق */
+    "--mo-drop": still || x.enter === "none" ? "0px" : "30px",
   } as React.CSSProperties;
 }
 

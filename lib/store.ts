@@ -52,7 +52,14 @@ type Cache = {
   activeUrl: string;
 };
 
-const caches = new Map<string, Cache>();
+/*
+  المخابئُ على `globalThis` لا في الوحدة: Next يحزم الصفحاتِ ومساراتِ
+  API في رسمين مستقلّين، فتُحمَّل الوحدةُ مرّتين ولكلّ نسخةٍ مخبأُها —
+  فما يكتبه مسارٌ لا يراه تخطيطٌ حتى تنتهي مدّةُ المخبأ. والمشتركُ بينهما
+  في العملية الواحدة هو `globalThis`.
+*/
+const cachesGlobal = globalThis as unknown as { __tenantStores?: Map<string, Cache> };
+const caches = (cachesGlobal.__tenantStores ??= new Map<string, Cache>());
 
 function slot(id = currentTenantId()): Cache {
   let c = caches.get(id);

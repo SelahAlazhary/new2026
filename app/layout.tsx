@@ -17,8 +17,11 @@ import { findIconCover, iconCoverClass } from "@/lib/icon-covers";
 import { findVectorLib, vectorLibClass } from "@/lib/vector-libs";
 import { RouteTransition } from "@/components/ui/route-transition";
 import { RegisterSW } from "@/components/pwa/register-sw";
+import { headers } from "next/headers";
 import { getPublicDB, getScopedDB, loadDB } from "@/lib/db";
-import { TenantNotFound } from "@/lib/hub/context";
+import { TenantNotFound, currentTenant } from "@/lib/hub/context";
+import { isHubPath } from "@/lib/hub/resolve";
+import { pageGate } from "@/lib/hub/gate";
 import { touchSession } from "@/lib/session";
 import { defaultContent } from "@/lib/defaults";
 import { buildJsonLd, buildKeywords, siteUrl } from "@/lib/seo";
@@ -61,6 +64,7 @@ const plex = IBM_Plex_Sans_Arabic({
 
 /** إعدادات العرض — viewport-fit=cover ضروري لاحترام حوّاف الشاشة في التطبيق المثبّت. */
 export async function generateViewport(): Promise<Viewport> {
+  if (await onHub()) return { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#1b2a4a" };
   /* يربط الطلبَ بمنصّته أوّلاً — وبلا منصّةٍ يُعاد الافتراضيُّ بلا كسر */
   try {
     await loadDB();
@@ -96,7 +100,20 @@ function safeUrl(raw?: string): URL {
 }
 
 /** ميتاداتا ديناميكية من قاعدة البيانات (العنوان/الوصف/الأيقونة/OG). */
+/** هل هذا الطلبُ لصفحةٍ من صفحات المنصّة الأمّ؟ (المسارُ من الوسيط) */
+async function onHub(): Promise<boolean> {
+  try {
+    return isHubPath((await headers()).get("x-pathname") ?? "");
+  } catch {
+    return false;
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
+  /* الـHub لا يرث هويّةَ منصّةٍ ولا يُفهرس */
+  if (await onHub()) {
+    return { title: { default: "لوحة المنصّات", template: "%s | لوحة المنصّات" }, robots: { index: false, follow: false } };
+  }
   try {
     await loadDB();
   } catch (e) {
@@ -179,7 +196,44 @@ function NoTenant() {
   );
 }
 
+/**
+ * صفحةُ التوقّف — تُعرض للطالب والزائر حين تُوقَف المنصّة أو ينتهي اشتراكُها.
+ * ولا تُذكر فيها تفاصيلُ الحساب ولا اسمُ المنصّة الأمّ: الطالبُ ليس طرفاً
+ * في اشتراكِ معلّمه، ولا يُحمَّل خبراً ماليّاً لا يخصّه.
+ */
+function PausedPage({ brand, message }: { brand?: string; message: string }) {
+  return (
+    <html lang="ar" dir="rtl">
+      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#fbf9f5", color: "#1c2340", fontFamily: "system-ui, sans-serif" }}>
+        <main style={{ textAlign: "center", padding: "2rem", maxWidth: "34rem" }}>
+          <span style={{ fontSize: "2.6rem" }} aria-hidden="true">⏸</span>
+          <h1 style={{ fontSize: "1.35rem", margin: "0.75rem 0 0.35rem" }}>{brand ? `${brand} — متوقّفة مؤقّتاً` : "المنصّة متوقّفة مؤقّتاً"}</h1>
+          <p style={{ opacity: 0.75, fontSize: "0.95rem", lineHeight: 1.9 }}>{message}</p>
+          <p style={{ opacity: 0.55, fontSize: "0.8rem", marginTop: "1.5rem" }}>حسابك ودروسك محفوظة، وتعود كما هي فور عودة المنصّة.</p>
+        </main>
+      </body>
+    </html>
+  );
+}
+
+/**
+ * جذرُ المنصّة الأمّ — بلا مزوّد محتوًى ولا خلفيّةِ هوية.
+ * ------------------------------------------------------------------
+ * صفحاتُ الـHub لا تنتمي لمنصّةٍ بعينها، فلا `ContentProvider` لها ولا
+ * ثيمَ مستأجرٍ ولا زخرفة. والخطوطُ تبقى — فالهويّةُ البصريّةُ واحدة.
+ */
+function HubRoot({ children, fontClass }: { children: ReactNode; fontClass: string }) {
+  return (
+    <html lang="ar" dir="rtl" data-layout="light" suppressHydrationWarning>
+      <body className={`${fontClass} font-sans`}>{children}</body>
+    </html>
+  );
+}
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const fontClass = `${plex.variable} ${lalezar.variable} ${ruqaa.variable}`;
+  if (await onHub()) return <HubRoot fontClass={fontClass}>{children}</HubRoot>;
+
   try {
     await loadDB(); // مصدر الحقيقة (فايربيز إن ضُبط) — ويربط الطلبَ بمنصّته
   } catch (e) {
@@ -187,6 +241,20 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     throw e;
   }
   const session = await touchSession(); // يمدّد الجلسة الدائمة
+
+  /*
+    حالةُ المنصّة تُفرض قبل أن يُرسم شيء (انظر `lib/hub/gate.ts`):
+    المؤرشفةُ وغيرُ المجهّزة لا تُخدم، والموقوفةُ يراها الطالبُ صفحةَ
+    توقّف — ويدخلها **صاحبُها** ليرى بياناتِه ويجدّد، فالكتابةُ وحدَها
+    هي المحجوبة (٤٠٢ في `tenantRoute`).
+  */
+  const gate = pageGate(currentTenant().tenant);
+  if (!gate.ok) {
+    if (gate.kind !== "paused") return <NoTenant />;
+    if (session?.role !== "admin") {
+      return <PausedPage brand={getPublicDB().content?.brand} message={gate.message} />;
+    }
+  }
   // الحمولة الأولى (SSR) مقيّدة بدور صاحب الجلسة — لا تسرّب بيانات لغير أصحابها
   const db = getScopedDB(session);
   const theme = db.content?.theme ?? defaultContent.theme;
@@ -277,7 +345,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           المنصّة كلِّها بلا استثناء.
         */
         style={iconFrameVars(pub.content?.iconFrameColors)}
-        className={`${plex.variable} ${lalezar.variable} ${ruqaa.variable} font-sans ${iconFrameClass(findIconFrame(pub.content?.iconFrame))} ${iconCoverClass(findIconCover(pub.content?.iconCover))} ${iconMotionClass(findIconMotion(pub.content?.iconMotion))} ${vectorLibClass(findVectorLib(pub.content?.vectorLib))}`}
+        className={`${fontClass} font-sans ${iconFrameClass(findIconFrame(pub.content?.iconFrame))} ${iconCoverClass(findIconCover(pub.content?.iconCover))} ${iconMotionClass(findIconMotion(pub.content?.iconMotion))} ${vectorLibClass(findVectorLib(pub.content?.vectorLib))}`}
       >
         {/*
           الخلفيةُ خارج كلّ ما يتحرّك.

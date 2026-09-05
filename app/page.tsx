@@ -9,6 +9,7 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/sections/faq";
 import { CtaFooter } from "@/components/sections/cta-footer";
 import { SectionDivider } from "@/components/sections/section-divider";
+import { Descend } from "@/components/brand/descend";
 import { getPublicDB, loadDB } from "@/lib/db";
 import {
   findHomeLayout, WIDTH_CLASS, DENSITY_CLASS, type HomeSection,
@@ -100,13 +101,18 @@ export default async function Home() {
                 <MaintenancePanel title={mt.title} message={mt.message} until={mt.until} />
               </div>
             ) : (
-              <Section />
+              /* كلُّ قسمٍ يهبط إلى موضعه حين تبلغه العين — انظر `Descend` */
+              <Descend>
+                <Section />
+              </Descend>
             )}
           </div>
         );
       })}
 
-      <CtaFooter />
+      <Descend>
+        <CtaFooter />
+      </Descend>
 
       {/* دعوة ثابتة أسفل شاشة الهاتف — ظهورها من CSS بحسب التنسيق */}
       {/*

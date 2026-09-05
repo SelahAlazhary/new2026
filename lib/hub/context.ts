@@ -7,6 +7,8 @@ import type { Tenant } from "./types";
 import {
   tenantIdBySlug, tenantById, defaultTenantId, rootServesDefaultTenant,
 } from "./registry";
+import { apiGate } from "./gate";
+import { featureForApiPath, featureOn, isAlwaysOpen, sectionForApiPath, sectionHidden } from "./sections";
 
 /**
  * سياقُ المستأجر — قلبُ العزل.
@@ -162,6 +164,45 @@ export function tenantRoute<A extends unknown[]>(fn: Handler<A>): (req: Request,
       }
       throw e;
     }
+
+    /*
+      ثلاثةُ فحوصٍ في مكانٍ واحد — قبل أن يعمل المسارُ شيئاً.
+      ------------------------------------------------------------------
+      وُضعت هنا لا في كلّ مسارٍ على حدة لسببٍ واحد: **ما يُنسى لا يحمي**.
+      ثمانيةٌ وثلاثون مساراً، ومن أضاف التاسعَ والثلاثين غداً لن يتذكّر
+      ثلاثةَ أسطر. واللفُّ آليّ، فالفحصُ يناله كلُّ مسارٍ بلا استثناء.
+
+        ١) حالةُ المنصّة  — موقوفةٌ تُقرأ ولا تُكتب، ومؤرشفةٌ لا شيء.
+        ٢) ميزةٌ مطفأة    — تُغلق للجميع (طالباً ومشرفاً).
+        ٣) قسمٌ مخفيّ     — يُغلق مسارُه الإداريّ، فلا يُعدَّل ما أُخفي.
+    */
+    const pathname = new URL(req.url).pathname;
+
+    const gate = apiGate(ctx.tenant, req.method, pathname);
+    if (!gate.ok) {
+      return NextResponse.json(
+        { error: gate.message, code: gate.kind === "paused" ? "tenant_paused" : "tenant_unavailable" },
+        { status: gate.status, headers: { "Cache-Control": "no-store" } }
+      );
+    }
+
+    if (!isAlwaysOpen(pathname)) {
+      const feature = featureForApiPath(pathname);
+      if (feature && !featureOn(ctx.tenant, feature)) {
+        return NextResponse.json(
+          { error: "هذه الميزة غير مفعّلة في خطّة المنصّة", code: "feature_off", feature },
+          { status: 403, headers: { "Cache-Control": "no-store" } }
+        );
+      }
+      const section = sectionForApiPath(pathname);
+      if (section && sectionHidden(ctx.tenant, section)) {
+        return NextResponse.json(
+          { error: "هذا القسم غير متاح في هذه المنصّة", code: "section_hidden", section },
+          { status: 403, headers: { "Cache-Control": "no-store" } }
+        );
+      }
+    }
+
     return als.run(ctx, () => Promise.resolve(fn(req, ...args)));
   };
 }

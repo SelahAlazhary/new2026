@@ -28,6 +28,16 @@ const env = {
   FIREBASE_DATABASE_SECRET: "",
   COOKIE_SECURE: "0",
   ADMIN_DEVICE_LOCK: "0",
+  /*
+    حسابُ لوحة المنصّات للتجربة المحلّية وحدَها.
+    مكتوبٌ هنا لا في `.env.example` لأنّ هذا الملفَّ **مِشْجَبُ تطويرٍ
+    صريح**: يُفرغ مفاتيحَ الإنتاج ويُطفئ الكوكيَ الآمنة وقفلَ الجهاز.
+    وفي الإنتاج تُضبط `SUPER_ADMIN_*` في متغيّرات الاستضافة، ولا يمرّ
+    هذا السكربتُ أصلاً.
+  */
+  SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL || "super@local.test",
+  SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD || "LocalHub@2026",
+  SUPER_DEVICE_LOCK: "0",
 };
 
 const child = spawn("npx", ["next", mode, "-p", port], { stdio: "inherit", env, shell: true });

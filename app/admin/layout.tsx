@@ -6,6 +6,8 @@ import { adminNav } from "@/lib/dashboard-data";
 import { getSession } from "@/lib/session";
 import { loadDB, getDB } from "@/lib/db";
 import { can, isOwner, permForPath } from "@/lib/perms";
+import { currentTenant } from "@/lib/hub/context";
+import { sectionForAdminPath, sectionHidden } from "@/lib/hub/sections";
 import { deviceMatches } from "@/lib/device-guard";
 import { findToolbar, toolbarClass, stickClass } from "@/lib/toolbar-styles";
 import { findIconFrame, iconFrameClass, iconFrameVars } from "@/lib/icon-frames";
@@ -26,11 +28,20 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   /* والجهازُ يُفحص في كلّ طلب — انظر `deviceMatches`. */
   if (!(await deviceMatches(me))) redirect("/login?device=1");
 
-  // القائمة تعرض ما يملكه هذا المشرف فقط
-  const nav = adminNav.filter((item) => {
-    const perm = permForPath(item.href);
-    return perm === null || can(me, perm);
-  });
+  /*
+    القائمة تعرض ما يملكه هذا المشرف **وما لم يُخفَ عن منصّته**.
+    والفرقُ بينهما مقصود: الصلاحيةُ تُمنح من داخل المنصّة (المالكُ يوزّعها
+    على مشرفيه)، والإخفاءُ يأتي من فوقها (خطّةُ الاشتراك). فقد يملك
+    المالكُ «كلَّ شيء» ولا يرى قسماً أُخفي عن منصّته كلِّها.
+  */
+  const { tenant } = currentTenant();
+  const shown = (href: string) => {
+    const perm = permForPath(href);
+    if (perm !== null && !can(me, perm)) return false;
+    const section = sectionForAdminPath(href);
+    return !(section && sectionHidden(tenant, section));
+  };
+  const nav = adminNav.filter((item) => shown(item.href));
 
   /**
    * حماية الصفحة نفسها: إخفاء الرابط لا يكفي — من يكتب المسار يدوياً
@@ -39,6 +50,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const path = (await headers()).get("x-pathname") ?? "";
   const needed = path ? permForPath(path) : null;
   if (needed && !can(me, needed)) redirect("/admin?denied=1");
+  const hiddenHere = path && path !== "/admin" ? sectionForAdminPath(path) : null;
+  if (hiddenHere && sectionHidden(tenant, hiddenHere)) redirect("/admin?hidden=1");
+
+  /* المنصّةُ الموقوفة: لوحتُها تُقرأ ولا تُكتب — ولافتةٌ تقول السبب لا تُخفيه. */
+  const paused = tenant.status === "suspended" || tenant.status === "expired";
 
   /*
     شريط الأدوات: لوحة الإدارة كانت الشاشةَ الوحيدة التي لا تحمل أصنافه،
@@ -63,6 +79,20 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           avatar: session.name.charAt(0),
         }}
       >
+        {paused && (
+          <div
+            role="status"
+            className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-[13px] text-amber-800"
+          >
+            <span aria-hidden="true">⏸</span>
+            <b className="font-kufi">
+              {tenant.status === "expired" ? "انتهى اشتراك المنصّة" : "المنصّة موقوفة مؤقّتاً"}
+            </b>
+            <span className="opacity-80">
+              {tenant.suspendReason || "لوحتك للقراءة فقط الآن، وبياناتك كلّها محفوظة."} — الطلاب يرون صفحة توقّف.
+            </span>
+          </div>
+        )}
         {children}
       </AdminShell>
     </div>

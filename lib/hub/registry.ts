@@ -1,15 +1,13 @@
 import "server-only";
-import fs from "fs";
-import path from "path";
-import { fbGet, fbSet, firebaseConfigured } from "../firebase";
 import type { Tenant } from "./types";
 import { UNLIMITED } from "./types";
+import { hubGet, hubSet, hubList } from "./store";
 
 /**
  * سجلُّ المستأجرين — من الـslug إلى المعرّف، ومن المعرّف إلى بطاقة المنصّة.
  * ------------------------------------------------------------------
  * يُقرأ في **كلّ طلب** (لحلّ المضيف)، فلا بدّ أن يكون رخيصاً: ذاكرةٌ
- * مؤقّتة لدقيقة، وقراءةٌ ضحلة من `hub/slugs/{slug}` لا من الشجرة كلّها.
+ * مؤقّتة لدقيقة، وقراءةُ عقدةٍ واحدة (`hub/slugs/{slug}`) لا الشجرةِ كلِّها.
  * والنفيُ يُخبَّأ أيضاً (١٥ ثانية) — وإلّا صار كلُّ مضيفٍ مجهول ضربةً
  * على القاعدة.
  *
@@ -17,8 +15,7 @@ import { UNLIMITED } from "./types";
  * تبقى: معرّفُها `DEFAULT_TENANT_ID` (وإلّا `default`)، وتُخدم على الجذر
  * محلّياً وعلى الإنتاج حتى يُقلَب `ROOT_HOST_MODE=hub` عند إطلاق الـHub.
  *
- * **وبلا فايربيز** (تطويرٌ محلّي) يُقرأ السجلُّ من `data/hub.json` — فتُنشأ
- * منصّاتٌ للتجربة بلا سحابة.
+ * والتخزينُ كلُّه في `lib/hub/store.ts` — فايربيز أو `data/hub.json`.
  */
 
 const TTL_HIT = 60_000;
@@ -59,48 +56,42 @@ export function implicitDefaultTenant(): Tenant {
 /* ---------- الذاكرة المؤقّتة ---------- */
 
 type Slot<T> = { value: T | null; at: number };
-const slugCache = new Map<string, Slot<string>>();
-const tenantCache = new Map<string, Slot<Tenant>>();
+
+/**
+ * المخبأُ على `globalThis` لا في الوحدة — وهذا ليس تزيّناً.
+ * ------------------------------------------------------------------
+ * Next يحزم **الصفحاتِ ومساراتِ API في رسمين مستقلّين**، فالوحدةُ الواحدة
+ * تُحمَّل مرّتين في العملية نفسِها ولكلّ نسخةٍ حالتُها. والنتيجةُ التي
+ * وقعت فعلاً: يُخفي أدمنُ المنصّات قسماً من مسارٍ في API فيُصدّق المسارُ
+ * ويكذّبه التخطيطُ — القسمُ يُرفض تعديلُه ويبقى رابطُه في القائمة دقيقةً
+ * كاملة (عمرَ المخبأ).
+ *
+ * و`globalThis` مشتركٌ بين الرسمين في العملية الواحدة، فالإبطالُ يبلغ
+ * الاثنين في اللحظة. ويبقى ما بين **نسخ الخادم** على فيرسل متأخّراً
+ * بعمر المخبأ (دقيقة) — وهذا حدُّ ما يُصنع بلا إشارةٍ مشتركة، وهو مقبولٌ
+ * لبطاقةٍ تتغيّر مرّةً في الشهر.
+ */
+const g = globalThis as unknown as {
+  __hubSlugCache?: Map<string, Slot<string>>;
+  __hubTenantCache?: Map<string, Slot<Tenant>>;
+};
+const slugCache = (g.__hubSlugCache ??= new Map<string, Slot<string>>());
+const tenantCache = (g.__hubTenantCache ??= new Map<string, Slot<Tenant>>());
 
 function fresh<T>(s: Slot<T> | undefined): boolean {
   if (!s) return false;
   return Date.now() - s.at < (s.value === null ? TTL_MISS : TTL_HIT);
 }
 
-/** يُسقط ما خُبّئ عن منصّةٍ — بعد تعديلها من الـHub. */
+/**
+ * يُسقط ما خُبّئ عن منصّةٍ — بعد تعديلها من الـHub.
+ * والإسقاطُ محلّيٌّ لهذه النسخة: نسخُ فيرسل الأخرى تلحق بعد دقيقةٍ على
+ * الأكثر (عمرُ المخبأ)، وهو مقبولٌ لبياناتٍ تتغيّر مرّةً في الشهر.
+ */
 export function forgetTenant(id: string, slug?: string) {
   tenantCache.delete(id);
   if (slug) slugCache.delete(slug);
   for (const [k, v] of slugCache) if (v.value === id) slugCache.delete(k);
-}
-
-/* ---------- السجلّ المحلّي (بلا سحابة) ---------- */
-
-const HUB_FILE = path.join(process.cwd(), "data", "hub.json");
-const READ_ONLY_FS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-
-type LocalHub = { tenants: Record<string, Tenant>; slugs: Record<string, string> };
-
-function readLocalHub(): LocalHub {
-  try {
-    if (!READ_ONLY_FS && fs.existsSync(HUB_FILE)) {
-      const raw = JSON.parse(fs.readFileSync(HUB_FILE, "utf-8")) as Partial<LocalHub>;
-      return { tenants: raw.tenants ?? {}, slugs: raw.slugs ?? {} };
-    }
-  } catch {
-    /* ملفٌ تالف — يُعامل كفارغ */
-  }
-  return { tenants: {}, slugs: {} };
-}
-
-function writeLocalHub(h: LocalHub) {
-  if (READ_ONLY_FS) return;
-  try {
-    fs.mkdirSync(path.dirname(HUB_FILE), { recursive: true });
-    fs.writeFileSync(HUB_FILE, JSON.stringify(h, null, 2), "utf-8");
-  } catch {
-    /* قرصٌ غير قابل للكتابة */
-  }
 }
 
 /* ---------- القراءة ---------- */
@@ -116,12 +107,8 @@ export async function tenantIdBySlug(slug: string): Promise<string | null> {
 
   let id: string | null = null;
   try {
-    if (firebaseConfigured()) {
-      const v = await fbGet<string>(`hub/slugs/${s}`);
-      id = typeof v === "string" && v ? v : null;
-    } else {
-      id = readLocalHub().slugs[s] ?? null;
-    }
+    const v = await hubGet<string>(`slugs/${s}`);
+    id = typeof v === "string" && v ? v : null;
   } catch {
     /* تعذّرت القراءة — يُعامل كمجهول ويُعاد بعد قليل */
     id = hit?.value ?? null;
@@ -137,11 +124,7 @@ export async function tenantById(id: string): Promise<Tenant | null> {
 
   let t: Tenant | null = null;
   try {
-    if (firebaseConfigured()) {
-      t = await fbGet<Tenant>(`hub/tenants/${id}`);
-    } else {
-      t = readLocalHub().tenants[id] ?? null;
-    }
+    t = await hubGet<Tenant>(`tenants/${id}`);
   } catch {
     t = hit?.value ?? null;
   }
@@ -164,34 +147,36 @@ function normalizeTenant(t: Tenant): Tenant {
   };
 }
 
-/** كلُّ المنصّات — للمهامّ المجدولة (النسخ الاحتياطي…). */
+/** كلُّ المنصّات — للـHub وللمهامّ المجدولة. */
 export async function listTenants(): Promise<Tenant[]> {
   let map: Record<string, Tenant> = {};
   try {
-    map = (firebaseConfigured()
-      ? (await fbGet<Record<string, Tenant>>("hub/tenants")) ?? {}
-      : readLocalHub().tenants) ?? {};
+    map = await hubList<Tenant>("tenants");
   } catch {
     map = {};
   }
   const list = Object.values(map).filter((t) => t && t.id).map(normalizeTenant);
   if (!list.some((t) => t.id === defaultTenantId())) list.unshift(implicitDefaultTenant());
-  return list;
+  return list.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
 }
 
-/* ---------- الكتابة (تُستعمل من الـHub وسكربت الترحيل) ---------- */
+/* ---------- الكتابة ---------- */
 
 export async function upsertTenant(t: Tenant): Promise<void> {
-  if (firebaseConfigured()) {
-    await fbSet(`hub/tenants/${t.id}`, t);
-    await fbSet(`hub/slugs/${t.slug}`, t.id);
-  } else {
-    const h = readLocalHub();
-    /* إن تغيّر الـslug يُمحى القديم من الفهرس */
-    for (const [s, id] of Object.entries(h.slugs)) if (id === t.id && s !== t.slug) delete h.slugs[s];
-    h.tenants[t.id] = t;
-    h.slugs[t.slug] = t.id;
-    writeLocalHub(h);
-  }
+  const before = await hubGet<Tenant>(`tenants/${t.id}`);
+  await hubSet(`tenants/${t.id}`, t);
+  await hubSet(`slugs/${t.slug}`, t.id);
+  /* إن تغيّر الـslug يُمحى القديمُ من الفهرس فلا يبقى عنوانٌ يشير إلى منصّةٍ باسمٍ آخر */
+  if (before?.slug && before.slug !== t.slug) await hubSet(`slugs/${before.slug}`, null);
   forgetTenant(t.id, t.slug);
+  if (before?.slug) forgetTenant(t.id, before.slug);
+}
+
+/** تعديلٌ جزئيٌّ على بطاقة منصّة — يقرأ ثمّ يكتب البطاقةَ وحدَها. */
+export async function patchTenant(id: string, patch: Partial<Tenant>): Promise<Tenant | null> {
+  const cur = (await hubGet<Tenant>(`tenants/${id}`)) ?? (id === defaultTenantId() ? implicitDefaultTenant() : null);
+  if (!cur) return null;
+  const next = normalizeTenant({ ...cur, ...patch, id: cur.id });
+  await upsertTenant(next);
+  return next;
 }
