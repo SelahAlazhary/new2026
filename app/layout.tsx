@@ -21,6 +21,7 @@ import { headers } from "next/headers";
 import { getPublicDB, getScopedDB, loadDB } from "@/lib/db";
 import { TenantNotFound, currentTenant } from "@/lib/hub/context";
 import { isHubPath } from "@/lib/hub/resolve";
+import { isHubRootRequest } from "@/lib/hub/guard-host";
 import { pageGate } from "@/lib/hub/gate";
 import { touchSession } from "@/lib/session";
 import { defaultContent } from "@/lib/defaults";
@@ -100,10 +101,15 @@ function safeUrl(raw?: string): URL {
 }
 
 /** ميتاداتا ديناميكية من قاعدة البيانات (العنوان/الوصف/الأيقونة/OG). */
-/** هل هذا الطلبُ لصفحةٍ من صفحات المنصّة الأمّ؟ (المسارُ من الوسيط) */
+/**
+ * هل هذا الطلبُ لصفحةٍ من صفحات الموقع الأمّ؟
+ * إمّا مسارُ Hub صريح (`/hub` · `/start`)، وإمّا الجذرُ في وضع الـHub —
+ * فصفحتُه الرئيسيّة «أنشئ منصّتك» لا منصّةَ طالب.
+ */
 async function onHub(): Promise<boolean> {
   try {
-    return isHubPath((await headers()).get("x-pathname") ?? "");
+    if (isHubPath((await headers()).get("x-pathname") ?? "")) return true;
+    return await isHubRootRequest();
   } catch {
     return false;
   }

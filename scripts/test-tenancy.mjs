@@ -23,7 +23,13 @@ import fs from "node:fs";
 import path from "node:path";
 
 const BASE = new URL(process.env.BASE || "http://127.0.0.1:3300");
-const ROOT_HOST = `localhost:${BASE.port}`;
+/*
+  في وضع الـHub الجذرُ موقعُ إنشاء المنصّات لا منصّة، فالمنصّةُ الافتراضية
+  تُخاطَب على نطاقها الفرعيّ. وبلا وضع الـHub يبقى الجذرُ يخدمها.
+*/
+const HUB_MODE = (process.env.ROOT_HOST_MODE || "hub") === "hub";
+const DEF_SLUG = process.env.DEFAULT_TENANT_SLUG || process.env.DEFAULT_TENANT_ID || "default";
+const ROOT_HOST = HUB_MODE ? `${DEF_SLUG}.localhost:${BASE.port}` : `localhost:${BASE.port}`;
 const DEMO_HOST = `demo.localhost:${BASE.port}`;
 
 /* ---------- تجهيز منصّة «demo» محلّياً (قبل الخادم) ---------- */

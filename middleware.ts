@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { classifyHost, isHubPath, type HostKind } from "@/lib/hub/resolve";
+import { classifyHost, isHubPath, isTenantOnlyPath, type HostKind } from "@/lib/hub/resolve";
 
 /**
  * الطبقة الأمامية للحماية (تعمل قبل أي صفحة أو مسار):
@@ -168,6 +168,20 @@ export function middleware(req: NextRequest) {
   /* مساراتُ الـHub على الجذر وحده — على نطاق منصّةٍ لا وجودَ لها */
   if (hostKind.kind !== "root" && isHubPath(pathname)) {
     return new NextResponse("Not Found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
+  /*
+    الجذرُ حين يكون «موقعَ إنشاء المنصّات» (ROOT_HOST_MODE=hub) لا يخدم
+    منصّةً: فمساراتُ الطالب والمشرف والدخول عليه لا معنى لها، وتُحوَّل
+    إلى «أنشئ منصّتك». والطالبُ لا علاقةَ له بالجذر أصلاً — منصّتُه على
+    نطاقها الفرعيّ.
+  */
+  const rootIsHub = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
+  if (hostKind.kind === "root" && rootIsHub && isTenantOnlyPath(pathname)) {
+    const to = req.nextUrl.clone();
+    to.pathname = "/start";
+    to.search = "";
+    return NextResponse.redirect(to);
   }
 
   /* تبديلُ منصّة التطوير: ?tenant=slug يُثبّت الكوكي، و?tenant= (فارغ) يمحوها */

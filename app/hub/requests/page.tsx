@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listTenants } from "@/lib/hub/registry";
 import { StatusPill } from "@/components/hub/status-pill";
+import { RequestActions } from "@/components/hub/request-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "الطلبات" };
@@ -26,7 +27,8 @@ export default async function RequestsPage() {
         title="منصّات بانتظار الموافقة"
         empty="لا توجد منصّة تنتظر موافقة."
         items={waiting}
-        cta="راجع وفعّل"
+        cta="راجع"
+        actions
       />
       <Group
         title="منصّات قيد الإنشاء"
@@ -40,13 +42,14 @@ export default async function RequestsPage() {
 }
 
 function Group({
-  title, items, empty, cta, hint,
+  title, items, empty, cta, hint, actions = false,
 }: {
   title: string;
   items: Awaited<ReturnType<typeof listTenants>>;
   empty: string;
   cta: string;
   hint?: string;
+  actions?: boolean;
 }) {
   return (
     <section className="mb-7">
@@ -68,10 +71,11 @@ function Group({
               <StatusPill status={t.status} />
               <Link
                 href={`/hub/tenants/${t.id}`}
-                className="rounded-full bg-[#1b2a4a] px-3.5 py-1.5 text-[11.5px] font-bold text-white"
+                className="rounded-full border border-black/12 px-3 py-1.5 text-[11.5px] font-bold"
               >
                 {cta}
               </Link>
+              {actions && <RequestActions tenantId={t.id} />}
             </li>
           ))}
         </ul>

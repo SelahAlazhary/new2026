@@ -74,5 +74,10 @@ export function classifyHost(rawHost: string | null | undefined, rootDomain?: st
 
 /** مساراتُ الـHub — تعمل على الجذر وحده. */
 export function isHubPath(pathname: string): boolean {
-  return /^\/(hub|start|api\/hub)(\/|$)/.test(pathname);
+  return /^\/(hub|start|api\/hub|api\/start)(\/|$)/.test(pathname);
+}
+
+/** مساراتٌ تخصّ منصّةً بعينها — على الجذر بلا مستأجرٍ تُحوَّل إلى الموقع الأمّ. */
+export function isTenantOnlyPath(pathname: string): boolean {
+  return /^\/(admin|student|login|register|legal)(\/|$)/.test(pathname);
 }

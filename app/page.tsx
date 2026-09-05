@@ -10,6 +10,10 @@ import { Faq } from "@/components/sections/faq";
 import { CtaFooter } from "@/components/sections/cta-footer";
 import { SectionDivider } from "@/components/sections/section-divider";
 import { Descend } from "@/components/brand/descend";
+import { isHubRootRequest } from "@/lib/hub/guard-host";
+import { visiblePlans } from "@/lib/hub/plans";
+import { getHubSettings } from "@/lib/hub/settings";
+import { Marketing } from "@/components/hub/marketing";
 import { getPublicDB, loadDB } from "@/lib/db";
 import {
   findHomeLayout, WIDTH_CLASS, DENSITY_CLASS, type HomeSection,
@@ -43,6 +47,16 @@ const SECTIONS: Record<HomeSection, React.ComponentType> = {
 };
 
 export default async function Home() {
+  /*
+    الجذرُ في وضع الـHub = موقعُ إنشاء المنصّات، لا منصّةُ طالب.
+    فتُعرض صفحةُ «أنشئ منصّتك» بدل صفحة الهبوط التعليميّة.
+  */
+  if (await isHubRootRequest()) {
+    const plans = await visiblePlans();
+    const brand = (await getHubSettings()).brand.name || "منصّات";
+    return <Marketing plans={plans} brand={brand} />;
+  }
+
   await loadDB();
   const { content } = getPublicDB();
   const L = findHomeLayout(content.homeLayout);

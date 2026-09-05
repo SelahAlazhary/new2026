@@ -16,3 +16,19 @@ export async function isHubHost(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * هل هذا الطلبُ للموقع الأمّ نفسِه (لا لمنصّةٍ)؟
+ * ------------------------------------------------------------------
+ * صحيحٌ حين يكون المضيفُ الجذرَ **والجذرُ يخدم الـHub** (ROOT_HOST_MODE=hub).
+ * حينها لا مستأجرَ يُحلّ، وتُعرض صفحاتُ «أنشئ منصّتك» بدل صفحة منصّة.
+ */
+export async function isHubRootRequest(): Promise<boolean> {
+  try {
+    const kind = (await headers()).get("x-host-kind") ?? "root";
+    if (kind !== "root") return false;
+    return (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
+  } catch {
+    return false;
+  }
+}

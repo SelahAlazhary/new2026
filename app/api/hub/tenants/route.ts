@@ -6,6 +6,8 @@ import { listTenants, patchTenant, tenantById, forgetTenant } from "@/lib/hub/re
 import { invalidateTenant } from "@/lib/store";
 import { audit } from "@/lib/hub/audit";
 import { SECTIONS, FEATURES } from "@/lib/hub/sections";
+import { provisionTenant } from "@/lib/hub/provision";
+import { subscriptionForTenant, setSubscriptionStatus } from "@/lib/hub/plans";
 import type { HideableSection, TenantFeature, TenantLimits, TenantStatus } from "@/lib/hub/types";
 
 export const dynamic = "force-dynamic";
@@ -115,6 +117,29 @@ export async function PATCH(req: Request) {
       details = {};
       break;
     }
+
+    /* الموافقةُ على منصّةٍ تنتظر: تُجهَّز وتُفعَّل، ويُنشأ حسابُ أدمنها */
+    case "approve": {
+      if (current.status !== "pending_approval" && current.status !== "onboarding") {
+        return NextResponse.json({ error: "هذه المنصّة ليست بانتظار الموافقة" }, { status: 400 });
+      }
+      const result = await provisionTenant(id);
+      const sub = await subscriptionForTenant(id);
+      if (sub && (sub.status === "pending_approval" || sub.status === "pending_payment")) {
+        await setSubscriptionStatus(sub.id, "active", "super");
+      }
+      await audit("tenant.approve", actor, { tenantId: id });
+      return NextResponse.json({ ok: true, tenant: result.tenant });
+    }
+
+    /* الرفضُ مع سبب — تبقى المسودّة ليصحّحها صاحبُها */
+    case "reject": {
+      const reason = String(body.reason ?? "").slice(0, 300);
+      patch = { status: "onboarding", onboardingStep: "name", suspendReason: reason };
+      details = { reason };
+      break;
+    }
+
     default:
       return NextResponse.json({ error: "أمر غير معروف" }, { status: 400 });
   }

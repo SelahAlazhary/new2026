@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getDB, loadDB } from "@/lib/db";
+import { isHubRootRequest } from "@/lib/hub/guard-host";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,15 @@ const PRESET_HEX: Record<string, string> = {
  * الاسم والشعار واللون كلّها من قاعدة البيانات.
  */
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  /* الجذرُ في وضع الـHub لا منصّةَ له — تعريفٌ بسيطٌ للموقع الأمّ */
+  if (await isHubRootRequest()) {
+    return {
+      id: "/", name: "أنشئ منصّتك التعليمية", short_name: "منصّات",
+      start_url: "/", scope: "/", display: "standalone",
+      lang: "ar", dir: "rtl", theme_color: "#233b8b", background_color: "#fbfaf7",
+      icons: [{ src: "/api/pwa-icon?size=512", sizes: "512x512", type: "image/png", purpose: "any" }],
+    };
+  }
   /* يربط الطلبَ بمنصّته أوّلاً — الملفُّ يُطلب من نطاق كلّ منصّة على حدة */
   await loadDB();
   const { content } = getDB();

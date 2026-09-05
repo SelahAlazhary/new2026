@@ -26,6 +26,9 @@ const env = {
   FIREBASE_CLIENT_EMAIL: "",
   FIREBASE_PRIVATE_KEY: "",
   FIREBASE_DATABASE_SECRET: "",
+  /* بلا جوجل محلّيّاً — فيعمل بابُ دخول المدرّس التطويريّ (?dev=بريد) */
+  GOOGLE_CLIENT_ID: "",
+  GOOGLE_CLIENT_SECRET: "",
   COOKIE_SECURE: "0",
   ADMIN_DEVICE_LOCK: "0",
   /*
@@ -38,6 +41,12 @@ const env = {
   SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL || "super@local.test",
   SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD || "LocalHub@2026",
   SUPER_DEVICE_LOCK: "0",
+  /*
+    الجذرُ موقعُ إنشاء المنصّات محلّيّاً: `localhost:3300` يعرض «أنشئ
+    منصّتك»، والمنصّاتُ على نطاقاتها الفرعيّة (`default.localhost:3300`).
+    فالطالبُ لا علاقةَ له بالجذر — منصّتُه وحدَها.
+  */
+  ROOT_HOST_MODE: process.env.ROOT_HOST_MODE || "hub",
 };
 
 const child = spawn("npx", ["next", mode, "-p", port], { stdio: "inherit", env, shell: true });

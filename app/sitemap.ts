@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getPublicDB, loadDB } from "@/lib/db";
 import { siteUrl } from "@/lib/seo";
+import { isHubRootRequest } from "@/lib/hub/guard-host";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
  * تحويل الزائر إلى صفحة الدخول يُضعف جودة الفهرسة لا يقوّيها.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (await isHubRootRequest()) return [];
   await loadDB();
   const { content } = getPublicDB();
   const base = await siteUrl(content.url);

@@ -21,8 +21,11 @@ import http from "node:http";
 import fs from "node:fs";
 
 const BASE = new URL(process.env.BASE || "http://127.0.0.1:3300");
-const ROOT_HOST = `localhost:${BASE.port}`;
 const TENANT_ID = process.env.DEFAULT_TENANT_ID || "default";
+/* الجذرُ = لوحة المنصّات؛ والمنصّةُ الافتراضية على نطاقها الفرعيّ (وضع الـHub) */
+const ROOT_HOST = `localhost:${BASE.port}`;
+const DEF_SLUG = process.env.DEFAULT_TENANT_SLUG || TENANT_ID;
+const TEN_HOST = `${DEF_SLUG}.localhost:${BASE.port}`;
 
 const SUPER_EMAIL = process.env.SUPER_ADMIN_EMAIL || "super@local.test";
 const SUPER_PASS = process.env.SUPER_ADMIN_PASSWORD || "LocalHub@2026";
@@ -96,7 +99,7 @@ const t = (name, ok, info = "") => {
   t("قائمة المنصّات تصل", list.status === 200 && Array.isArray(list.json?.tenants), `status ${list.status}`);
 
   /* جلسةُ مشرف المنصّة الافتراضية */
-  const adminLogin = await req(ROOT_HOST, "POST", "/api/auth/login", { body: { username: E.ADMIN_EMAIL, password: E.ADMIN_PASSWORD } });
+  const adminLogin = await req(TEN_HOST, "POST", "/api/auth/login", { body: { username: E.ADMIN_EMAIL, password: E.ADMIN_PASSWORD } });
   const admin = cookiesOf(adminLogin);
   t("دخول مشرف المنصّة", adminLogin.status === 200, `status ${adminLogin.status}`);
 
@@ -106,20 +109,20 @@ const t = (name, ok, info = "") => {
   });
   t("إخفاء «قناة اليوتيوب»", hide.status === 200 && hide.json?.tenant?.hiddenSections?.includes("youtube"), `status ${hide.status} ${hide.text.slice(0, 120)}`);
 
-  const page = await req(ROOT_HOST, "GET", "/admin/youtube", { cookie: admin });
+  const page = await req(TEN_HOST, "GET", "/admin/youtube", { cookie: admin });
   const toHidden = (page.headers.location ?? "").includes("hidden=1");
   t("مسار القسم المخفيّ يُعاد", (page.status === 307 || page.status === 302) && toHidden, `status ${page.status} → ${page.headers.location}`);
 
-  const putHidden = await req(ROOT_HOST, "PUT", "/api/content", { cookie: admin, body: { youtube: { channelId: "hack" } } });
+  const putHidden = await req(TEN_HOST, "PUT", "/api/content", { cookie: admin, body: { youtube: { channelId: "hack" } } });
   t("تعديل بيانات القسم المخفيّ → ٤٠٣", putHidden.status === 403 && putHidden.json?.code === "section_hidden", `status ${putHidden.status} ${putHidden.text.slice(0, 120)}`);
 
-  const apiHidden = await req(ROOT_HOST, "GET", "/api/youtube", { cookie: admin });
+  const apiHidden = await req(TEN_HOST, "GET", "/api/youtube", { cookie: admin });
   t("مسار القسم المخفيّ في API → ٤٠٣", apiHidden.status === 403, `status ${apiHidden.status}`);
 
-  const payload = await req(ROOT_HOST, "GET", "/api/content", { cookie: admin });
+  const payload = await req(TEN_HOST, "GET", "/api/content", { cookie: admin });
   t("حمولة المشرف بلا بيانات القسم المخفيّ", payload.status === 200 && !payload.json?.youtube, `youtube=${JSON.stringify(payload.json?.youtube)?.slice(0, 60)}`);
 
-  const navGone = await req(ROOT_HOST, "GET", "/admin", { cookie: admin });
+  const navGone = await req(TEN_HOST, "GET", "/admin", { cookie: admin });
   t("رابط القسم يختفي من القائمة", navGone.status === 200 && !navGone.text.includes("/admin/youtube"), "الرابط ما زال في الصفحة");
 
   console.log("\n== ٤) إطفاءُ ميزة يُغلق مسارها ==");
@@ -127,7 +130,7 @@ const t = (name, ok, info = "") => {
     cookie: hub, body: { id: TENANT_ID, action: "features", features: { exams: false } },
   });
   t("إطفاء «الاختبارات»", offExams.status === 200, `status ${offExams.status}`);
-  const examApi = await req(ROOT_HOST, "POST", "/api/exam", { cookie: admin, body: {} });
+  const examApi = await req(TEN_HOST, "POST", "/api/exam", { cookie: admin, body: {} });
   t("مسار الميزة المطفأة → ٤٠٣", examApi.status === 403 && examApi.json?.code === "feature_off", `status ${examApi.status} ${examApi.text.slice(0, 120)}`);
 
   console.log("\n== ٥) إيقافُ منصّة ==");
@@ -136,15 +139,15 @@ const t = (name, ok, info = "") => {
   });
   t("الإيقاف", suspend.status === 200 && suspend.json?.tenant?.status === "suspended", `status ${suspend.status}`);
 
-  const guest = await req(ROOT_HOST, "GET", "/");
+  const guest = await req(TEN_HOST, "GET", "/");
   t("الزائر يرى صفحة توقّف", guest.status === 200 && guest.text.includes("متوقّفة مؤقّتاً"), "لا لافتة توقّف");
-  const readWhilePaused = await req(ROOT_HOST, "GET", "/api/content", { cookie: admin });
+  const readWhilePaused = await req(TEN_HOST, "GET", "/api/content", { cookie: admin });
   t("القراءة تعمل أثناء الإيقاف", readWhilePaused.status === 200, `status ${readWhilePaused.status}`);
-  const writeWhilePaused = await req(ROOT_HOST, "PUT", "/api/content", { cookie: admin, body: { content: { brand: "X" } } });
+  const writeWhilePaused = await req(TEN_HOST, "PUT", "/api/content", { cookie: admin, body: { content: { brand: "X" } } });
   t("الكتابة تُردّ ٤٠٢", writeWhilePaused.status === 402 && writeWhilePaused.json?.code === "tenant_paused", `status ${writeWhilePaused.status} ${writeWhilePaused.text.slice(0, 120)}`);
-  const adminPanel = await req(ROOT_HOST, "GET", "/admin", { cookie: admin });
+  const adminPanel = await req(TEN_HOST, "GET", "/admin", { cookie: admin });
   t("صاحب المنصّة يدخل لوحته", adminPanel.status === 200 && adminPanel.text.includes("موقوفة مؤقّتاً"), `status ${adminPanel.status}`);
-  const loginStillWorks = await req(ROOT_HOST, "POST", "/api/auth/login", { body: { username: E.ADMIN_EMAIL, password: E.ADMIN_PASSWORD } });
+  const loginStillWorks = await req(TEN_HOST, "POST", "/api/auth/login", { body: { username: E.ADMIN_EMAIL, password: E.ADMIN_PASSWORD } });
   t("الدخول يبقى مفتوحاً أثناء الإيقاف", loginStillWorks.status === 200, `status ${loginStillWorks.status}`);
 
   console.log("\n== ٦) السجلّ ==");
@@ -158,7 +161,7 @@ const t = (name, ok, info = "") => {
     await req(ROOT_HOST, "PATCH", "/api/hub/tenants", { cookie: hub, body: { id: TENANT_ID, action: "features", features: { exams: true } } }),
   ];
   t("أُعيدت الحالة والأقسام والميزات", restore.every((r) => r.status === 200), restore.map((r) => r.status).join(","));
-  const back = await req(ROOT_HOST, "GET", "/api/content", { cookie: admin });
+  const back = await req(TEN_HOST, "GET", "/api/content", { cookie: admin });
   t("المنصّة تعمل كما كانت", back.status === 200, `status ${back.status}`);
 
   console.log(`\n${fail === 0 ? "✔" : "✖"} ${pass} ناجح · ${fail} فاشل\n`);
