@@ -3,6 +3,7 @@ import { fbGet, fbSet } from "./firebase";
 import { firebaseUsable } from "./store";
 import { CAP } from "./activity";
 import type { Activity } from "./types";
+import { tenantPath } from "./hub/context";
 
 /**
  * سجلُّ النشاط — خارج قاعدة المنصّة عمداً.
@@ -19,12 +20,11 @@ import type { Activity } from "./types";
  * وبلا فايربيز تعمل المنصّة كما هي بلا سجلّ — التتبّعُ إضافةٌ لا شرط.
  */
 
-const ROOT = "activity";
-
 function path(userId: string): string {
   /* المعرّفات مقيّدة الشكل أصلاً، والتنقية هنا حرصٌ على ألّا يخرج
-     مسارٌ عن جذره مهما جاء المعرّفُ من حيث جاء. */
-  return `${ROOT}/${userId.replace(/[^A-Za-z0-9_-]/g, "")}`;
+     مسارٌ عن جذره مهما جاء المعرّفُ من حيث جاء. والجذرُ تحت منصّة
+     الطالب: `tenants/{id}/activity/{uid}`. */
+  return tenantPath(`activity/${userId.replace(/[^A-Za-z0-9_-]/g, "")}`);
 }
 
 /** سجلُّ طالب — الأحدث أوّلاً، أو فارغٌ إن لم يوجد. */

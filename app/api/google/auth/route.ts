@@ -5,12 +5,13 @@ import { authUrl, googleConfigured } from "@/lib/google";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import { loadDB } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** GET: بدء ربط حساب جوجل — للأدمن فقط. */
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -35,3 +36,6 @@ export async function GET(req: Request) {
   });
   return NextResponse.redirect(authUrl(req, state));
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

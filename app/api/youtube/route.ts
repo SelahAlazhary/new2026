@@ -4,12 +4,13 @@ import { syncChannel, youtubeApiConfigured } from "@/lib/youtube";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import type { YoutubeVideo } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** PUT: حفظ/مسح مفتاح YouTube Data API — للأدمن فقط (يُحفظ على الخادم ولا يُعاد إطلاقاً). */
-export async function PUT(req: Request) {
+async function PUT_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -27,7 +28,7 @@ export async function PUT(req: Request) {
 }
 
 /** GET: حالة الربط (للأدمن) — هل مفتاح الواجهة مضبوط؟ */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -49,7 +50,7 @@ export async function GET() {
  * POST: مزامنة القناة — { channel }
  * تُبقي إعدادات كل فيديو (إخفاء/تثبيت/ترتيب) كما هي عند إعادة المزامنة.
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
 }
 
 /** DELETE: فصل القناة ومسح فيديوهاتها من المنصّة. */
-export async function DELETE() {
+async function DELETE_impl() {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -110,3 +111,9 @@ export async function DELETE() {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);
+export const PUT = tenantRoute(PUT_impl);
+export const DELETE = tenantRoute(DELETE_impl);

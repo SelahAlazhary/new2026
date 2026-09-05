@@ -7,6 +7,7 @@ import { recordEvent } from "@/lib/security";
 import { getDB, loadDB } from "@/lib/db";
 import { googleStatus, uploadToDrive } from "@/lib/google";
 import { limit } from "@/lib/guard";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -28,7 +29,7 @@ const RECEIPT_EXT = new Set(["png", "jpg", "jpeg", "webp", "gif", "avif", "heic"
  * الوجهة: Google Drive الحساب المربوط إذا فُعّل ذلك من التخصيص (mediaHost = "drive")،
  * وإلا تخزين الخادم المحلي. يمكن فرض الوجهة بحقل النموذج `target`.
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   const form = await req.formData();
@@ -109,3 +110,6 @@ export async function POST(req: Request) {
   // يُخدَم عبر مسار API (لأن ملفات public المُضافة وقت التشغيل لا يخدمها خادم الإنتاج)
   return NextResponse.json({ ok: true, url: `/api/file/${name}`, host: "local" });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

@@ -105,6 +105,227 @@
         ".validate": true
       }
     },
+    "tenants": {
+      ".read": false,
+      ".write": false,
+      "$tenantId": {
+        ".validate": "$tenantId.matches(/^[a-z0-9_-]{1,64}$/)",
+        "platform": {
+          "users": {
+            "$index": {
+              ".validate": "newData.hasChildren(['id','name','role','username','passwordHash','salt','createdAt'])",
+              "role": {
+                ".validate": "newData.val() === 'admin' || newData.val() === 'student'"
+              },
+              "username": {
+                ".validate": "newData.isString() && newData.val().length <= 200"
+              },
+              "passwordHash": {
+                ".validate": "newData.isString() && newData.val().length >= 32"
+              },
+              "salt": {
+                ".validate": "newData.isString() && newData.val().length >= 16"
+              },
+              "active": {
+                ".validate": "newData.isBoolean()"
+              },
+              "deviceId": {
+                ".validate": "newData.isString() && newData.val().length <= 128"
+              },
+              "pushSubs": {
+                "$sub": {
+                  ".validate": "newData.hasChildren(['endpoint','p256dh','auth'])",
+                  "endpoint": {
+                    ".validate": "newData.isString() && newData.val().beginsWith('https://')"
+                  }
+                }
+              },
+              "subscriptions": {
+                "$sub": {
+                  ".validate": "newData.hasChildren(['id','subjectId','activatedAt'])",
+                  "expiresAt": {
+                    ".validate": "newData.isString() || newData.val() === null"
+                  }
+                }
+              },
+              "$other": {
+                ".validate": true
+              }
+            }
+          },
+          "codes": {
+            "$index": {
+              ".validate": "newData.hasChildren(['code','status'])",
+              "code": {
+                ".validate": "newData.isString() && newData.val().length <= 64"
+              },
+              "status": {
+                ".validate": "newData.val() === 'متاح' || newData.val() === 'مستخدم' || newData.val() === 'منتهي'"
+              },
+              "$other": {
+                ".validate": true
+              }
+            }
+          },
+          "subjects": {
+            "$index": {
+              ".validate": "newData.hasChildren(['id','name'])",
+              "price": {
+                ".validate": "newData.isNumber() && newData.val() >= 0"
+              },
+              "term": {
+                ".validate": "newData.val() === 1 || newData.val() === 2"
+              },
+              "$other": {
+                ".validate": true
+              }
+            }
+          },
+          "plans": {
+            "$index": {
+              ".validate": "newData.hasChildren(['id','name','kind','scope'])",
+              "price": {
+                ".validate": "newData.isNumber() && newData.val() >= 0"
+              },
+              "scope": {
+                ".validate": "newData.val() === 'all' || newData.val() === 'term' || newData.val() === 'subject'"
+              },
+              "$other": {
+                ".validate": true
+              }
+            }
+          },
+          "exams": {
+            "$index": {
+              ".validate": "newData.hasChildren(['id','title'])",
+              "$other": {
+                ".validate": true
+              }
+            }
+          },
+          "integrations": {
+            ".read": false,
+            ".write": false
+          },
+          "$other": {
+            ".validate": true
+          }
+        },
+        "backups": {
+          ".read": false,
+          ".write": false
+        },
+        "activity": {
+          ".read": false,
+          ".write": false
+        },
+        "claims": {
+          ".read": false,
+          ".write": false
+        },
+        "decisions": {
+          ".read": false,
+          ".write": false
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "hub": {
+      ".read": false,
+      ".write": false,
+      "tenants": {
+        "$tenantId": {
+          ".validate": "newData.hasChildren(['id','slug','status'])",
+          "id": {
+            ".validate": "newData.isString() && newData.val() === $tenantId"
+          },
+          "slug": {
+            ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$|^[a-z0-9]$/)"
+          },
+          "status": {
+            ".validate": "newData.val() === 'onboarding' || newData.val() === 'pending_approval' || newData.val() === 'active' || newData.val() === 'suspended' || newData.val() === 'expired' || newData.val() === 'archived'"
+          },
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "slugs": {
+        "$slug": {
+          ".validate": "newData.isString() && newData.val().length <= 64"
+        }
+      },
+      "owners": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','email'])",
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "saasPlans": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','name','interval','priceEGP'])",
+          "priceEGP": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "interval": {
+            ".validate": "newData.val() === 'month' || newData.val() === 'quarter' || newData.val() === 'year'"
+          },
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "subscriptions": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','tenantId','planId','status'])",
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "invoices": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','tenantId','amountEGP','status','provider'])",
+          "amountEGP": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "domains": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','tenantId','domain','status'])",
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "audit": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','at','action'])",
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "superAdmins": {
+        "$id": {
+          ".validate": "newData.hasChildren(['id','email','passwordHash','salt'])",
+          "$other": {
+            ".validate": true
+          }
+        }
+      },
+      "settings": {
+        ".validate": true
+      }
+    },
     "backups": {
       ".read": false,
       ".write": false

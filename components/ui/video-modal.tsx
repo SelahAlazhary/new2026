@@ -4,6 +4,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { IconClose } from "@/components/brand/icons";
 import { useEffect } from "react";
+import { CleanYouTube, youtubeId } from "@/components/student/clean-youtube";
 
 export function VideoModal({
   open,
@@ -14,6 +15,8 @@ export function VideoModal({
   onClose: () => void;
   src?: string;
 }) {
+  /* مقطعُ يوتيوب يُعرض بالمشغّل النظيف — لا عنوانَ ولا شعارَ ولا مقترحات */
+  const yt = youtubeId(src);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     if (open) document.addEventListener("keydown", onKey);
@@ -45,13 +48,17 @@ export function VideoModal({
             >
               <IconClose className="size-5" />
             </button>
-            <iframe
-              src={src || "about:blank"}
-              title="درس تجريبي"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="size-full"
-            />
+            {yt ? (
+              <CleanYouTube videoId={yt} title="درس تجريبي" />
+            ) : (
+              <iframe
+                src={src || "about:blank"}
+                title="درس تجريبي"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="size-full"
+              />
+            )}
           </motion.div>
         </motion.div>
       )}

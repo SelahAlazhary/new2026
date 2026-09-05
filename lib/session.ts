@@ -8,6 +8,8 @@ import type { Role } from "./types";
  * السرّ من AUTH_SECRET أو قيمة تطوير احتياطية.
  */
 import { AUTH_SECRET as SECRET } from "./secrets";
+import { tryCurrentTenant, bindTenant } from "./hub/context";
+import { defaultTenantId } from "./hub/registry";
 /**
  * علم Secure للكوكي: يُفعَّل يدوياً عند النشر على HTTPS (COOKIE_SECURE=1).
  * لا يُشتق من NODE_ENV لأن التشغيل الإنتاجي على http://localhost شائع،
@@ -26,12 +28,27 @@ function sign(payload: string) {
   return b64url(crypto.createHmac("sha256", SECRET).update(payload).digest());
 }
 
+/**
+ * الرمزُ يحمل معرّفَ منصّته `tid`.
+ * ------------------------------------------------------------------
+ * الكوكي معزولةٌ بالمضيف أصلاً، لكنّ المنصّةَ الواحدة قد تُخدم على
+ * نطاقٍ فرعيّ ودومينٍ مخصّص، والرمزُ يُنسخ بين الأجهزة. فيُربط الرمزُ
+ * بمنصّته ويُرفض على غيرها — كوكي منصّة «أ» لا تفتح شيئاً على «ب» ولو
+ * تطابق معرّفُ المستخدم مصادفةً.
+ *
+ * والرمزُ القديم (قبل تعدّد المنصّات) بلا `tid` يُقبل على المنصّة
+ * الافتراضية وحدَها ثمّ يُستبدل برمزٍ موسومٍ عند أوّل زيارة — فلا يخرج
+ * طالبٌ من حسابه بسبب الترحيل.
+ */
 export function createToken(s: Session): string {
-  const payload = b64url(Buffer.from(JSON.stringify({ ...s, iat: Date.now() })));
+  const tid = tryCurrentTenant()?.id;
+  const payload = b64url(Buffer.from(JSON.stringify({ ...s, tid, iat: Date.now() })));
   return `${payload}.${sign(payload)}`;
 }
 
-export function verifyToken(token: string | undefined): Session | null {
+type Parsed = { session: Session; legacy: boolean };
+
+function parseToken(token: string | undefined): Parsed | null {
   if (!token || !token.includes(".")) return null;
   const [payload, sig] = token.split(".");
   const expected = sign(payload);
@@ -44,26 +61,56 @@ export function verifyToken(token: string | undefined): Session | null {
     // انتهاء صلاحية حقيقي: رمز قديم لا يُقبل حتى لو بقيت الكوكي على الجهاز
     if (!data.iat || Date.now() - Number(data.iat) > MAX_AGE * 1000) return null;
     if (!data.uid || (data.role !== "admin" && data.role !== "student")) return null;
-    return { uid: data.uid, role: data.role, name: data.name };
+
+    /* ربطُ الرمز بمنصّته — بلا سياقٍ لا يُقبل شيء (الفشلُ مغلق) */
+    const here = tryCurrentTenant()?.id;
+    if (!here) return null;
+    const legacy = typeof data.tid !== "string" || !data.tid;
+    if (legacy ? here !== defaultTenantId() : data.tid !== here) return null;
+
+    return { session: { uid: data.uid, role: data.role, name: data.name }, legacy };
   } catch {
     return null;
   }
 }
 
+export function verifyToken(token: string | undefined): Session | null {
+  return parseToken(token)?.session ?? null;
+}
+
 /** قراءة الجلسة الحالية (Server Components / Route Handlers). */
 export async function getSession(): Promise<Session | null> {
+  /*
+    التخطيطاتُ المتداخلة (admin/student) تسأل عن الجلسة قبل `loadDB()`،
+    وNext يرسمها على التوازي مع الجذر — فلا يُفترض أنّ أحداً ربط المنصّةَ
+    قبلنا. الربطُ هنا رخيصٌ (ذاكرةٌ مؤقّتة) ولا يفعل شيئاً إن كان قائماً.
+    وبلا منصّةٍ (مضيفٌ مجهول) لا جلسةَ أصلاً.
+  */
+  try {
+    await bindTenant();
+  } catch {
+    return null;
+  }
   const store = await cookies();
   return verifyToken(store.get(COOKIE)?.value);
 }
 
 /** تمديد صلاحية الكوكي عند كل استخدام (جلسة دائمة ما دام الطالب يفتح المنصّة). */
 export async function touchSession(): Promise<Session | null> {
+  try {
+    await bindTenant();
+  } catch {
+    return null;
+  }
   const store = await cookies();
   const raw = store.get(COOKIE)?.value;
-  const session = verifyToken(raw);
+  const parsed = parseToken(raw);
+  const session = parsed?.session ?? null;
   if (session && raw) {
     try {
-      store.set(COOKIE, raw, { httpOnly: true, sameSite: "lax", path: "/", maxAge: MAX_AGE, secure: SECURE });
+      /* الرمزُ القديم بلا `tid` يُستبدل بموسومٍ — مرّةً واحدة ثمّ يُمدَّد كما هو */
+      const value = parsed!.legacy ? createToken(session) : raw;
+      store.set(COOKIE, value, { httpOnly: true, sameSite: "lax", path: "/", maxAge: MAX_AGE, secure: SECURE });
     } catch {
       /* لا يمكن الكتابة في بعض السياقات — القراءة تكفي */
     }

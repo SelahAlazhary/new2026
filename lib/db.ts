@@ -15,6 +15,7 @@ import { dropActivity } from "./activity-store";
 import { firebaseConfigured, fbClaimOnce } from "./firebase";
 import { pushConfigured } from "./push";
 import { ensureStore, peek, commit, flushStore, storeState, invalidate, readLocal } from "./store";
+import { bindTenant, tenantPath } from "./hub/context";
 
 /**
  * مخزن محلي بسيط على هيئة ملف JSON.
@@ -62,6 +63,12 @@ function seed(): DB {
 
 /** تحميل البيانات من مصدر الحقيقة (فايربيز إن ضُبط، وإلا الملف المحلي). */
 export async function loadDB(): Promise<DB> {
+  /*
+    أوّلُ شيء: أيُّ منصّةٍ؟ — يُربط الطلبُ بمستأجره من ترويسات الوسيط.
+    داخل مسار API ملفوفٍ بـ`tenantRoute` السياقُ قائمٌ فلا يُفعل شيء؛
+    وفي التخطيطات والصفحات هذا هو ما يجعل `getDB()` بعده تعرف منصّتها.
+  */
+  await bindTenant();
   await ensureStore(seed);
   const db = getDB(); // getDB يطبّع الحقول الناقصة على النسخة المحمّلة
   void autoBackupTick();
@@ -517,7 +524,7 @@ export async function redeemCode(userId: string, rawCode: string, subjectId?: st
     والفحصُ المتزامنُ يكفيها.
   */
   const claimKey = code.code.trim().toUpperCase().replace(/[.$#[\]/]/g, "-");
-  const claimed = await fbClaimOnce(`claims/${claimKey}`, {
+  const claimed = await fbClaimOnce(tenantPath(`claims/${claimKey}`), {
     by: user.id, name: user.name, at: now.toISOString(),
   });
   if (!claimed) {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { loadDB } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -22,7 +23,7 @@ const MIME: Record<string, string> = {
 };
 
 /** يخدم الملفات المرفوعة من القرص مع دعم Range (لتشغيل/تمرير الفيديو). */
-export async function GET(req: Request, { params }: { params: Promise<{ name: string }> }) {
+async function GET_impl(req: Request, { params }: { params: Promise<{ name: string }> }) {
   await loadDB();
   const { name } = await params;
   const safe = path.basename(name); // منع الخروج من المجلد
@@ -96,3 +97,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ name: st
     },
   });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

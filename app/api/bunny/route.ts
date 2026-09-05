@@ -3,6 +3,7 @@ import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
 import { bunnyConfig, bunnyConfigured } from "@/lib/bunny";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -20,7 +21,7 @@ function guard(session: { role?: string } | null) {
 }
 
 /** PUT: حفظ/مسح المفتاح ومعرّف المكتبة ومهلة الرابط. */
-export async function PUT(req: Request) {
+async function PUT_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!guard(session)) {
@@ -65,7 +66,7 @@ export async function PUT(req: Request) {
 }
 
 /** GET: الحالة — وجودُ المفتاح لا قيمتُه. */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
   if (!guard(session)) {
@@ -80,3 +81,7 @@ export async function GET() {
     ttl: bunnyConfig().ttl,
   });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const PUT = tenantRoute(PUT_impl);

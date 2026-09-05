@@ -5,31 +5,75 @@ import type { DB } from "./types";
 import { firebaseConfigured, fbGet, fbSet, firebaseSecure, fbGetFrom, fbSetTo, type FirebaseConfig } from "./firebase";
 import { orderNodes, markUp, markDown, writeTarget } from "./db-nodes";
 import type { DbNode } from "./types";
+import { currentTenantId, platformRoot } from "./hub/context";
+import { defaultTenantId } from "./hub/registry";
 
 /**
- * طبقة التخزين.
- *
+ * طبقة التخزين — لكلّ منصّةٍ مخبأُها وطابورُها وجذرُها.
+ * ------------------------------------------------------------------
  * • عند ضبط فايربيز: **Firebase Realtime Database هي مصدر الحقيقة**؛
  *   تُقرأ عند الإقلاع وتُحدَّث بعد كل تغيير، والملف المحلي يبقى نسخة احتياطية للطوارئ.
  * • بلا فايربيز: الملف المحلي هو المصدر (تشغيل بلا إنترنت أو قبل الربط).
  *
- * الكتابة تمرّ بطابور متسلسل يضمن ترتيب العمليات وعدم تداخلها،
+ * **تعدّدُ المستأجرين.** كان هنا مخبأٌ واحدٌ وجذرٌ واحد `platform`. فصار
+ * لكلّ منصّةٍ:
+ *   ــ جذرٌ في فايربيز: `tenants/{id}/platform`
+ *   ــ ملفٌّ محلّي:      `data/tenants/{id}/db.json`
+ *   ــ مخبأٌ وطابورُ كتابةٍ مستقلّان (فكتابةُ منصّةٍ لا تنتظر أختَها)
+ * والمعرّفُ يأتي من سياق الطلب (`lib/hub/context.ts`) لا من معامل — فكلُّ
+ * الدوالّ العامّة هنا تحتفظ بتوقيعها القديم، ولا يُلمس تسعون بالمئة ممّا
+ * يستدعيها. ولا سياقَ = خطأٌ صريح، لا بياناتٌ افتراضية.
+ *
+ * **والمنصّةُ الافتراضية** (المرحَّلة من الإصدار الواحد) تُقرأ من الجذر
+ * القديم `platform` إن كان جذرُها الجديد فارغاً — قراءةً لا كتابة — فلا
+ * تنقطع لحظةً بين النشر والترحيل. وأوّلُ حفظٍ يكتب في الجذر الجديد،
+ * ومن بعده يُقرأ منه.
+ *
+ * الكتابة تمرّ بطابور متسلسل لكل منصّة يضمن ترتيب العمليات وعدم تداخلها،
  * ويمكن لأي مسار انتظار اكتمالها عبر flushStore() قبل الردّ على المستخدم.
  */
 
 const DATA_DIR = path.join(process.cwd(), "data");
-const DB_FILE = path.join(DATA_DIR, "db.json");
-const ROOT = "platform";
+const LEGACY_DB_FILE = path.join(DATA_DIR, "db.json");
+const LEGACY_ROOT = "platform";
 /** مدّة صلاحية النسخة المخزّنة في الذاكرة قبل إعادة القراءة من فايربيز. */
 const TTL = 15_000;
+/** سقفُ المنصّات المخبّأة في ذاكرة نسخةٍ واحدة — الأقدمُ استعمالاً يُطرد. */
+const MAX_TENANTS = 50;
 
-type Cache = { data: DB | null; loadedAt: number };
-const cache: Cache = { data: null, loadedAt: 0 };
+type Cache = {
+  data: DB | null;
+  loadedAt: number;
+  usedAt: number;
+  pending: Promise<void>;
+  lastError: string | null;
+  lastSyncAt: string | null;
+  source: "firebase" | "local";
+  activeUrl: string;
+};
 
-let pending: Promise<void> = Promise.resolve();
-let lastError: string | null = null;
-let lastSyncAt: string | null = null;
-let source: "firebase" | "local" = "local";
+const caches = new Map<string, Cache>();
+
+function slot(id = currentTenantId()): Cache {
+  let c = caches.get(id);
+  if (!c) {
+    c = { data: null, loadedAt: 0, usedAt: 0, pending: Promise.resolve(), lastError: null, lastSyncAt: null, source: "local", activeUrl: "" };
+    caches.set(id, c);
+    evict();
+  }
+  c.usedAt = Date.now();
+  return c;
+}
+
+/** يطرد الأقدمَ استعمالاً حين يزيد العدد. */
+function evict() {
+  if (caches.size <= MAX_TENANTS) return;
+  const byAge = [...caches.entries()].sort((a, b) => a[1].usedAt - b[1].usedAt);
+  for (const [id] of byAge) {
+    if (caches.size <= MAX_TENANTS) break;
+    caches.delete(id);
+  }
+}
 
 /**
  * فايربيز تحذف المصفوفات الفارغة، وتُعيد المصفوفة ككائن بمفاتيح رقمية إن كانت مثقوبة.
@@ -83,21 +127,28 @@ function normalizeLists(db: DB): DB {
 
 /* ---------- الملف المحلي ---------- */
 
-function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+/** هل نظام الملفات قابل للكتابة؟ (على فيرسل وما شابهه: لا) */
+const READ_ONLY_FS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+/** ملفُّ المنصّة الحالية. */
+function dbFile(id = currentTenantId()): string {
+  return path.join(DATA_DIR, "tenants", id.replace(/[^A-Za-z0-9_-]/g, ""), "db.json");
 }
 
 export function readLocal(): DB | null {
   try {
-    if (READ_ONLY_FS || !fs.existsSync(DB_FILE)) return null;
-    return JSON.parse(fs.readFileSync(DB_FILE, "utf-8")) as DB;
+    if (READ_ONLY_FS) return null;
+    const file = dbFile();
+    if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, "utf-8")) as DB;
+    /* توافقٌ: المنصّةُ الافتراضية قبل الترحيل المحلّي تقرأ الملفَّ القديم */
+    if (currentTenantId() === defaultTenantId() && fs.existsSync(LEGACY_DB_FILE)) {
+      return JSON.parse(fs.readFileSync(LEGACY_DB_FILE, "utf-8")) as DB;
+    }
+    return null;
   } catch {
     return null;
   }
 }
-
-/** هل نظام الملفات قابل للكتابة؟ (على فيرسل وما شابهه: لا) */
-const READ_ONLY_FS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 
 /**
  * الكتابة المحلية تُستخدم فقط في وضع «بلا سحابة» (تشغيل محلي قبل الربط).
@@ -106,8 +157,9 @@ const READ_ONLY_FS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTI
 export function writeLocal(db: DB) {
   if (firebaseUsable() || READ_ONLY_FS) return;
   try {
-    ensureDir();
-    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), "utf-8");
+    const file = dbFile();
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(db, null, 2), "utf-8");
   } catch {
     /* قرص غير قابل للكتابة — البيانات في السحابة على أي حال */
   }
@@ -125,8 +177,9 @@ export function firebaseUsable(): boolean {
  * seed: بذرة تُكتب إذا كانت القاعدة فارغة تماماً (أول تشغيل).
  */
 export async function ensureStore(seed?: () => DB): Promise<DB> {
-  const fresh = cache.data && Date.now() - cache.loadedAt < TTL;
-  if (fresh) return cache.data!;
+  const c = slot();
+  const fresh = c.data && Date.now() - c.loadedAt < TTL;
+  if (fresh) return c.data!;
 
   if (firebaseUsable()) {
     try {
@@ -137,94 +190,105 @@ export async function ensureStore(seed?: () => DB): Promise<DB> {
         ثم الخطأ. والفروعُ لا تُزاد إلا حين تُضاف، فلا تُدفع كلفةٌ لم
         تُطلب.
       */
-      const remote = await readChain();
+      const remote = await readChain(c);
       if (remote && toArrayLength(remote.users)) {
         normalizeLists(remote);
-        cache.data = remote;
-        cache.loadedAt = Date.now();
-        source = "firebase";
-        lastError = null;
+        c.data = remote;
+        c.loadedAt = Date.now();
+        c.source = "firebase";
+        c.lastError = null;
         return remote;
       }
       // القاعدة السحابية فارغة: ارفع المحلي (أو البذرة) إليها
       const local = readLocal() ?? seed?.() ?? null;
       if (local) {
-        await fbSet(ROOT, { ...local, _syncedAt: new Date().toISOString() });
-        cache.data = local;
-        cache.loadedAt = Date.now();
-        source = "firebase";
-        lastSyncAt = new Date().toISOString();
+        await fbSet(platformRoot(), { ...local, _syncedAt: new Date().toISOString() });
+        c.data = local;
+        c.loadedAt = Date.now();
+        c.source = "firebase";
+        c.lastSyncAt = new Date().toISOString();
         return local;
       }
     } catch (e) {
-      lastError = (e as Error).message;
+      c.lastError = (e as Error).message;
       // حماية حاسمة: لا نستبدل بيانات السحابة ببذرة فارغة عند تعذّر الوصول.
       // نُبقي آخر نسخة في الذاكرة إن وُجدت، وإلا نُفشل الطلب بوضوح بدل مسح البيانات.
-      if (cache.data) return cache.data;
+      if (c.data) return c.data;
       const emergency = readLocal();
       if (emergency) {
-        cache.data = emergency;
-        cache.loadedAt = 0;
-        source = "local";
+        c.data = emergency;
+        c.loadedAt = 0;
+        c.source = "local";
         return emergency;
       }
-      throw new Error(`تعذّر الوصول إلى قاعدة البيانات السحابية${lastError ? ` — ${lastError}` : ""}`);
+      throw new Error(`تعذّر الوصول إلى قاعدة البيانات السحابية${c.lastError ? ` — ${c.lastError}` : ""}`);
     }
   }
 
   const local = readLocal() ?? seed?.() ?? null;
   if (!local) throw new Error("لا توجد بيانات");
   if (!firebaseUsable()) writeLocal(local);
-  cache.data = local;
-  cache.loadedAt = Date.now();
-  source = firebaseUsable() ? "local" : "local";
+  c.data = local;
+  c.loadedAt = Date.now();
+  c.source = "local";
   return local;
 }
 
 /** النسخة الحالية من الذاكرة (أو الملف المحلي إن لم تُحمّل بعد). */
 export function peek(seed?: () => DB): DB {
-  if (cache.data) return cache.data;
+  const c = slot();
+  if (c.data) return c.data;
   const local = readLocal() ?? seed?.();
   if (!local) throw new Error("لا توجد بيانات");
-  cache.data = local;
-  cache.loadedAt = 0; // تُعاد القراءة من فايربيز في أول فرصة
+  c.data = local;
+  c.loadedAt = 0; // تُعاد القراءة من فايربيز في أول فرصة
   writeLocalIfMissing(local);
   return local;
 }
 
 function writeLocalIfMissing(db: DB) {
-  if (!fs.existsSync(DB_FILE)) writeLocal(db);
+  if (!fs.existsSync(dbFile())) writeLocal(db);
 }
 
 /* ---------- الكتابة ---------- */
 
 /** يحفظ فوراً محلياً، ويُدرج الكتابة السحابية في الطابور. */
 export function commit(db: DB) {
-  cache.data = db;
-  cache.loadedAt = Date.now();
+  const c = slot();
+  c.data = db;
+  c.loadedAt = Date.now();
   writeLocal(db);
 
   if (!firebaseUsable()) return;
-  pending = pending
-    .then(() => writeChain({ ...db, _syncedAt: new Date().toISOString() }))
+  const root = platformRoot();
+  c.pending = c.pending
+    .then(() => writeChain(c, root, { ...db, _syncedAt: new Date().toISOString() }))
     .then(() => {
-      lastSyncAt = new Date().toISOString();
-      lastError = null;
+      c.lastSyncAt = new Date().toISOString();
+      c.lastError = null;
     })
     .catch((e: Error) => {
-      lastError = e.message;
+      c.lastError = e.message;
     });
 }
 
 /** انتظار اكتمال كل الكتابات المعلّقة (يُستدعى قبل الردّ في المسارات المهمّة). */
 export async function flushStore(): Promise<{ ok: boolean; error: string | null }> {
-  await pending;
-  return { ok: !lastError, error: lastError };
+  const c = slot();
+  await c.pending;
+  return { ok: !c.lastError, error: c.lastError };
 }
 
-/** إسقاط النسخة المخزّنة لإجبار قراءة جديدة. */
+/** إسقاط النسخة المخزّنة لإجبار قراءة جديدة — للمنصّة الحالية. */
 export function invalidate() {
-  cache.loadedAt = 0;
+  const c = caches.get(currentTenantId());
+  if (c) c.loadedAt = 0;
+}
+
+/** إسقاطُ مخبأ منصّةٍ بعينها — بعد تعديلها من الـHub. */
+export function invalidateTenant(id: string) {
+  const c = caches.get(id);
+  if (c) c.loadedAt = 0;
 }
 
 function toArrayLength(v: unknown): number {
@@ -232,11 +296,12 @@ function toArrayLength(v: unknown): number {
 }
 
 export function storeState() {
+  const c = slot();
   return {
-    source,
-    lastSyncAt,
-    lastError,
-    cachedAt: cache.loadedAt ? new Date(cache.loadedAt).toISOString() : null,
+    source: c.source,
+    lastSyncAt: c.lastSyncAt,
+    lastError: c.lastError,
+    cachedAt: c.loadedAt ? new Date(c.loadedAt).toISOString() : null,
     firebaseUsable: firebaseUsable(),
   };
 }
@@ -255,8 +320,8 @@ export function storeState() {
 */
 
 /** القواعد المعروفة الآن: المحفوظةُ في آخر نسخةٍ قُرئت + قاعدةُ البيئة. */
-function knownNodes(): DbNode[] {
-  return orderNodes(cache.data?.integrations?.databases);
+function knownNodes(c: Cache): DbNode[] {
+  return orderNodes(c.data?.integrations?.databases);
 }
 
 /** يُحوّل القاعدة إلى إعدادِ اتصال. */
@@ -272,23 +337,30 @@ function asConfig(n: DbNode): FirebaseConfig {
 /**
  * يقرأ من أوّل قاعدةٍ تردّ.
  * الأخطاءُ تُجمع فلا تضيع، وتُرفع آخرُها إن سقطت السلسلةُ كلُّها.
+ *
+ * والمنصّةُ الافتراضية إن خلا جذرُها الجديد تُقرأ من الجذر القديم
+ * `platform` — قراءةً فقط؛ فأوّلُ حفظٍ يكتب الجديدَ ويُغني عن القديم.
  */
-async function readChain(): Promise<DB | null> {
-  const nodes = knownNodes();
+async function readChain(c: Cache): Promise<DB | null> {
+  const nodes = knownNodes(c);
+  const root = platformRoot();
+  const legacy = currentTenantId() === defaultTenantId();
 
   /* بلا فروع: المسار القديم نفسُه بلا زيادة. */
   if (nodes.length <= 1) {
-    const data = await fbGet<DB>(ROOT);
-    return data;
+    const data = await fbGet<DB>(root);
+    if (data || !legacy) return data;
+    return fbGet<DB>(LEGACY_ROOT);
   }
 
   let last: Error | null = null;
   for (const n of nodes) {
     try {
-      const { data, bytes } = await fbGetFrom<DB>(asConfig(n), ROOT);
+      let { data, bytes } = await fbGetFrom<DB>(asConfig(n), root);
+      if (!data && legacy) ({ data, bytes } = await fbGetFrom<DB>(asConfig(n), LEGACY_ROOT));
       markUp(n.url, bytes);
       if (data) {
-        activeUrl = n.url;
+        c.activeUrl = n.url;
         return data;
       }
     } catch (e) {
@@ -305,24 +377,24 @@ async function readChain(): Promise<DB | null> {
  * النسخُ لا يُنتظَر ولا يُفشِل: الكتابةُ نجحت متى قبلتها قاعدةٌ واحدة،
  * والبقيّةُ نسخٌ للأمان تلحق متى استطاعت.
  */
-async function writeChain(payload: DB & { _syncedAt: string }): Promise<void> {
-  const nodes = knownNodes();
+async function writeChain(c: Cache, root: string, payload: DB & { _syncedAt: string }): Promise<void> {
+  const nodes = knownNodes(c);
 
   if (nodes.length <= 1) {
-    await fbSet(ROOT, payload);
+    await fbSet(root, payload);
     return;
   }
 
-  const target = writeTarget(cache.data?.integrations?.databases) ?? nodes[0];
+  const target = writeTarget(c.data?.integrations?.databases) ?? nodes[0];
   let wrote = false;
   let last: Error | null = null;
 
   /* الهدفُ أوّلاً، فإن أبى جُرِّبت البقيّة بترتيبها. */
   for (const n of [target, ...nodes.filter((x) => x.url !== target.url)]) {
     try {
-      await fbSetTo(asConfig(n), ROOT, payload);
+      await fbSetTo(asConfig(n), root, payload);
       markUp(n.url);
-      activeUrl = n.url;
+      c.activeUrl = n.url;
       wrote = true;
       break;
     } catch (e) {
@@ -335,15 +407,14 @@ async function writeChain(payload: DB & { _syncedAt: string }): Promise<void> {
 
   /* نسخُ الأمان — بلا انتظار وبلا إفشال. */
   for (const n of nodes) {
-    if (n.url === activeUrl) continue;
-    void fbSetTo(asConfig(n), ROOT, payload)
+    if (n.url === c.activeUrl) continue;
+    void fbSetTo(asConfig(n), root, payload)
       .then(() => markUp(n.url))
       .catch((e: Error) => markDown(n.url, e.message));
   }
 }
 
 /** عنوانُ القاعدة التي يُقرأ منها ويُكتب فيها الآن — للعرض في اللوحة. */
-let activeUrl = "";
 export function activeNodeUrl(): string {
-  return activeUrl;
+  return slot().activeUrl;
 }

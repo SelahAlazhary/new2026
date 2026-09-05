@@ -4,12 +4,13 @@ import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import { can, permForDbKey, permForContentKeys } from "@/lib/perms";
 import type { DB } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** GET: البيانات المسموح بها لصاحب الجلسة فقط (زائر/طالب/أدمن). */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
   return NextResponse.json(getScopedDB(session), {
@@ -18,7 +19,7 @@ export async function GET() {
 }
 
 /** PUT: دمج تعديل جزئي (محتوى/كيانات) — للأدمن فقط. */
-export async function PUT(req: Request) {
+async function PUT_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -69,3 +70,7 @@ export async function PUT(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, ...rest, integrations: publicIntegrations(next) });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const PUT = tenantRoute(PUT_impl);

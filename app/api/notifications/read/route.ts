@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { markNotificationsRead, loadDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** POST: تعليم إشعارات الطالب كمقروءة — { ids: string[] } */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -17,3 +18,6 @@ export async function POST(req: Request) {
   markNotificationsRead(session.uid, ids);
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

@@ -18,6 +18,7 @@ import { findVectorLib, vectorLibClass } from "@/lib/vector-libs";
 import { RouteTransition } from "@/components/ui/route-transition";
 import { RegisterSW } from "@/components/pwa/register-sw";
 import { getPublicDB, getScopedDB, loadDB } from "@/lib/db";
+import { TenantNotFound } from "@/lib/hub/context";
 import { touchSession } from "@/lib/session";
 import { defaultContent } from "@/lib/defaults";
 import { buildJsonLd, buildKeywords, siteUrl } from "@/lib/seo";
@@ -59,7 +60,14 @@ const plex = IBM_Plex_Sans_Arabic({
 });
 
 /** إعدادات العرض — viewport-fit=cover ضروري لاحترام حوّاف الشاشة في التطبيق المثبّت. */
-export function generateViewport(): Viewport {
+export async function generateViewport(): Promise<Viewport> {
+  /* يربط الطلبَ بمنصّته أوّلاً — وبلا منصّةٍ يُعاد الافتراضيُّ بلا كسر */
+  try {
+    await loadDB();
+  } catch (e) {
+    if (e instanceof TenantNotFound) return { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#233b8b" };
+    throw e;
+  }
   const { content } = getPublicDB();
   const preset: Record<string, string> = {
     midad: "#233b8b", nile: "#095e86", andalus: "#245c4b", rumman: "#87263a",
@@ -89,7 +97,12 @@ function safeUrl(raw?: string): URL {
 
 /** ميتاداتا ديناميكية من قاعدة البيانات (العنوان/الوصف/الأيقونة/OG). */
 export async function generateMetadata(): Promise<Metadata> {
-  await loadDB();
+  try {
+    await loadDB();
+  } catch (e) {
+    if (e instanceof TenantNotFound) return { title: "لا توجد منصّة على هذا العنوان", robots: { index: false, follow: false } };
+    throw e;
+  }
   const pub = getPublicDB();
   const c = pub.content;
   const site = await siteUrl(c.url);
@@ -145,8 +158,34 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+/**
+ * مضيفٌ لا منصّةَ عليه — صفحةٌ صغيرة بلا أيّ بيانات.
+ * ------------------------------------------------------------------
+ * الجذرُ هو من يرسم `<html>`، فلا يُرمى `notFound()` هنا (لا حدودَ فوقه
+ * تلتقطه). ولا تُذكر منصّةٌ أخرى ولا الـHub: الزائرُ على عنوانٍ خاطئ لا
+ * يُعطى خريطةً لما سواه.
+ */
+function NoTenant() {
+  return (
+    <html lang="ar" dir="rtl">
+      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#fbf9f5", color: "#1c2340", fontFamily: "system-ui, sans-serif" }}>
+        <main style={{ textAlign: "center", padding: "2rem" }}>
+          <p style={{ fontSize: "3rem", margin: 0 }}>٤٠٤</p>
+          <h1 style={{ fontSize: "1.25rem", margin: "0.5rem 0" }}>لا توجد منصّة على هذا العنوان</h1>
+          <p style={{ opacity: 0.7, fontSize: "0.9rem" }}>تأكّد من الرابط الذي وصلك من معلّمك.</p>
+        </main>
+      </body>
+    </html>
+  );
+}
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  await loadDB(); // مصدر الحقيقة (فايربيز إن ضُبط)
+  try {
+    await loadDB(); // مصدر الحقيقة (فايربيز إن ضُبط) — ويربط الطلبَ بمنصّته
+  } catch (e) {
+    if (e instanceof TenantNotFound) return <NoTenant />;
+    throw e;
+  }
   const session = await touchSession(); // يمدّد الجلسة الدائمة
   // الحمولة الأولى (SSR) مقيّدة بدور صاحب الجلسة — لا تسرّب بيانات لغير أصحابها
   const db = getScopedDB(session);

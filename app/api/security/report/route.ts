@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { loadDB } from "@/lib/db";
 import { recordEvent } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -23,8 +24,10 @@ async function handle(req: Request) {
   return NextResponse.json({ error: status === 404 ? "غير موجود" : "طلب غير صالح" }, { status });
 }
 
-export const GET = handle;
-export const POST = handle;
-export const PUT = handle;
-export const PATCH = handle;
-export const DELETE = handle;
+/* يُسجَّل الحدثُ في سجلّ المنصّة التي وقع عليها — لا في سجلٍّ مشترك */
+const scoped = tenantRoute(handle);
+export const GET = scoped;
+export const POST = scoped;
+export const PUT = scoped;
+export const PATCH = scoped;
+export const DELETE = scoped;

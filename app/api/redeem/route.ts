@@ -3,12 +3,13 @@ import { redeemCode, loadDB, flushDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { clientIp, limit } from "@/lib/guard";
 import { recordEvent, bannedUntil } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** POST: تفعيل كورس بكود — للطالب المسجّل فقط. */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -50,3 +51,6 @@ export async function POST(req: Request) {
   }
   return NextResponse.json(result);
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

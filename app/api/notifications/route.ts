@@ -4,6 +4,7 @@ import { pushNotification, pushConfigured } from "@/lib/push";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import type { Notification } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -12,7 +13,7 @@ export const runtime = "nodejs";
  * POST: إنشاء إشعار وإرساله فوراً لأجهزة جمهوره — للأدمن فقط.
  * { title, body, grade?, track?, userId?, link? }
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
 }
 
 /** DELETE: حذف إشعار — للأدمن فقط. */
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -71,3 +72,7 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);
+export const DELETE = tenantRoute(DELETE_impl);

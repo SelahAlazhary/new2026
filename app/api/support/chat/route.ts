@@ -8,6 +8,7 @@ import { can } from "@/lib/perms";
 import { sendToUsers } from "@/lib/push";
 import type { Ticket, ChatMessage } from "@/lib/types";
 import { forwardStudentMessage } from "@/lib/support-bridge";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -80,7 +81,7 @@ function summary(t: Ticket) {
   };
 }
 
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
@@ -127,7 +128,7 @@ export async function GET(req: Request) {
   return NextResponse.json({ threads });
 }
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/support/chat");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -194,7 +195,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true, messages: t.messages });
 }
 
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/support/chat");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -220,3 +221,8 @@ export async function PATCH(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, thread: summary(t) });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);
+export const PATCH = tenantRoute(PATCH_impl);

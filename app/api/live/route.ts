@@ -5,6 +5,7 @@ import { pushNotification, pushConfigured } from "@/lib/push";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import type { Live, Notification } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -37,7 +38,7 @@ async function announce(live: Live) {
  * PATCH: تغيير حالة جلسة — للأدمن فقط.
  * { id, status }  ·  status = "مباشر" يُطلق إشعاراً فورياً، و"منتهي" يُنهي البث حالاً.
  */
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -76,7 +77,7 @@ export async function PATCH(req: Request) {
 }
 
 /** DELETE: حذف جلسة — يُنهي البث/الاجتماع فوراً ثم يحذفها. */
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -100,3 +101,7 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const PATCH = tenantRoute(PATCH_impl);
+export const DELETE = tenantRoute(DELETE_impl);

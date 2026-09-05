@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getDB } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ const GLYPHS: Record<string, string> = {
   exams: `<path d="M8.6 4.6H6.8a2 2 0 0 0-2 2v12.2a2 2 0 0 0 2 2h10.4a2 2 0 0 0 2-2V6.6a2 2 0 0 0-2-2h-1.8"/><rect x="8.6" y="2.8" width="6.8" height="3.6" rx="1.2"/><path d="m9.2 13.6 2 2 3.8-4"/>`,
 };
 
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   const { searchParams } = new URL(req.url);
   const name = searchParams.get("name") ?? "courses";
   const size = Math.min(512, Math.max(48, Number(searchParams.get("size")) || 96));
@@ -62,3 +63,6 @@ export async function GET(req: Request) {
     { width: size, height: size, headers: { "Cache-Control": "public, max-age=3600" } }
   );
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

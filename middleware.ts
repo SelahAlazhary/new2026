@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { classifyHost, isHubPath, type HostKind } from "@/lib/hub/resolve";
 
 /**
  * الطبقة الأمامية للحماية (تعمل قبل أي صفحة أو مسار):
@@ -106,6 +107,41 @@ function floodBlocked(ip: string): boolean {
   return h.n > FLOOD_MAX;
 }
 
+/*
+  ============================================================
+  حلُّ المستأجر من المضيف (تعدّدُ المنصّات)
+  ------------------------------------------------------------
+  الوسيطُ لا يملك قاعدةَ بيانات، فلا يعرف المنصّاتِ بأسمائها. لكنّه
+  يعرف **شكلَ** العنوان: `{slug}.{ROOT_DOMAIN}` منصّةٌ، والجذرُ جذر.
+  فيصنّف المضيفَ ويضع النتيجةَ في ترويستين يقرؤهما الخادم:
+    x-host-kind   root | tenant | custom | invalid
+    x-tenant-slug الـslug إن كان مستأجراً
+  **وتُمحى الترويستان إن جاءتا من العميل** — وإلّا انتحل أحدُهم منصّةً
+  بترويسةٍ يكتبها. فالمصدرُ الوحيدُ لهما هذا الوسيط.
+
+  محلّياً: `?tenant=slug` يُثبّت كوكي `dev_tenant` فتُخدم تلك المنصّةُ على
+  localhost بلا نطاقٍ فرعيّ — للتطوير وحدَه، ولا يعمل على فيرسل.
+  ============================================================
+*/
+const TENANT_HEADERS = ["x-host-kind", "x-tenant-slug", "x-tenant-id"];
+const DEV = !process.env.VERCEL;
+
+function resolveHost(req: NextRequest): HostKind {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  let kind = classifyHost(host, process.env.ROOT_DOMAIN);
+  if (DEV && kind.kind === "root") {
+    const dev = req.cookies.get("dev_tenant")?.value?.trim().toLowerCase();
+    if (dev) kind = { kind: "tenant", slug: dev };
+  }
+  return kind;
+}
+
+function stampTenant(h: Headers, kind: HostKind) {
+  for (const k of TENANT_HEADERS) h.delete(k);
+  h.set("x-host-kind", kind.kind);
+  h.set("x-tenant-slug", kind.kind === "tenant" ? kind.slug : "");
+}
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -119,6 +155,30 @@ export function middleware(req: NextRequest) {
   const ua = req.headers.get("user-agent") ?? "";
   if (BAD_BOTS.test(ua)) {
     return report(req, "bot", pathname);
+  }
+
+  /* ــــ المستأجر ــــ */
+  const hostKind = resolveHost(req);
+
+  /* مضيفٌ لا يصلح منصّةً (مستوًى أعمق من الفرعي) → ٤٠٤ صامت */
+  if (hostKind.kind === "invalid") {
+    return new NextResponse("Not Found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
+  /* مساراتُ الـHub على الجذر وحده — على نطاق منصّةٍ لا وجودَ لها */
+  if (hostKind.kind !== "root" && isHubPath(pathname)) {
+    return new NextResponse("Not Found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
+  /* تبديلُ منصّة التطوير: ?tenant=slug يُثبّت الكوكي، و?tenant= (فارغ) يمحوها */
+  if (DEV && req.nextUrl.searchParams.has("tenant")) {
+    const url = req.nextUrl.clone();
+    const want = (url.searchParams.get("tenant") ?? "").trim().toLowerCase();
+    url.searchParams.delete("tenant");
+    const res = NextResponse.redirect(url);
+    if (want) res.cookies.set("dev_tenant", want, { path: "/", httpOnly: true, sameSite: "lax" });
+    else res.cookies.delete("dev_tenant");
+    return res;
   }
 
   /* حاجزُ الإغراق — يُصدّ المصدرُ الواحدُ العنيف قبل أن يبلغ المسار. */
@@ -150,6 +210,7 @@ export function middleware(req: NextRequest) {
   // تمرير المسار للطبقة الخادمية (تستخدمه لوحة الإدارة لفحص الصلاحيات)
   const forwarded = new Headers(req.headers);
   forwarded.set("x-pathname", pathname);
+  stampTenant(forwarded, hostKind);
   const res = NextResponse.next({ request: { headers: forwarded } });
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.headers.set(k, v);
   res.headers.set("Content-Security-Policy", CSP);
@@ -180,6 +241,8 @@ function report(req: NextRequest, kind: "csrf" | "probe" | "bot", path: string) 
   const headers = new Headers(req.headers);
   headers.set("x-blocked-kind", kind);
   headers.set("x-blocked-path", path);
+  /* يُدوَّن في سجلّ المنصّة التي وقع عليها الفحص */
+  stampTenant(headers, resolveHost(req));
   return NextResponse.rewrite(url, { request: { headers } });
 }
 

@@ -3,6 +3,7 @@ import { getDB, saveDB } from "./db";
 import { fbSet, fbGet, firebaseConfigured } from "./firebase";
 import { googleStatus, uploadBufferToDrive, deleteDriveFile, backupFolderId, downloadDriveFile } from "./google";
 import type { BackupEntry, DB } from "./types";
+import { currentTenant, tenantPath } from "./hub/context";
 
 /**
  * النسخ الاحتياطي الكامل للمنصّة.
@@ -51,7 +52,8 @@ export async function createBackup(reason: "manual" | "auto" = "manual"): Promis
   const json = JSON.stringify(data);
   const size = Buffer.byteLength(json, "utf-8");
   const at = new Date().toISOString();
-  const name = `emz-backup-${stamp()}.json`;
+  /* اسمُ الملف يحمل معرّفَ المنصّة — مجلّدُ Drive واحدٌ قد يجمع أكثر من منصّة */
+  const name = `emz-backup-${currentTenant().slug}-${stamp()}.json`;
 
   const result: BackupResult = {
     ok: false, at, size,
@@ -76,7 +78,7 @@ export async function createBackup(reason: "manual" | "auto" = "manual"): Promis
   /* --- Firebase --- */
   if (firebaseConfigured()) {
     try {
-      await fbSet(`backups/${at.replace(/[.:]/g, "-")}`, { at, reason, size, data });
+      await fbSet(tenantPath(`backups/${at.replace(/[.:]/g, "-")}`), { at, reason, size, data });
       result.firebase = { ok: true };
       void pruneFirebase();
     } catch (e) {
@@ -139,11 +141,11 @@ async function pruneDrive(folderId: string): Promise<void> {
 /** إبقاء آخر لقطات فايربيز فقط. */
 async function pruneFirebase(): Promise<void> {
   try {
-    const all = await fbGet<Record<string, unknown>>("backups");
+    const all = await fbGet<Record<string, unknown>>(tenantPath("backups"));
     if (!all) return;
     const keys = Object.keys(all).sort();
     for (const k of keys.slice(0, Math.max(0, keys.length - FB_KEEP))) {
-      await fbSet(`backups/${k}`, null);
+      await fbSet(tenantPath(`backups/${k}`), null);
     }
   } catch {
     /* التنظيف ليس حرجاً */

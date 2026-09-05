@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getDB } from "@/lib/db";
+import { getDB, loadDB } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,9 @@ const PRESET_HEX: Record<string, string> = {
  * ملف تعريف التطبيق (PWA) — يتبع هوية المنصّة المضبوطة من لوحة الأدمن:
  * الاسم والشعار واللون كلّها من قاعدة البيانات.
  */
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  /* يربط الطلبَ بمنصّته أوّلاً — الملفُّ يُطلب من نطاق كلّ منصّة على حدة */
+  await loadDB();
   const { content } = getDB();
   const theme = content.theme;
   const primary =

@@ -3,6 +3,7 @@ import { getDB } from "./db";
 import { sendToUsers } from "./push";
 import { targetName, newActivationCode } from "./payments";
 import { fbClaimOnce, fbReleaseClaim } from "./firebase";
+import { tenantPath } from "./hub/context";
 import type { DB, PayRequest, PayRequestStatus, Code, Notification } from "./types";
 
 /**
@@ -45,12 +46,12 @@ export async function decideOnce(
   body: { code?: unknown; reason?: unknown },
   by: string
 ): Promise<{ ok: true; status: PayRequestStatus } | { error: string }> {
-  const claimed = await fbClaimOnce(`decisions/${r.id}`, { by, action, at: now() });
+  const claimed = await fbClaimOnce(tenantPath(`decisions/${r.id}`), { by, action, at: now() });
   if (!claimed) return { error: "بُتَّ في هذا الطلب بالفعل" };
   const result = decide(r, action, body, by);
   if ("error" in result) {
     /* لم يقع بتٌّ — تُحرَّر المطالبةُ فتصحّ إعادةُ المحاولة */
-    await fbReleaseClaim(`decisions/${r.id}`);
+    await fbReleaseClaim(tenantPath(`decisions/${r.id}`));
   }
   return result;
 }

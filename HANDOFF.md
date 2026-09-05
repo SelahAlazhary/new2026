@@ -208,3 +208,44 @@ cd "C:/Users/pc/Downloads/jawa-elmanhag-landing" && npm install && npm run dev
 - عند اختبار الـAPI بـ curl على ويندوز: **العربية تتلف في `curl -d`** — استخدم Python client (UTF-8) للاختبار.
 - الفلترة (صف/شعبة) والإشعارات تعتمد على الجلسة في SSR (تُمرَّر من `app/layout.tsx`).
 - احذف `data/db.json` لإعادة الحالة لمنصة فارغة نظيفة.
+
+---
+
+## 10) المنصّة الأم (Multi-Tenant) — المرحلة M1: سياق المستأجر
+
+> الخطّة الكاملة في `SAAS-PROMPT.md`. هذه المرحلة تجعل الكود **متعدّد المنصّات** بلا أي تغيير مرئي: المنصّة الحالية تعمل كما هي على الجذر وعلى نطاقها الفرعي.
+
+### كيف يُعرف المستأجر
+- **الوسيط `middleware.ts`** يصنّف المضيف عبر `lib/hub/resolve.ts` (نقيّ، يعمل على Edge): `{slug}.{ROOT_DOMAIN}` أو `{slug}.localhost` = منصّة · الجذر/`www`/`*.vercel.app`/`localhost` = جذر · غير ذلك = دومين مخصّص (يُخدم كجذر حتى M6). يضع `x-host-kind` و`x-tenant-slug` **بعد محو أي ترويسة بهذا الاسم من العميل** (لا انتحال). مساراتُ الـHub (`/hub`, `/start`, `/api/hub`) على نطاق منصّة → ٤٠٤. محلّياً: `?tenant=slug` يثبّت كوكي `dev_tenant` (لا يعمل على فيرسل).
+- **السجلّ `lib/hub/registry.ts`**: `hub/slugs/{slug}` → `tenantId`، و`hub/tenants/{id}` بطاقة المنصّة (`lib/hub/types.ts`)، بذاكرة مؤقّتة دقيقة ونفي ١٥ ثانية. بلا فايربيز يُقرأ `data/hub.json`. المنصّة الافتراضية = `DEFAULT_TENANT_ID` (وإلا `default`)، ويخدمها الجذر ما دام `ROOT_HOST_MODE=tenant`.
+- **السياق `lib/hub/context.ts`**: `AsyncLocalStorage` لمسارات API (كلها ملفوفة بـ`tenantRoute()` — ٣٨ ملفاً)، وصندوق `cache()` من React لمكوّنات الخادم يملؤه `bindTenant()` الذي يستدعيه `loadDB()`. **`getDB()` بلا سياق يرمي `TenantContextMissing`** — لا بيانات افتراضية أبداً. `runInTenant(ctx, fn)` للمهامّ المجدولة.
+
+### أين تعيش البيانات
+| كان | صار |
+|---|---|
+| `platform/` | `tenants/{id}/platform` |
+| `backups/` · `activity/` · `claims/` · `decisions/` | `tenants/{id}/…` |
+| `data/db.json` | `data/tenants/{id}/db.json` |
+| — | `hub/tenants` · `hub/slugs` (+ `data/hub.json` محلّياً) |
+
+`lib/store.ts` صار لكل منصّة مخبأٌ وطابور كتابة وجذر (LRU ٥٠ منصّة في الذاكرة). **المنصّة الافتراضية تقرأ الجذر القديم `platform/` إن كان جذرها الجديد فارغاً** (قراءة فقط) فلا تنقطع بين النشر والترحيل؛ أوّل حفظ يكتب الجديد.
+
+### الجلسة والحماية
+- رمز `emz_session` يحمل `tid`؛ يُرفض على منصّة أخرى. الرمز القديم بلا `tid` يُقبل على الافتراضية وحدها ويُستبدل بموسوم في أوّل زيارة (`touchSession`).
+- مفاتيح حدود المعدّل في `lib/guard.ts` تُسبَق بمعرّف المنصّة. سجلّ الأمان والحظر داخل قاعدة كل منصّة أصلاً.
+- `firebase/database.rules.json`: جذرا `tenants` و`hub` مغلقان بالكامل مع تحقّق بنيوي (نسخة قواعد `platform` تُطبَّق على `tenants/$id/platform`).
+
+### الترحيل والتشغيل
+```bash
+node scripts/migrate-to-tenants.mjs --dry          # يعرض ما سيفعله
+node scripts/migrate-to-tenants.mjs --id default   # ينسخ platform/ → tenants/default/platform ويسجّل المنصّة في hub/ — لا يحذف شيئاً
+```
+- `npm run start:local` / `npm run dev:local`: تشغيل محلّي **بلا فايربيز** (يُفرغ مفاتيحها) على `data/` — لا يلمس الإنتاج.
+- `npm run test:tenancy` (بعد `node scripts/test-tenancy.mjs --seed` مرّة ثم تشغيل الخادم): ١٨ فحص عزل — جذر/فرعي، ترويسة منتحلة، مضيف مجهول، مسارات Hub، كوكي منقولة بين منصّتين، انفصال البيانات. **كلها ناجحة.**
+- `/api/cron/backup` يمرّ على كل المنصّات النشطة/الموقوفة بدفعات.
+
+### ما يلي (M2+)
+`tenantGate` (إيقاف/انتهاء)، لوحة الـHub، إخفاء الأقسام، Onboarding بجوجل، الفوترة، الدومين المخصّص — بالترتيب في `SAAS-PROMPT.md` §12.
+
+## 11) مشغّل يوتيوب النظيف
+`components/student/clean-youtube.tsx`: مقطع يوتيوب يُعرض **بلا عنوان ولا شعار ولا مقترحات ولا أزرار يوتيوب** — الإطار أصمّ (`controls=0` + `pointer-events:none`)، غطاء معتم كلّما لم يكن المقطع شغّالاً (قبل البدء/الإيقاف/الانتهاء — لحظات ظهور واجهة يوتيوب)، والتحكّم كلّه بأزرارنا عبر `postMessage` (بلا سكربت خارجي ولا تغيير في CSP). يُستعمل في مشغّل الدرس (`unit-view.tsx`) ونافذة الدرس المجاني (`video-modal.tsx`). العلامة المائية تبقى فوق المقطع.

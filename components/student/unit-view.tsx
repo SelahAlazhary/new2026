@@ -28,6 +28,7 @@ import {
 import { Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { VideoWatermark } from "@/components/student/video-watermark";
+import { CleanYouTube } from "@/components/student/clean-youtube";
 import { allLessons, usableMaterials } from "@/lib/course-units";
 import type { Lesson, Material, Subject, Unit } from "@/lib/types";
 import { setPref } from "@/lib/consent";
@@ -45,7 +46,7 @@ import { setPref } from "@/lib/consent";
  */
 const YT_PARAMS = "rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1";
 
-export function toEmbed(url: string): { kind: "video" | "iframe"; src: string; drive?: boolean; yt?: boolean } {
+export function toEmbed(url: string): { kind: "video" | "iframe"; src: string; drive?: boolean; yt?: boolean; ytId?: string } {
   const u = url.trim();
   // Bunny Stream (iframe.mediadelivery.net) — نحوّل /play/ إلى /embed/
   if (u.includes("mediadelivery.net")) {
@@ -62,7 +63,8 @@ export function toEmbed(url: string): { kind: "video" | "iframe"; src: string; d
   if (bunny) return { kind: "iframe", src: `https://iframe.mediadelivery.net/embed/${bunny[1]}/${bunny[2]}` };
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { kind: "video", src: u };
   const yt = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
-  if (yt) return { kind: "iframe", src: `https://www.youtube-nocookie.com/embed/${yt[1]}?${YT_PARAMS}`, yt: true };
+  /* يوتيوب يُعرض بالمشغّل النظيف (`CleanYouTube`) — والعنوانُ هنا للتوافق مع من يقرأ `src` */
+  if (yt) return { kind: "iframe", src: `https://www.youtube-nocookie.com/embed/${yt[1]}?${YT_PARAMS}`, yt: true, ytId: yt[1] };
   const vm = u.match(/vimeo\.com\/(\d+)/);
   if (vm) return { kind: "iframe", src: `https://player.vimeo.com/video/${vm[1]}` };
   return { kind: "iframe", src: u };
@@ -352,6 +354,14 @@ export function UnitView({
               <video key={current.id} src={embed.src} controls className="size-full" />
               <VideoWatermark name={me?.name} tag={me?.id} />
             </>
+          ) : embed?.ytId ? (
+            /*
+              يوتيوب: المقطعُ وحدَه بلا عنوانٍ ولا شعارٍ ولا مقترحات —
+              الإطارُ أصمّ والأزرارُ لنا. انظر `components/student/clean-youtube.tsx`.
+            */
+            <CleanYouTube key={current.id} videoId={embed.ytId} title={current.title}>
+              <VideoWatermark name={me?.name} tag={me?.id} />
+            </CleanYouTube>
           ) : (
             <>
               <iframe key={current.id} src={embed?.src} title={current.title} allowFullScreen
@@ -364,42 +374,11 @@ export function UnitView({
               )}
 
               {/*
-                طبقتان تحجبان روابطَ يوتيوب الخارجة.
-                ------------------------------------------------------------
-                على الإيقاف يعرض يوتيوب شريطاً فيه **عنوانُ المقطع** وزرَّي
-                «مشاهدة لاحقاً» و«مشاركة»، وشعارَه أسفلَ اليسار — وكلُّها
-                روابطُ تخرج بالطالب إلى يوتيوب، فيجد المقطعَ هناك ويشاركه
-                بلا اشتراك.
-
-                فطبقتان: شريطٌ أعلى المشغّل يبتلع ضغطَ العنوان والزرّين،
-                ومربّعٌ أسفلَ اليسار يبتلع ضغطَ الشعار. والوسطُ متروك —
-                الضغطُ فيه تشغيلٌ وإيقافٌ لا خروج.
-
-                ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-                **وهذا إخفاءٌ لا تأمين، وينبغي أن يُقال صريحاً.**
-                معرّفُ المقطع مكتوبٌ في مصدر الصفحة، ومن فتح «عناصر
-                المطوِّر» قرأه في ثوانٍ ومضى إلى يوتيوب. والطبقةُ تمنع
-                الضغطةَ العابرة — وهي أكثرُ ما يقع فعلاً — ولا تمنع من
-                قصَد.
-
+                (يوتيوب لا يصل إلى هنا — له مشغّلُه النظيف أعلاه.)
                 **والتأمينُ الحقيقيُّ أن يُرفع المقطعُ على Bunny Stream**
                 بروابطَ موقَّعةٍ تنتهي صلاحيتُها: هذه المنصّةُ تدعمه أصلاً
                 (انظر `toEmbed`)، ولا يُغني عنه حجبٌ ولا علامةٌ مائيّة.
               */}
-              {embed?.yt && (
-                <>
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-0 top-0 z-10 h-16 cursor-default"
-                    onContextMenu={(ev) => ev.preventDefault()}
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="absolute bottom-0 left-0 z-10 h-11 w-28 cursor-default"
-                    onContextMenu={(ev) => ev.preventDefault()}
-                  />
-                </>
-              )}
               {/*
                 اسمُ المشاهد فوق المقطع — لا يمنع التصوير، لكنّه يجعل
                 المصوِّرَ معروفاً. وهي الحمايةُ الوحيدةُ التي تعمل حقّاً.

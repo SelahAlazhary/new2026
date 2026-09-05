@@ -1,5 +1,6 @@
 import "server-only";
 import { headers } from "next/headers";
+import { tryCurrentTenant } from "./hub/context";
 
 /**
  * طبقة الحماية المشتركة للمسارات:
@@ -28,7 +29,18 @@ export type LimitResult = { ok: boolean; retryAfter?: number; remaining?: number
  * حدّ للمحاولات: مثلاً limit(key, 10, 60_000) = ١٠ محاولات في الدقيقة.
  * عند التجاوز يُحظر المفتاح لمدّة blockMs.
  */
+/**
+ * المفتاحُ يُسبَق بمعرّف المنصّة.
+ * عدّاداتُ الذاكرة مشتركةٌ بين كلّ المنصّات في النسخة الواحدة، فلولا هذا
+ * لحجب طالبٌ مشاغبٌ على منصّةٍ طلابَ منصّةٍ أخرى من العنوان نفسِه —
+ * مدرسةٌ واحدة، منصّتان، عنوانٌ واحد.
+ */
+function scoped(key: string): string {
+  return `${tryCurrentTenant()?.id ?? "-"}:${key}`;
+}
+
 export function limit(key: string, max: number, windowMs: number, blockMs = windowMs): LimitResult {
+  key = scoped(key);
   const now = Date.now();
   sweep(now);
   const b = buckets.get(key);
@@ -50,7 +62,7 @@ export function limit(key: string, max: number, windowMs: number, blockMs = wind
 
 /** تصفير عدّاد بعد نجاح العملية (مثل تسجيل دخول صحيح). */
 export function resetLimit(key: string) {
-  buckets.delete(key);
+  buckets.delete(scoped(key));
 }
 
 /**

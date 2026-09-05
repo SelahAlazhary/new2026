@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { gradeExam, loadDB, flushDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { limit } from "@/lib/guard";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -10,7 +11,7 @@ export const runtime = "nodejs";
  * POST: تسليم إجابات اختبار — التصحيح على السيرفر فقط.
  * { examId, answers: number[] }  (‑1 = بلا إجابة)
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -33,3 +34,6 @@ export async function POST(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, attempt: out.attempt, correct: out.correct });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

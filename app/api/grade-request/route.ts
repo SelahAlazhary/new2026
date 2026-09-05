@@ -4,6 +4,7 @@ import { getSession } from "@/lib/session";
 import { sameOrigin, limit, clientIp } from "@/lib/guard";
 import { can } from "@/lib/perms";
 import type { GradeRequest } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -28,7 +29,7 @@ function list(): GradeRequest[] {
 }
 
 /* ---------- الطالب يطلب ---------- */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   if (!(await sameOrigin(req))) return NextResponse.json({ error: "طلب غير مسموح" }, { status: 403 });
 
   const session = await getSession();
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
 }
 
 /* ---------- الأستاذ يقرّر ---------- */
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   if (!(await sameOrigin(req))) return NextResponse.json({ error: "طلب غير مسموح" }, { status: 403 });
 
   const session = await getSession();
@@ -134,3 +135,7 @@ export async function PATCH(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, request: row });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);
+export const PATCH = tenantRoute(PATCH_impl);

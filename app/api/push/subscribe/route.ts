@@ -2,18 +2,19 @@ import { NextResponse } from "next/server";
 import { savePushSub, removePushSub, loadDB, flushDB } from "@/lib/db";
 import { publicVapidKey, pushConfigured } from "@/lib/push";
 import { getSession } from "@/lib/session";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** GET: المفتاح العام (VAPID) — مُصمَّم ليكون عاماً، ويلزم المتصفّح للاشتراك. */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   return NextResponse.json({ configured: pushConfigured(), key: publicVapidKey() });
 }
 
 /** POST: تسجيل جهاز الطالب لاستقبال الإشعارات. */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
 }
 
 /** DELETE: إلغاء تسجيل الجهاز. */
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -44,3 +45,8 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);
+export const DELETE = tenantRoute(DELETE_impl);

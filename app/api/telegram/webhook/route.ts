@@ -5,6 +5,7 @@ import {
 } from "@/lib/telegram";
 import { decideOnce, notifyStudent } from "@/lib/pay-decide";
 import { ticketIdFrom, replyFromTelegram, notifySupportReply } from "@/lib/support-bridge";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -30,7 +31,7 @@ const REASONS = [
   "بيانات التحويل غير صحيحة",
 ];
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const cfg = tgConfig();
 
@@ -310,3 +311,6 @@ async function onMessage(m: Message) {
     );
   }
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

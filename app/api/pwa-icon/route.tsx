@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { mediaSrc } from "@/lib/media";
 import { getDB } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,7 +34,7 @@ function markSvg(): string {
  * أيقونة التطبيق بصيغة PNG مولّدة وقت الطلب — تتبع لون الثيم المختار من الأدمن،
  * وتستخدم شعار المنصّة المرفوع إن وُجد.
  */
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   const { searchParams, origin } = new URL(req.url);
   const size = Math.min(1024, Math.max(48, Number(searchParams.get("size")) || 512));
   const maskable = searchParams.get("maskable") === "1";
@@ -97,3 +98,6 @@ export async function GET(req: Request) {
     }
   );
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

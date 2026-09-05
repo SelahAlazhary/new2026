@@ -6,6 +6,7 @@ import { can } from "@/lib/perms";
 import {
   tgConfig, tgGetMe, tgSetWebhook, tgDeleteWebhook, tgWebhookInfo, tgSend, newWebhookSecret, siteUrl, esc, cleanTgId,
 } from "@/lib/telegram";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -29,7 +30,7 @@ async function guard(path: string) {
 }
 
 /** حالة الربط — بلا توكن إطلاقاً. */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   if (!(await guard("/api/telegram"))) {
     return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
@@ -50,7 +51,7 @@ export async function GET() {
   });
 }
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const me = await guard("/api/telegram");
   if (!me) return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
@@ -238,3 +239,7 @@ export async function POST(req: Request) {
     warn,
   });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);

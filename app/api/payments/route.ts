@@ -14,6 +14,7 @@ import {
   tgReady, tgSend, tgSendPhoto, payRequestText, payVerdictText, siteUrl, absolute,
 } from "@/lib/telegram";
 import type { DB, PayRequest, PayRequestStatus, Code, Notification } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -33,7 +34,7 @@ function clip(v: unknown, max: number): string {
 /*  POST — الطالب يقدّم طلب دفع                                        */
 /* ------------------------------------------------------------------ */
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -174,7 +175,7 @@ async function notifyTelegram(r: PayRequest, req: Request): Promise<PayRequest["
 /*  PATCH — المشرف يبتّ في الطلب                                       */
 /* ------------------------------------------------------------------ */
 
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   const db = getDB();
@@ -217,7 +218,7 @@ export async function PATCH(req: Request) {
 /*  DELETE — حذف طلب                                                   */
 /* ------------------------------------------------------------------ */
 
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   const db = getDB();
@@ -231,3 +232,8 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);
+export const PATCH = tenantRoute(PATCH_impl);
+export const DELETE = tenantRoute(DELETE_impl);

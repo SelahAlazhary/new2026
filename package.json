@@ -8,7 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify": "esbuild scripts/verify-wiring.mjs --bundle --platform=node --format=esm --outfile=node_modules/.cache/verify.mjs --log-level=error && node node_modules/.cache/verify.mjs"
+    "verify": "esbuild scripts/verify-wiring.mjs --bundle --platform=node --format=esm --outfile=node_modules/.cache/verify.mjs --log-level=error && node node_modules/.cache/verify.mjs",
+    "start:local": "node scripts/start-local.mjs",
+    "dev:local": "node scripts/start-local.mjs dev",
+    "test:tenancy": "node scripts/test-tenancy.mjs",
+    "migrate:tenants": "node scripts/migrate-to-tenants.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

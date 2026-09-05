@@ -5,6 +5,7 @@ import { recordEvent } from "@/lib/security";
 import { sameOrigin, passwordProblem, invalidUsername } from "@/lib/guard";
 import { ALL_PERMS, isOwner, type AdminPerm } from "@/lib/perms";
 import type { User } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -49,7 +50,7 @@ function cleanPerms(input: unknown): AdminPerm[] {
   return input.filter((p): p is AdminPerm => ALL_PERMS.includes(p as AdminPerm));
 }
 
-export async function GET() {
+async function GET_impl() {
   const gate = await requireOwner();
   if ("error" in gate) {
     await recordEvent("unauthorized_admin", "/api/admins");
@@ -59,7 +60,7 @@ export async function GET() {
   return NextResponse.json({ admins: admins.map(view), me: gate.me.id });
 }
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/admins");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true, admin: view(admin) });
 }
 
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/admins");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -190,7 +191,7 @@ export async function PATCH(req: Request) {
   return NextResponse.json({ ok: true, admin: view(target) });
 }
 
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/admins");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -214,3 +215,9 @@ export async function DELETE(req: Request) {
   await recordEvent("admin_removed", `حذف مشرف: ${target.username}`, { userId: target.id, username: target.username });
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);
+export const PATCH = tenantRoute(PATCH_impl);
+export const DELETE = tenantRoute(DELETE_impl);

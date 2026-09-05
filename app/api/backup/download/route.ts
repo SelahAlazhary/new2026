@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDB, loadDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -9,7 +10,7 @@ export const runtime = "nodejs";
  * GET: تنزيل نسخة احتياطية كاملة على جهاز الأدمن (ملف JSON).
  * تُستثنى أسرار التكاملات (رموز جوجل) من الملف المنزَّل.
  */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -37,3 +38,6 @@ export async function GET() {
     },
   });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

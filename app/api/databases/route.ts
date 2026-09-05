@@ -7,6 +7,7 @@ import { fbProbe } from "@/lib/firebase";
 import { envNode, orderNodes, nodeHealth, fillPercent, isFull, markUp, markDown, markOpen } from "@/lib/db-nodes";
 import { parseFirebasePaste, candidateUrls, validDbUrl } from "@/lib/fb-config";
 import type { DbNode } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -59,7 +60,7 @@ function publicNode(n: DbNode) {
   };
 }
 
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   if (!(await owner("/api/databases"))) {
     return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
@@ -71,7 +72,7 @@ export async function GET() {
   });
 }
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const me = await owner("/api/databases");
   if (!me) return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
@@ -317,3 +318,7 @@ async function findUrl(
   }
   return null;
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);

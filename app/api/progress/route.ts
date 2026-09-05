@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import { setUserProgress, getDB, userOwnsSubject, loadDB, flushDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { limit } from "@/lib/guard";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** POST: تحديث تقدّم الطالب في كورس مُفعّل له — { subjectId, value } */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -30,3 +31,6 @@ export async function POST(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, progress });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

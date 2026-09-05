@@ -102,3 +102,21 @@ git branch -M main && git remote add origin https://github.com/USERNAME/REPO.git
 - [ ] تغيير `ADMIN_PASSWORD` عن القيمة الافتراضية.
 - [ ] توليد `client_secret` جديد لجوجل إن كان القديم قد شورك في أي مكان.
 - [ ] فتح `/admin/security` والتأكّد أن السجلّ يعمل.
+
+---
+
+## ٨) تعدّد المنصّات (Multi-Tenant) — خطوات النشر
+
+1. **انشر الكود أوّلاً** — يعمل بلا أي متغيّر جديد: الجذر يخدم المنصّة الحالية، وتُقرأ بياناتها من `platform/` القديم حتى يتمّ الترحيل.
+2. **رحّل البيانات** (من جهازك، بـ`.env.local` الإنتاجي):
+   ```bash
+   node scripts/migrate-to-tenants.mjs --dry
+   node scripts/migrate-to-tenants.mjs --id default --slug default --name "اسم المنصّة"
+   ```
+   ينسخ ولا يحذف. بعد التأكّد أن كل شيء يعمل لأيام: `--drop-legacy`.
+3. **انشر قواعد فايربيز الجديدة**: `npx firebase-tools deploy --only database`.
+4. **متغيّرات فيرسل الجديدة**: `DEFAULT_TENANT_ID=default` · `ROOT_DOMAIN=platforms.example.com` (النطاق الجذري للمنصّات) · `ROOT_HOST_MODE=tenant` (يبقى كذلك حتى إطلاق الـHub في M3).
+5. **النطاق الفرعي العامّ**: في Vercel ← Domains أضِف `*.platforms.example.com`، وعند مزوّد DNS: `CNAME * → cname.vercel-dns.com`. الشهادة تُصدر تلقائياً.
+6. **جوجل**: عنوان العودة يبقى على الجذر — لا حاجة لتسجيل كل نطاق فرعي.
+
+> محلّياً: `npm run dev:local` ثم `http://demo.localhost:3000` لأي منصّة مسجّلة في `data/hub.json` (أو `?tenant=demo` على localhost).

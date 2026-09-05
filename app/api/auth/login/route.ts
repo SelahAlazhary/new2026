@@ -5,11 +5,12 @@ import { newActivity, pushActivity } from "@/lib/activity";
 import { ensureDeviceId, deviceLabel } from "@/lib/device";
 import { clientIp, limit, resetLimit, sameOrigin } from "@/lib/guard";
 import { recordEvent, bannedUntil } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
 
   const ip = await clientIp();
@@ -122,3 +123,6 @@ export async function POST(req: Request) {
   await recordEvent("login_ok", `دخول ${user!.role === "admin" ? "أدمن" : "طالب"}`, { userId: user!.id, username: user!.username });
   return NextResponse.json({ ok: true, role: user!.role, name: user!.name });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);

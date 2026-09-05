@@ -6,6 +6,7 @@ import { limit, clientIp } from "@/lib/guard";
 import { newActivity, pushActivity } from "@/lib/activity";
 import { appendActivity, readActivity } from "@/lib/activity-store";
 import type { ActivityKind } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -30,7 +31,7 @@ const KINDS = new Set<ActivityKind>(["view", "lesson", "quiz", "exam", "live"]);
 /** أقلّ فاصلٍ بين حدثين متطابقين — أقلُّ منه تكرارٌ لا معلومة. */
 const DEDUPE_MS = 60_000;
 
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "student") {
@@ -73,7 +74,7 @@ export async function POST(req: Request) {
  * لا يُقرأ إلا عند فتح التقرير، فبقاؤه خارج القاعدة الرئيسية لا يكلّف
  * شيئاً في المسار الساخن.
  */
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   const db = getDB();
@@ -84,3 +85,7 @@ export async function GET(req: Request) {
   const userId = new URL(req.url).searchParams.get("user") ?? "";
   return NextResponse.json({ activity: await readActivity(userId) });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);

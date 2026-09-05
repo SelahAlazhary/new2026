@@ -3,6 +3,7 @@ import { driveAccessToken } from "@/lib/google";
 import { getDB, loadDB } from "@/lib/db";
 import { recordEvent } from "@/lib/security";
 import { getSession } from "@/lib/session";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -15,7 +16,7 @@ export const runtime = "nodejs";
  * الخادم يجلبها من Drive برمز التطبيق (بلا مشاركة عامة ولا Referer) ويمرّرها للمتصفّح.
  * كما يدعم Range ليعمل تمرير الفيديو والصوت.
  */
-export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }) {
+async function GET_impl(req: Request, ctx: { params: Promise<{ id: string }> }) {
   await loadDB();
   const { id } = await ctx.params;
   if (!/^[\w-]{10,}$/.test(id)) {
@@ -101,3 +102,6 @@ function referencedInPlatform(id: string): boolean {
     return false;
   }
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

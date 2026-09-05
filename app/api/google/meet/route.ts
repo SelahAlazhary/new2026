@@ -4,6 +4,7 @@ import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import type { Live, LiveAudience } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -21,7 +22,7 @@ function arabicTime(iso: string): string {
  * POST: إنشاء جلسة بث بـ Google Meet وإضافتها لقائمة البث — للأدمن فقط.
  * { title, subject, subjectId?, grade, track?, startsAt, durationMinutes, audience, status }
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
 }
 
 /** DELETE: حذف جلسة + حدثها في تقويم جوجل — { id } */
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -106,3 +107,7 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);
+export const DELETE = tenantRoute(DELETE_impl);

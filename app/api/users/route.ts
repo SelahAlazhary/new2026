@@ -6,6 +6,7 @@ import { clientIp, limit, sameOrigin, passwordProblem, invalidUsername } from "@
 import { signupProblem, showsTrack, showsBranch, normalizePhone } from "@/lib/signup-rules";
 import { sourceOf } from "@/lib/activity";
 import { recordEvent, bannedUntil } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -14,7 +15,7 @@ export const runtime = "nodejs";
  *  - الأدمن: ينشئ أي حساب (طالب/أدمن) ويحدّد التفعيل.
  *  - غير مسجّل: تسجيل ذاتي كطالب (بانتظار التفعيل).
  */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   const body = await req.json();
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
 /** PATCH: تفعيل/إيقاف حساب · السماح بجهاز جديد · تغيير بيانات الدخول — للأدمن فقط.
  *  { id, active } · { id, action: "resetDevice" } · { id, action: "credentials", username?, password? }
  */
-export async function PATCH(req: Request) {
+async function PATCH_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (session?.role !== "admin") {
@@ -143,7 +144,7 @@ export async function PATCH(req: Request) {
 }
 
 /** DELETE: حذف حساب — للأدمن فقط. */
-export async function DELETE(req: Request) {
+async function DELETE_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (session?.role !== "admin") {
@@ -156,3 +157,8 @@ export async function DELETE(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const POST = tenantRoute(POST_impl);
+export const PATCH = tenantRoute(PATCH_impl);
+export const DELETE = tenantRoute(DELETE_impl);

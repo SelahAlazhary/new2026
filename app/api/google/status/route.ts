@@ -3,6 +3,7 @@ import { googleStatus, redirectUri } from "@/lib/google";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
 import { loadDB } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -12,7 +13,7 @@ export const runtime = "nodejs";
  * وجوده في الواجهة يحلّ خطأ redirect_uri_mismatch: يكفي نسخه كما هو
  * ولصقه في Google Cloud Console ← Authorized redirect URIs.
  */
-export async function GET(req: Request) {
+async function GET_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -30,3 +31,6 @@ export async function GET(req: Request) {
     pinned: Boolean(process.env.GOOGLE_REDIRECT_URI),
   });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);

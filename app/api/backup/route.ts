@@ -6,12 +6,13 @@ import { createBackup, backupHistory, restoreSnapshot, restoreFromDrive } from "
 import { googleStatus, uploadBufferToDrive } from "@/lib/google";
 import { getSession } from "@/lib/session";
 import { recordEvent } from "@/lib/security";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 /** GET: سجلّ النسخ الاحتياطية وحالة التخزين — للأدمن فقط. */
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -37,7 +38,7 @@ export async function GET() {
 }
 
 /** POST: { action: "backup" | "migrate" } — للأدمن فقط. */
-export async function POST(req: Request) {
+async function POST_impl(req: Request) {
   await loadDB();
   const session = await getSession();
   if (!session || session.role !== "admin") {
@@ -139,3 +140,7 @@ async function migrateLocalFiles(): Promise<{ moved: number; failed: number; ski
 
   return { moved, failed, skipped: 0 };
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const POST = tenantRoute(POST_impl);

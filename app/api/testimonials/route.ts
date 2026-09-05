@@ -5,6 +5,7 @@ import { recordEvent } from "@/lib/security";
 import { sameOrigin } from "@/lib/guard";
 import { can } from "@/lib/perms";
 import type { Testimonial } from "@/lib/types";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -43,7 +44,7 @@ function clean(input: unknown): Testimonial[] {
     .filter((t): t is Testimonial => t !== null);
 }
 
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const all = getDB().content.testimonials ?? [];
   const session = await getSession();
@@ -52,7 +53,7 @@ export async function GET() {
   return NextResponse.json({ testimonials: visible });
 }
 
-export async function PUT(req: Request) {
+async function PUT_impl(req: Request) {
   if (!(await sameOrigin(req))) {
     await recordEvent("csrf_blocked", "/api/testimonials");
     return NextResponse.json({ error: "طلب غير مصرّح" }, { status: 403 });
@@ -77,3 +78,7 @@ export async function PUT(req: Request) {
   await flushDB();
   return NextResponse.json({ ok: true, testimonials: db.content.testimonials });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
+export const PUT = tenantRoute(PUT_impl);

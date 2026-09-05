@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSession, clearSessionCookie } from "@/lib/session";
 import { loadDB, sessionUser } from "@/lib/db";
+import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export async function GET() {
+async function GET_impl() {
   await loadDB();
   const session = await getSession();
 
@@ -19,3 +20,6 @@ export async function GET() {
 
   return NextResponse.json({ session });
 }
+
+/* كلُّ معالجٍ يعمل داخل سياق منصّته — انظر lib/hub/context.ts */
+export const GET = tenantRoute(GET_impl);
