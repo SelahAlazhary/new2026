@@ -9,6 +9,8 @@ import { can, isOwner, permForPath } from "@/lib/perms";
 import { currentTenant } from "@/lib/hub/context";
 import { sectionForAdminPath, sectionHidden } from "@/lib/hub/sections";
 import { deviceMatches } from "@/lib/device-guard";
+import { getImpersonation } from "@/lib/hub/impersonate";
+import { ImpersonateBanner } from "@/components/hub/impersonate-banner";
 import { findToolbar, toolbarClass, stickClass } from "@/lib/toolbar-styles";
 import { findIconFrame, iconFrameClass, iconFrameVars } from "@/lib/icon-frames";
 import { findIconMotion, iconMotionClass } from "@/lib/icon-motion";
@@ -55,6 +57,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   /* المنصّةُ الموقوفة: لوحتُها تُقرأ ولا تُكتب — ولافتةٌ تقول السبب لا تُخفيه. */
   const paused = tenant.status === "suspended" || tenant.status === "expired";
+  const imp = await getImpersonation();
 
   /*
     شريط الأدوات: لوحة الإدارة كانت الشاشةَ الوحيدة التي لا تحمل أصنافه،
@@ -79,6 +82,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           avatar: session.name.charAt(0),
         }}
       >
+        {imp && <ImpersonateBanner superName={imp.superName} tenantSlug={imp.tenantSlug} />}
         {paused && (
           <div
             role="status"

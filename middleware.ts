@@ -139,7 +139,11 @@ function resolveHost(req: NextRequest): HostKind {
 function stampTenant(h: Headers, kind: HostKind) {
   for (const k of TENANT_HEADERS) h.delete(k);
   h.set("x-host-kind", kind.kind);
-  h.set("x-tenant-slug", kind.kind === "tenant" ? kind.slug : "");
+  h.set("x-tenant-slug",
+    kind.kind === "tenant" ? kind.slug :
+    kind.kind === "custom" ? kind.host :
+    ""
+  );
 }
 
 export function middleware(req: NextRequest) {

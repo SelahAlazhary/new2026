@@ -15,7 +15,8 @@
     "migrate:tenants": "node scripts/migrate-to-tenants.mjs",
     "test:hub": "node scripts/test-hub.mjs",
     "test:onboarding": "node scripts/test-onboarding.mjs",
-    "test:billing": "node scripts/test-billing.mjs"
+    "test:billing": "node scripts/test-billing.mjs",
+    "test:domains": "node scripts/test-domains.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

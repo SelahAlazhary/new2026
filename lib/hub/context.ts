@@ -98,6 +98,7 @@ export function tenantPath(sub: string, id = currentTenantId()): string {
  */
 export async function resolveFromHeaders(h: { get(k: string): string | null }): Promise<TenantCtx> {
   const kind = h.get("x-host-kind") ?? "root";
+  /* للدومين المخصّص: الـslug يحمل العنوانَ الكامل لحلّه من خريطة الدومينات */
   const slug = (h.get("x-tenant-slug") ?? "").toLowerCase();
   return resolve(kind, slug);
 }
@@ -106,8 +107,11 @@ export async function resolve(kind: string, slug: string): Promise<TenantCtx> {
   let id: string | null = null;
   if (kind === "tenant" && slug) {
     id = await tenantIdBySlug(slug);
-  } else if (kind === "root" || kind === "custom") {
-    /* الجذرُ والدومينُ المجهول يخدمان المنصّةَ الافتراضية حتى يُطلَق الـHub (M3/M6) */
+  } else if (kind === "custom" && slug) {
+    /* دومينٌ مخصّص — نبحث في خريطة الدومينات */
+    const { tenantIdByDomain } = await import("./domains");
+    id = await tenantIdByDomain(slug);
+  } else if (kind === "root") {
     if (rootServesDefaultTenant()) id = defaultTenantId();
   }
   if (!id) throw new TenantNotFound(slug || kind);

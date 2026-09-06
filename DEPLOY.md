@@ -46,6 +46,9 @@ git branch -M main && git remote add origin https://github.com/USERNAME/REPO.git
 | `YOUTUBE_API_KEY` | اختياري — لجلب كل فيديوهات القناة |
 | `CRON_SECRET` | سرّ عشوائي لحماية مسار النسخ الاحتياطي المجدول |
 | `ADMIN_DEVICE_LOCK` | اختياري — `0` يوقف قفل جهاز المشرفين مؤقّتاً (صمّام استعادة) |
+| `VERCEL_TOKEN` | اختياري — لربط الدومينات المخصّصة تلقائياً عبر Vercel API |
+| `VERCEL_PROJECT_ID` | اختياري — معرّف مشروع فيرسل (مع `VERCEL_TOKEN` لإدارة الدومينات) |
+| `VERCEL_TEAM_ID` | اختياري — معرّف الفريق إن كان المشروع تحت فريق |
 
 > **تنبيه على `FIREBASE_PRIVATE_KEY`:** إن لصقته بصيغة السطر الواحد فاترك `\n` كما هي — الكود يحوّلها لأسطر حقيقية.
 

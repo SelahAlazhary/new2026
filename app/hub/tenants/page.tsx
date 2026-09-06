@@ -33,9 +33,18 @@ export default async function TenantsPage({
 
   return (
     <>
-      <header className="mb-5">
-        <h1 className="font-display text-2xl font-bold">المنصّات</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">{all.length} منصّة — اضغط أيّها لفتح لوحة التحكّم فيها.</p>
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold">المنصّات</h1>
+          <p className="mt-1 text-[13px] text-muted-foreground">{all.length} منصّة — اضغط أيّها لفتح لوحة التحكّم فيها.</p>
+        </div>
+        <a
+          href="/api/hub/export?type=tenants"
+          download
+          className="rounded-full border border-black/12 px-3 py-1.5 text-[11px] font-bold transition hover:border-black/25"
+        >
+          تصدير CSV
+        </a>
       </header>
 
       <form className="mb-4 flex flex-wrap items-center gap-2">

@@ -10,6 +10,10 @@ export const ACTION_LABEL: Record<string, string> = {
   "tenant.limits": "غيّر الحدود",
   "tenant.notes": "حدّث ملاحظات",
   "hub.settings": "حدّث إعدادات المنصّة الأمّ",
+  "domain.add": "ربط دومين مخصّص",
+  "domain.remove": "حذف دومين مخصّص",
+  "impersonate.start": "بدأ انتحال مشرف منصّة",
+  "impersonate.end": "أنهى الانتحال",
 };
 
 export function actionLabel(action: string): string {

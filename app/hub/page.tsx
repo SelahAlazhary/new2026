@@ -13,11 +13,26 @@ export default async function HubOverview() {
   const events = await readAudit({ limit: 8 });
 
   const by = (s: string) => tenants.filter((t) => t.status === s).length;
+  const agg = tenants.reduce(
+    (a, t) => {
+      if (!t.stats) return a;
+      a.students += t.stats.students;
+      a.activeSubs += t.stats.activeSubs;
+      a.revenue += t.stats.revenueEGP;
+      return a;
+    },
+    { students: 0, activeSubs: 0, revenue: 0 }
+  );
   const cards = [
     { label: "منصّات نشطة", value: by("active"), href: "/hub/tenants?status=active", tone: "ok" as const },
     { label: "بانتظار الموافقة", value: by("pending_approval"), href: "/hub/requests", tone: "wait" as const },
     { label: "موقوفة أو منتهية", value: by("suspended") + by("expired"), href: "/hub/tenants?status=suspended", tone: "bad" as const },
     { label: "إجمالي المنصّات", value: tenants.length, href: "/hub/tenants", tone: "plain" as const },
+  ];
+  const statsCards = [
+    { label: "إجمالي الطلاب", value: agg.students },
+    { label: "اشتراكات نشطة", value: agg.activeSubs },
+    { label: "إيراد المنصّات (ج.م.)", value: agg.revenue.toLocaleString("ar-EG") },
   ];
 
   const tone: Record<string, string> = {
@@ -48,6 +63,17 @@ export default async function HubOverview() {
           </Link>
         ))}
       </div>
+
+      {agg.students > 0 && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {statsCards.map((c) => (
+            <div key={c.label} className="rounded-2xl border border-black/[0.07] bg-white p-4">
+              <span className="font-kufi text-[10px] text-muted-foreground">{c.label}</span>
+              <p className="font-display mt-1 text-2xl font-bold leading-none">{c.value}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <section className="mt-8">
         <div className="mb-3 flex items-end justify-between">

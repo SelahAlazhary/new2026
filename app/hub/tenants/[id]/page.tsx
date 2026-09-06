@@ -2,9 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { tenantById } from "@/lib/hub/registry";
 import { readAudit } from "@/lib/hub/audit";
-import { SECTIONS, FEATURES } from "@/lib/hub/sections";
+import { SECTIONS, FEATURES, featureOn } from "@/lib/hub/sections";
 import { getHubSettings } from "@/lib/hub/settings";
+import { listDomains } from "@/lib/hub/domains";
 import { TenantControls } from "@/components/hub/tenant-controls";
+import { DomainManager } from "@/components/hub/domain-manager";
+import { ImpersonateBtn } from "@/components/hub/impersonate-btn";
 import { StatusPill } from "@/components/hub/status-pill";
 import { actionLabel } from "@/lib/hub/labels";
 
@@ -15,7 +18,11 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
   const tenant = await tenantById(id);
   if (!tenant) notFound();
 
-  const [events, settings] = await Promise.all([readAudit({ tenantId: id, limit: 40 }), getHubSettings()]);
+  const [events, settings, domains] = await Promise.all([
+    readAudit({ tenantId: id, limit: 40 }),
+    getHubSettings(),
+    listDomains(id),
+  ]);
 
   const root = settings.rootDomain;
   const base = tenant.customDomain
@@ -49,11 +56,16 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
           <p className="truncate text-[12px] text-muted-foreground" dir="ltr">{base}</p>
         </div>
         <StatusPill status={tenant.status} />
+        {tenant.status === "active" && <ImpersonateBtn tenantId={tenant.id} />}
       </header>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
         <div className="order-2 lg:order-1">
           <TenantControls tenant={tenant} sections={SECTIONS} features={FEATURES} />
+
+          <div className="mt-5">
+            <DomainManager tenantId={tenant.id} domains={domains} canAdd={featureOn(tenant, "customDomain")} />
+          </div>
 
           <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4">
             <h3 className="font-display text-[15px] font-bold">سجلّ هذه المنصّة</h3>
