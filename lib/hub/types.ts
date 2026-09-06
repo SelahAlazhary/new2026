@@ -83,7 +83,11 @@ export type TenantOwner = {
   email: string;
   name: string;
   picture?: string;
+  /** معرّف جوجل الثابت — فارغٌ لمن سجّل بالبريد وكلمة المرور. */
   googleSub: string;
+  /** تجزئة كلمة المرور (scrypt) — لمن سجّل بالبريد. جوجل وحدها بلا كلمة مرور. */
+  passwordHash?: string;
+  salt?: string;
   phone?: string;
   tenantIds: string[];
   createdAt: string;

@@ -2,6 +2,7 @@ import "server-only";
 import crypto from "crypto";
 import { cookies } from "next/headers";
 import { AUTH_SECRET } from "../secrets";
+import { hashPassword, verifyPassword } from "../db";
 import type { TenantOwner } from "./types";
 import { hubGet, hubList, hubSet, hubId } from "./store";
 
@@ -119,6 +120,49 @@ export async function upsertOwnerFromGoogle(p: {
     lastLoginAt: now,
   };
   await hubSet(`owners/${id}`, rec);
+  return rec;
+}
+
+/**
+ * تسجيلُ مدرّسٍ بالبريد وكلمة المرور.
+ * ------------------------------------------------------------------
+ * بديلٌ عن جوجل لمن لا يريدها. المفتاحُ البريد نفسُه: من سجّل بجوجل
+ * ببريدٍ ثمّ حاول تسجيله بكلمة مرور — أو العكس — فهو حسابٌ واحد. فإن
+ * وُجد الحسابُ بلا كلمة مرور (جوجل) تُضاف إليه؛ وإن كان له كلمةٌ رُفض
+ * التكرار وطُلب الدخول.
+ */
+export async function registerOwnerWithPassword(p: {
+  name: string; email: string; password: string;
+}): Promise<{ owner?: TenantOwner; error?: string }> {
+  const email = p.email.trim().toLowerCase();
+  const existing = await ownerByEmail(email);
+  const { salt, passwordHash } = hashPassword(p.password);
+  const now = new Date().toISOString();
+
+  if (existing) {
+    if (existing.passwordHash) return { error: "لهذا البريد حساب بالفعل — سجّل الدخول" };
+    /* حسابُ جوجل يُضاف إليه كلمةُ مرور — ربطُ الطريقتين ببريدٍ واحد */
+    const updated: TenantOwner = { ...existing, passwordHash, salt, name: existing.name || p.name.trim(), lastLoginAt: now };
+    await hubSet(`owners/${existing.id}`, updated);
+    return { owner: updated };
+  }
+  const id = hubId("own");
+  const rec: TenantOwner = {
+    id, email, name: p.name.trim() || email.split("@")[0],
+    googleSub: "", passwordHash, salt,
+    tenantIds: [], createdAt: now, lastLoginAt: now,
+  };
+  await hubSet(`owners/${id}`, rec);
+  return { owner: rec };
+}
+
+/** يتحقّق من دخول المدرّس بالبريد وكلمة المرور. */
+export async function checkOwnerPassword(email: string, password: string): Promise<TenantOwner | null> {
+  const rec = await ownerByEmail(email);
+  if (!rec || rec.blocked || !rec.passwordHash || !rec.salt) return null;
+  const ok = verifyPassword(password, { passwordHash: rec.passwordHash, salt: rec.salt } as never);
+  if (!ok) return null;
+  await hubSet(`owners/${rec.id}`, { ...rec, lastLoginAt: new Date().toISOString() });
   return rec;
 }
 

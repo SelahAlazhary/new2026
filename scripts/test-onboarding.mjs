@@ -59,6 +59,22 @@ let pass = 0, fail = 0;
 const t = (name, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ? "OK  " : "FAIL"} ${name}${ok ? "" : `  ← ${info}`}`); };
 
 (async () => {
+  console.log("\n== ٠) تسجيل المدرّس بالبريد وكلمة المرور ==");
+  const mail = `pass${Date.now().toString(36)}@test.com`;
+  const reg = await req(ROOT, "POST", "/api/hub/auth/owner", { body: { mode: "register", name: "أستاذ تجريبي", email: mail, password: "Teacher2026x" } });
+  const regJar = jarOf(reg);
+  t("إنشاء حساب بالبريد", reg.status === 200 && reg.json?.ok && regJar.includes("hub_owner"), `status ${reg.status} ${reg.text.slice(0, 120)}`);
+  const weak = await req(ROOT, "POST", "/api/hub/auth/owner", { body: { mode: "register", name: "x", email: `w${Date.now()}@t.com`, password: "123" } });
+  t("كلمة مرور ضعيفة تُرفض", weak.status === 400, `status ${weak.status}`);
+  const dup = await req(ROOT, "POST", "/api/hub/auth/owner", { body: { mode: "register", name: "x", email: mail, password: "Teacher2026x" } });
+  t("تكرار البريد يُرفض", dup.status === 400, `status ${dup.status}`);
+  const badLogin = await req(ROOT, "POST", "/api/hub/auth/owner", { body: { mode: "login", email: mail, password: "wrong-000" } });
+  t("كلمة مرور خاطئة تُردّ", badLogin.status === 401, `status ${badLogin.status}`);
+  const goodLogin = await req(ROOT, "POST", "/api/hub/auth/owner", { body: { mode: "login", email: mail, password: "Teacher2026x" } });
+  t("الدخول بالبريد يعمل", goodLogin.status === 200 && goodLogin.json?.ok, `status ${goodLogin.status}`);
+  const meState = await req(ROOT, "GET", "/api/start", { cookie: jarOf(goodLogin) });
+  t("جلسة المدرّس بالبريد صالحة", meState.json?.owner?.email === mail, JSON.stringify(meState.json?.owner));
+
   console.log("\n== ١) الجذرُ موقعُ إنشاء المنصّات، والطالبُ لا يبلغه ==");
   const home = await req(ROOT, "GET", "/");
   t("الجذر يعرض «أنشئ منصّتك»", home.status === 200 && home.text.includes("أنشئ منصّتك"), `status ${home.status}`);

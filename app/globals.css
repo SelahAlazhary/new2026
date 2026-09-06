@@ -5354,3 +5354,12 @@ body {
 .ob-wait-spin { display: block; width: 2.6rem; height: 2.6rem; border-radius: 999px; border: 3px solid #e7e3d9; border-top-color: var(--ob-primary); animation: ob-spin 1s linear infinite; margin-bottom: 1.2rem; }
 @keyframes ob-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .ob-wait-spin { animation: none; } }
+
+/* دخول المدرّس بالبريد داخل رحلة الإنشاء */
+.ob-or { display: flex; align-items: center; gap: .8rem; margin: 1.2rem 0 .3rem; color: var(--ob-dim); font-size: .78rem; }
+.ob-or::before, .ob-or::after { content: ""; flex: 1; height: 1px; background: var(--ob-line); }
+.ob-email { margin-top: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+.ob-tabs { display: flex; gap: .4rem; background: #f4f2ec; border-radius: 999px; padding: .25rem; margin-bottom: .3rem; }
+.ob-tabs button { flex: 1; border: none; background: none; padding: .5rem; border-radius: 999px; font-weight: 700; font-size: .82rem; color: var(--ob-dim); cursor: pointer; }
+.ob-tabs button.is-on { background: #fff; color: var(--ob-ink); box-shadow: 0 2px 8px -4px rgba(16,24,40,.3); }
+.ob-email .w-full { width: 100%; }

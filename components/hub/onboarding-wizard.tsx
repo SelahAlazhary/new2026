@@ -145,16 +145,18 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
 
   if (!state) return <Shell><p className="ob-loading">جارٍ التحميل…</p></Shell>;
 
-  /* ١) غير مسجَّل → الدخول */
+  /* ١) غير مسجَّل → الدخول (جوجل أو بريد وكلمة مرور) */
   if (!state.owner) {
     return (
       <Shell>
         <Panel>
           <h1 className="ob-title">أنشئ منصّتك التعليمية</h1>
-          <p className="ob-sub">ابدأ بتسجيل الدخول بحساب جوجل — بلا كلمات مرور.</p>
+          <p className="ob-sub">ابدأ بتسجيل الدخول — بحساب جوجل أو بالبريد وكلمة المرور.</p>
           <a href="/api/hub/auth/google?next=/start" className="ob-google">
             <GoogleMark /> المتابعة بحساب جوجل
           </a>
+          <div className="ob-or"><span>أو</span></div>
+          <EmailAuth onDone={() => load()} />
           {devSignin && <DevSignin />}
         </Panel>
       </Shell>
@@ -462,6 +464,54 @@ function Cred({ label, value, link, mono }: { label: string; value: string; link
       <span className={`ob-cred-value ${mono ? "mono" : ""}`} dir={link || mono ? "ltr" : "auto"}>{value}</span>
       <button type="button" className="ob-copy" onClick={copy}>{copied ? "نُسخ ✓" : "نسخ"}</button>
     </div>
+  );
+}
+function EmailAuth({ onDone }: { onDone: () => void }) {
+  const [mode, setMode] = useState<"login" | "register">("register");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [website, setWebsite] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setErr("");
+    try {
+      const res = await fetch("/api/hub/auth/owner", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode, name, email, password, website }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setErr(data.error ?? "تعذّر"); return; }
+      onDone();
+    } catch {
+      setErr("تعذّر الاتصال بالخادم");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="ob-email">
+      <div className="ob-tabs">
+        <button type="button" className={mode === "register" ? "is-on" : ""} onClick={() => { setMode("register"); setErr(""); }}>حساب جديد</button>
+        <button type="button" className={mode === "login" ? "is-on" : ""} onClick={() => { setMode("login"); setErr(""); }}>لديّ حساب</button>
+      </div>
+      {mode === "register" && (
+        <input className="inp w-full" placeholder="اسمك" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+      )}
+      <input className="inp w-full" type="email" dir="ltr" placeholder="البريد الإلكتروني" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
+      <input className="inp w-full" type="password" placeholder="كلمة المرور" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={mode === "register" ? "new-password" : "current-password"} required />
+      {mode === "register" && <p className="ob-hint">٨ أحرف على الأقل، فيها حرف ورقم.</p>}
+      <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={website} onChange={(e) => setWebsite(e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
+      {err && <p className="ob-error">{err}</p>}
+      <button type="submit" className="ob-primary w-full" disabled={busy}>
+        {busy ? "…" : mode === "register" ? "إنشاء حساب" : "دخول"}
+      </button>
+    </form>
   );
 }
 function DevSignin() {
