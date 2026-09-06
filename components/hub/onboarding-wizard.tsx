@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { BrandPreset } from "@/lib/hub/presets";
 import type { SaasPlan, Tenant } from "@/lib/hub/types";
+import { PresetPreview } from "@/components/hub/preset-preview";
 
 type StartState = {
   owner: { name: string; email: string; picture?: string } | null;
@@ -292,6 +293,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
 
         {step === "design" && (
           <Step title="هويّة المنصّة" desc="اختر تصميماً ولوّنه كما تحب — يمكنك تغييره لاحقاً.">
+            <PresetPreview preset={presets.find((p) => p.id === presetId) ?? presets[0]} colors={colors} />
             <div className="ob-preset-grid">
               {presets.map((pr) => (
                 <button

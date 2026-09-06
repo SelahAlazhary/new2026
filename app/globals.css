@@ -5363,3 +5363,33 @@ body {
 .ob-tabs button { flex: 1; border: none; background: none; padding: .5rem; border-radius: 999px; font-weight: 700; font-size: .82rem; color: var(--ob-dim); cursor: pointer; }
 .ob-tabs button.is-on { background: #fff; color: var(--ob-ink); box-shadow: 0 2px 8px -4px rgba(16,24,40,.3); }
 .ob-email .w-full { width: 100%; }
+
+/* ============================================================
+   معاينةُ الهويّة الحيّة (رحلة الإنشاء + تبويب الهوية)
+   ============================================================ */
+.pv {
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: .6rem;
+  margin-bottom: 1.2rem; padding: .8rem; border-radius: 1rem;
+  background: var(--pv-paper); border: 1px solid var(--pv-line);
+}
+.pv-screen { background: var(--pv-card); border: 1px solid var(--pv-line); border-radius: .7rem; padding: .55rem; overflow: hidden; }
+.pv[data-dark] .pv-screen { backdrop-filter: blur(2px); }
+.pv-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: .5rem; }
+.pv-logo { width: 1.5rem; height: .5rem; border-radius: 999px; background: var(--pv-primary); }
+.pv-navdots { display: flex; gap: .2rem; }
+.pv-navdots i { width: .35rem; height: .35rem; border-radius: 999px; background: var(--pv-dim); opacity: .5; }
+.pv-hero { display: flex; flex-direction: column; gap: .3rem; }
+.pv-eyebrow { width: 2.4rem; height: .4rem; border-radius: 999px; background: var(--pv-gold); }
+.pv-h1 { height: .55rem; border-radius: 999px; background: var(--pv-ink); opacity: .85; }
+.pv-h1.short { width: 60%; background: var(--pv-primary); opacity: 1; }
+.pv-btn { margin-top: .3rem; align-self: flex-start; font-size: .5rem; font-weight: 800; color: #fff; background: var(--pv-primary); padding: .28rem .6rem; border-radius: 999px; }
+.pv-cover { height: 2.4rem; border-radius: .5rem; background: linear-gradient(135deg, var(--pv-primary), var(--pv-gold)); margin-bottom: .4rem; }
+.pv-line-1 { display: block; height: .45rem; width: 85%; border-radius: 999px; background: var(--pv-ink); opacity: .8; margin-bottom: .25rem; }
+.pv-line-2 { display: block; height: .4rem; width: 55%; border-radius: 999px; background: var(--pv-dim); opacity: .5; }
+.pv-price { display: inline-block; margin-top: .4rem; font-size: .5rem; font-weight: 800; color: var(--pv-gold); }
+.pv-panel-head { height: 1rem; border-radius: .4rem; background: var(--pv-primary); opacity: .9; margin-bottom: .4rem; }
+.pv-panel-row { display: flex; align-items: center; gap: .3rem; margin-bottom: .3rem; }
+.pv-panel-row span { width: .8rem; height: .8rem; border-radius: 999px; background: var(--pv-gold); flex-shrink: 0; }
+.pv-panel-row b { flex: 1; height: .4rem; border-radius: 999px; background: var(--pv-dim); opacity: .4; }
+.pv-chip { display: inline-block; margin-top: .2rem; font-size: .48rem; font-weight: 800; color: var(--pv-gold); border: 1px solid var(--pv-gold); padding: .2rem .5rem; border-radius: 999px; }
+@media (max-width: 420px) { .pv { grid-template-columns: 1fr 1fr; } .pv-panel { display: none; } }

@@ -255,6 +255,8 @@ export type SiteContent = {
   /** الفصول الدراسية — تُدار من «الصفوف والفصول» وتظهر في التسجيل. */
   terms?: TermRow[];
 
+  /** معرّفُ حزمة الهويّة المطبَّقة (من `lib/hub/presets.ts`) — للإبراز في تبويب «الهوية». */
+  brandPresetId?: string;
   studentSkin?: string;
   studentLayout?: string;
   studentMobile?: string;

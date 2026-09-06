@@ -68,13 +68,15 @@ import {
 import { STUDENT_DESIGNS, findDesign, DEFAULT_DESIGN, type StudentDesign } from "@/lib/designs";
 import { HOME_LAYOUTS, findHomeLayout, DEFAULT_HOME_LAYOUT, type HomeLayout } from "@/lib/home-layouts";
 import { Section } from "@/components/dashboard/section";
+import { BRAND_PRESETS } from "@/lib/hub/presets";
+import { IdentityPresets } from "@/components/admin/identity-presets";
 
 /** ألوان جاهزة تُستخدم في أكثر من منتقٍ. */
 const SWATCH = ["#233b8b", "#095e86", "#245c4b", "#87263a", "#8a6212", "#4a3570", "#1f5a5e", "#2b3140"];
 
 const SHELL_SWATCH = ["#173972", "#0f172a", "#1e293b", "#c9a227", "#7c3aed", "#0ea5e9", "#f8fafc", "#ffffff"];
 
-type Tab = "skin" | "design" | "tiles" | "layout" | "side" | "bar" | "dock" | "mobile" | "home" | "plans" | "hero" | "sections" | "faq" | "cta" | "footer" | "navbar" | "mhome" | "motion" | "buttons" | "glow" | "shell" | "icons";
+type Tab = "identity" | "skin" | "design" | "tiles" | "layout" | "side" | "bar" | "dock" | "mobile" | "home" | "plans" | "hero" | "sections" | "faq" | "cta" | "footer" | "navbar" | "mhome" | "motion" | "buttons" | "glow" | "shell" | "icons";
 
 
 /** اختيار تثبيت الشريط — إعدادٌ لا هيئة، فله صفُّه الخاصّ. */
@@ -200,6 +202,13 @@ export default function AppearancePage() {
     Tab,
     { label: string; isDefault: boolean; patch: () => Record<string, unknown> }
   > = {
+    identity: {
+      label: "الهوية",
+      /* «الهوية» علامةٌ على حزمةٍ مطبَّقة؛ إعادتُها تُزيل العلامة، وكلُّ
+         بُعدٍ (ثيم/هيئة/حركة) يُعاد من تبويبه إن أُريد. */
+      isDefault: !content.brandPresetId,
+      patch: () => ({ brandPresetId: undefined }),
+    },
     skin: {
       label: "الثيم",
       isDefault: skin.id === DEFAULT_SKIN,
@@ -552,6 +561,9 @@ export default function AppearancePage() {
       />
 
       <div className="mb-6 flex flex-wrap gap-2">
+        <TabBtn active={tab === "identity"} onClick={() => setTab("identity")} icon={<Sparkles className="size-4" />}>
+          الهوية ({BRAND_PRESETS.length.toLocaleString("ar-EG")})
+        </TabBtn>
         <TabBtn active={tab === "skin"} onClick={() => setTab("skin")} icon={<Palette className="size-4" />}>
           الثيم واللون ({STUDENT_SKINS.length.toLocaleString("ar-EG")})
         </TabBtn>
@@ -619,6 +631,12 @@ export default function AppearancePage() {
           تخطيط الواجهة الرئيسية ({HOME_LAYOUTS.length.toLocaleString("ar-EG")})
         </TabBtn>
       </div>
+
+      {tab === "identity" && (
+        <Section title="هوية المنصّة" group="الهوية" subtitle="حزمةٌ كاملة بضغطة — تصميمٌ وألوانٌ وحركة معاً.">
+          <IdentityPresets />
+        </Section>
+      )}
 
       {tab === "skin" && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
