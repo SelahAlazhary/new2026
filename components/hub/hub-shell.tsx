@@ -16,12 +16,13 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Layers, Inbox, ScrollText, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Layers, Inbox, Receipt, ScrollText, Settings, LogOut, Menu, X } from "lucide-react";
 
 const NAV = [
   { href: "/hub", label: "نظرة عامة", Icon: LayoutDashboard },
   { href: "/hub/tenants", label: "المنصّات", Icon: Layers },
   { href: "/hub/requests", label: "الطلبات", Icon: Inbox },
+  { href: "/hub/billing", label: "الفواتير", Icon: Receipt },
   { href: "/hub/audit", label: "سجلّ التدقيق", Icon: ScrollText },
   { href: "/hub/settings", label: "الإعدادات", Icon: Settings },
 ];

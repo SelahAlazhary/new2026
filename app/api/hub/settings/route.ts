@@ -44,6 +44,30 @@ export async function PUT(req: Request) {
   }
   if (typeof body.emailFrom === "string") patch.emailFrom = body.emailFrom.trim().slice(0, 120);
 
+  /* بوّابة بايموب: علمُ التفعيل فقط — المفاتيحُ في متغيّرات البيئة لا في القاعدة */
+  if (body.paymob && typeof body.paymob === "object") {
+    patch.paymob = { enabled: (body.paymob as Record<string, unknown>).enabled === true, integrationIds: {} };
+  }
+
+  /* طرقُ التحويل اليدويّ */
+  if (body.manualPay && typeof body.manualPay === "object") {
+    const mp = body.manualPay as Record<string, unknown>;
+    const list = Array.isArray(mp.methods) ? mp.methods : [];
+    patch.manualPay = {
+      enabled: mp.enabled === true,
+      methods: list.slice(0, 10).map((m) => {
+        const o = (m ?? {}) as Record<string, unknown>;
+        const kind = (["instapay", "wallet", "bank"].includes(String(o.kind)) ? o.kind : "wallet") as "instapay" | "wallet" | "bank";
+        return {
+          kind,
+          label: String(o.label ?? "").slice(0, 60),
+          number: String(o.number ?? "").slice(0, 80),
+          active: o.active !== false,
+        };
+      }).filter((m) => m.number.trim()),
+    };
+  }
+
   const next = await saveHubSettings(patch);
   await audit("hub.settings", { kind: "super", id: me.id, name: me.name }, { details: { keys: Object.keys(patch) } });
   return NextResponse.json({ ok: true, settings: next });

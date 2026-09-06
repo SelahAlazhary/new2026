@@ -13,12 +13,22 @@ import type { BrandPreset } from "@/lib/hub/presets";
 import type { SaasPlan, Tenant } from "@/lib/hub/types";
 import { PresetPreview } from "@/components/hub/preset-preview";
 
+type ManualMethod = { kind: "instapay" | "wallet" | "bank"; label: string; number: string; active: boolean };
+type Payment = {
+  needPayment: boolean;
+  amountEGP: number;
+  manual: ManualMethod[];
+  paymob: boolean;
+  lastInvoice: { status: string; provider: string } | null;
+};
 type StartState = {
   owner: { name: string; email: string; picture?: string } | null;
   draft: Tenant | null;
   active: Tenant[];
   plans: SaasPlan[];
   planId: string | null;
+  subStatus: string | null;
+  payment: Payment | null;
 };
 
 const STEPS = ["name", "logo", "design", "domain", "review"] as const;
@@ -29,6 +39,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   const [step, setStep] = useState<Step>("name");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [paying, setPaying] = useState(false);
   const [delivery, setDelivery] = useState<{ adminEmail: string; password: string | null; studentUrl: string; adminUrl: string } | null>(null);
 
   /* حقولُ التحرير */
@@ -55,6 +66,13 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
       setDomain(data.draft.customDomain ?? "");
       const s = data.draft.onboardingStep;
       if (STEPS.includes(s as Step)) setStep(s as Step);
+    }
+    /* استئنافُ الدفع: خطّةٌ مدفوعةٌ بلا سداد، وقد بلغ المدرّسُ المراجعة */
+    if (data.subStatus === "pending_payment" && data.payment?.needPayment &&
+        (data.draft?.onboardingStep === "review" || data.payment?.lastInvoice)) {
+      setPaying(true);
+    } else if (data.subStatus !== "pending_payment") {
+      setPaying(false);
     }
     return data;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -121,12 +139,17 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     const d = await call({ action: "save", step: nextStep === "submit" ? "review" : nextStep, ...extra });
     if (!d?.ok) return;
     if (nextStep === "submit") {
-      const s = await call({ action: "submit" });
-      if (s?.provisioned && s.result) {
-        setDelivery({
-          adminEmail: s.result.adminEmail, password: s.result.password,
-          studentUrl: s.result.studentUrl, adminUrl: s.result.adminUrl,
-        });
+      /* الإرسالُ يُقرأ مباشرةً: ٤٠٢ «يحتاج دفعاً» ليس خطأً بل تحويلٌ لشاشة الدفع */
+      setBusy(true);
+      try {
+        const res = await fetch("/api/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "submit" }) });
+        const s = await res.json().catch(() => ({}));
+        if (s?.needPayment) { setPaying(true); }
+        else if (s?.provisioned && s.result) {
+          setDelivery({ adminEmail: s.result.adminEmail, password: s.result.password, studentUrl: s.result.studentUrl, adminUrl: s.result.adminUrl });
+        } else if (!res.ok) { setError(s.error ?? "تعذّر"); }
+      } finally {
+        setBusy(false);
       }
       await load();
       return;
@@ -180,6 +203,33 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
           </div>
           <a href={delivery.adminUrl} className="ob-primary" target="_blank" rel="noreferrer">افتح لوحة منصّتك</a>
           <button type="button" className="ob-link" onClick={() => { setDelivery(null); load(); }}>العودة إلى منصّاتي</button>
+        </Panel>
+      </Shell>
+    );
+  }
+
+  /* شاشةُ الدفع — خطّةٌ مدفوعةٌ بلا سداد */
+  if (paying && draft && state.payment) {
+    return (
+      <Shell>
+        <Panel>
+          <h1 className="ob-title">إتمام الدفع</h1>
+          <p className="ob-sub">اشتراك «{draft.name || draft.slug}» — {state.payment.amountEGP.toLocaleString("ar-EG")} ج.م.</p>
+          {error && <p className="ob-error">{error}</p>}
+          <PayScreen
+            payment={state.payment}
+            busy={busy}
+            onManual={async (kind, senderNumber, receipt) => {
+              const d = await call({ action: "pay", method: "manual", kind, senderNumber, receipt });
+              if (d?.ok) { setPaying(false); await load(); }
+            }}
+            onPaymob={async () => {
+              const d = await call({ action: "pay", method: "paymob" });
+              if (d?.iframeUrl) window.open(d.iframeUrl, "_blank", "noopener");
+            }}
+            onRecheck={() => load()}
+          />
+          <button type="button" className="ob-link" onClick={() => setPaying(false)}>رجوع للتعديل</button>
         </Panel>
       </Shell>
     );
@@ -514,6 +564,83 @@ function EmailAuth({ onDone }: { onDone: () => void }) {
         {busy ? "…" : mode === "register" ? "إنشاء حساب" : "دخول"}
       </button>
     </form>
+  );
+}
+function PayScreen({
+  payment, busy, onManual, onPaymob, onRecheck,
+}: {
+  payment: Payment; busy: boolean;
+  onManual: (kind: ManualMethod["kind"], senderNumber: string, receipt: string) => void;
+  onPaymob: () => void;
+  onRecheck: () => void;
+}) {
+  const [tab, setTab] = useState<"card" | "manual">(payment.paymob ? "card" : "manual");
+  const [method, setMethod] = useState(0);
+  const [sender, setSender] = useState("");
+  const [receipt, setReceipt] = useState("");
+
+  const onFile = (f: File) => {
+    if (f.size > 2_000_000) return;
+    const r = new FileReader();
+    r.onload = () => setReceipt(String(r.result));
+    r.readAsDataURL(f);
+  };
+
+  const m = payment.manual[method];
+  const kindLabel: Record<string, string> = { instapay: "إنستاباي", wallet: "محفظة", bank: "حساب بنكي" };
+
+  if (!payment.paymob && !payment.manual.length) {
+    return <p className="ob-hint">لم تُفعَّل بوّابة دفع بعد. تواصل مع الدعم لتفعيل اشتراكك.</p>;
+  }
+
+  return (
+    <div className="ob-pay">
+      <div className="ob-tabs">
+        {payment.paymob && <button type="button" className={tab === "card" ? "is-on" : ""} onClick={() => setTab("card")}>بطاقة بنكية</button>}
+        {payment.manual.length > 0 && <button type="button" className={tab === "manual" ? "is-on" : ""} onClick={() => setTab("manual")}>تحويل يدوي</button>}
+      </div>
+
+      {tab === "card" && payment.paymob && (
+        <div className="ob-pay-card">
+          <p className="ob-hint">ادفع بأمان عبر بايموب (فيزا/ماستركارد/محفظة). تُفعّل منصّتك فور نجاح الدفع.</p>
+          <button type="button" className="ob-primary w-full" disabled={busy} onClick={onPaymob}>الدفع بالبطاقة</button>
+          <button type="button" className="ob-link" onClick={onRecheck}>دفعتُ بالفعل — تحقّق</button>
+        </div>
+      )}
+
+      {tab === "manual" && payment.manual.length > 0 && (
+        <div className="ob-pay-manual">
+          <p className="ob-hint">حوّل قيمة الاشتراك إلى إحدى الطرق التالية، ثم أرفق صورة الإيصال — نراجعها ونفعّل منصّتك.</p>
+          <div className="ob-methods">
+            {payment.manual.map((mm, i) => (
+              <button type="button" key={i} className={`ob-method ${method === i ? "is-on" : ""}`} onClick={() => setMethod(i)}>
+                <b>{mm.label || kindLabel[mm.kind]}</b>
+                <span dir="ltr">{mm.number}</span>
+              </button>
+            ))}
+          </div>
+          {m && (
+            <div className="ob-copy-num">
+              <span dir="ltr">{m.number}</span>
+              <button type="button" onClick={() => navigator.clipboard?.writeText(m.number)}>نسخ</button>
+            </div>
+          )}
+          <label className="lbl mt-2">رقم المحوِّل (اختياري)</label>
+          <input className="inp w-full" dir="ltr" value={sender} onChange={(e) => setSender(e.target.value)} placeholder="01xxxxxxxxx" />
+          <label className="lbl mt-2">صورة الإيصال</label>
+          <div className="ob-logo-row">
+            <div className="ob-logo-preview">{receipt ? <img src={receipt} alt="" /> : <span>لا صورة</span>}</div>
+            <label className="ob-upload">اختر صورة<input type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} /></label>
+          </div>
+          <button
+            type="button" className="ob-primary w-full mt-3" disabled={busy || !receipt}
+            onClick={() => m && onManual(m.kind, sender, receipt)}
+          >
+            {busy ? "…" : "أرسلت التحويل — راجعوه"}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 function DevSignin() {

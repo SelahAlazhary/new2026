@@ -47,6 +47,9 @@ const env = {
     فالطالبُ لا علاقةَ له بالجذر — منصّتُه وحدَها.
   */
   ROOT_HOST_MODE: process.env.ROOT_HOST_MODE || "hub",
+  /* سرُّ توقيع بايموب للتجربة المحلّية (اختبار الـwebhook) — لا يُستعمل إلّا محلّيّاً */
+  PAYMOB_HMAC_SECRET: process.env.PAYMOB_HMAC_SECRET || "test_hmac_secret",
+  CRON_SECRET: process.env.CRON_SECRET || "local-cron-secret",
 };
 
 const child = spawn("npx", ["next", mode, "-p", port], { stdio: "inherit", env, shell: true });

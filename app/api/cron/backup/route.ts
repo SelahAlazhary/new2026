@@ -26,6 +26,19 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "غير مصرّح" }, { status: 401 });
   }
 
+  /*
+    دورةُ الفوترة تُشغَّل مع النسخ الاحتياطي — لا جدولةٌ ثانية.
+    خططُ فيرسل المجانية تسمح بجدولةٍ يوميّةٍ واحدة، فتُجمَع المهمّتان في
+    نداءٍ واحد. وعطلُ إحداهما لا يُوقف الأخرى.
+  */
+  let billing: unknown = null;
+  try {
+    const { runBillingCycle } = await import("@/lib/hub/billing/cycle");
+    billing = await runBillingCycle();
+  } catch (e) {
+    billing = { error: (e as Error).message };
+  }
+
   const tenants = (await listTenants()).filter((t) => t.status === "active" || t.status === "suspended");
   const results: { tenant: string; ok: boolean; size?: number; error?: string }[] = [];
 
@@ -43,5 +56,5 @@ export async function GET(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: results.every((r) => r.ok), count: results.length, results });
+  return NextResponse.json({ ok: results.every((r) => r.ok), count: results.length, results, billing });
 }

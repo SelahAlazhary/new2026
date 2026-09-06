@@ -11,8 +11,16 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
   const [approval, setApproval] = useState(settings.approval);
   const [grace, setGrace] = useState(settings.gracePeriodDays);
   const [emailFrom, setEmailFrom] = useState(settings.emailFrom);
+  const [paymobOn, setPaymobOn] = useState(settings.paymob.enabled);
+  const [manualOn, setManualOn] = useState(settings.manualPay.enabled);
+  const [methods, setMethods] = useState(settings.manualPay.methods.length ? settings.manualPay.methods : []);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
+  const addMethod = () => setMethods([...methods, { kind: "wallet", label: "", number: "", active: true }]);
+  const setMethod = (i: number, patch: Partial<(typeof methods)[number]>) =>
+    setMethods(methods.map((m, j) => (j === i ? { ...m, ...patch } : m)));
+  const delMethod = (i: number) => setMethods(methods.filter((_, j) => j !== i));
 
   const save = async () => {
     setBusy(true);
@@ -26,6 +34,8 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
           approval,
           gracePeriodDays: grace,
           emailFrom,
+          paymob: { enabled: paymobOn },
+          manualPay: { enabled: manualOn, methods },
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -94,6 +104,44 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
             dir="ltr" placeholder="no-reply@example.com" className="inp w-full"
           />
         </span>
+      </div>
+
+      {/* ــ بوّابات الدفع ــ */}
+      <div className="mt-5 border-t border-black/[0.07] pt-4">
+        <h4 className="font-display text-[14px] font-bold">بوّابات دفع اشتراك المنصّات</h4>
+        <p className="mb-3 mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+          كيف يدفع المدرّسون اشتراكهم. مفاتيح بايموب السرّية في متغيّرات البيئة، وهنا التفعيل فقط.
+        </p>
+
+        <label className="mb-2 flex cursor-pointer items-center gap-2 text-[12.5px]">
+          <input type="checkbox" checked={paymobOn} onChange={(e) => setPaymobOn(e.target.checked)} className="size-4 accent-[#1b2a4a]" />
+          الدفع بالبطاقة عبر بايموب (يتطلّب ضبط مفاتيح PAYMOB_* في البيئة)
+        </label>
+        <label className="flex cursor-pointer items-center gap-2 text-[12.5px]">
+          <input type="checkbox" checked={manualOn} onChange={(e) => setManualOn(e.target.checked)} className="size-4 accent-[#1b2a4a]" />
+          التحويل اليدوي (إنستاباي / محفظة / بنك)
+        </label>
+
+        {manualOn && (
+          <div className="mt-3 space-y-2">
+            {methods.map((m, i) => (
+              <div key={i} className="flex flex-wrap items-center gap-2 rounded-xl border border-black/[0.08] p-2">
+                <select value={m.kind} onChange={(e) => setMethod(i, { kind: e.target.value as typeof m.kind })} className="inp w-auto text-[12px]">
+                  <option value="instapay">إنستاباي</option>
+                  <option value="wallet">محفظة</option>
+                  <option value="bank">بنك</option>
+                </select>
+                <input value={m.label} onChange={(e) => setMethod(i, { label: e.target.value })} placeholder="الاسم المعروض" className="inp flex-1 text-[12px]" style={{ minWidth: "7rem" }} />
+                <input value={m.number} onChange={(e) => setMethod(i, { number: e.target.value })} dir="ltr" placeholder="الرقم / العنوان" className="inp flex-1 text-[12px]" style={{ minWidth: "8rem" }} />
+                <label className="flex items-center gap-1 text-[11px]">
+                  <input type="checkbox" checked={m.active} onChange={(e) => setMethod(i, { active: e.target.checked })} className="size-3.5 accent-[#1b2a4a]" /> مفعّل
+                </label>
+                <button type="button" onClick={() => delMethod(i)} className="text-[11px] font-bold text-rose-600">حذف</button>
+              </div>
+            ))}
+            <button type="button" onClick={addMethod} className="rounded-full border border-black/12 px-3 py-1.5 text-[12px] font-bold">+ إضافة طريقة</button>
+          </div>
+        )}
       </div>
 
       <button

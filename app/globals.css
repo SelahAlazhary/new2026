@@ -5393,3 +5393,14 @@ body {
 .pv-panel-row b { flex: 1; height: .4rem; border-radius: 999px; background: var(--pv-dim); opacity: .4; }
 .pv-chip { display: inline-block; margin-top: .2rem; font-size: .48rem; font-weight: 800; color: var(--pv-gold); border: 1px solid var(--pv-gold); padding: .2rem .5rem; border-radius: 999px; }
 @media (max-width: 420px) { .pv { grid-template-columns: 1fr 1fr; } .pv-panel { display: none; } }
+
+/* دفع اشتراك المنصّة داخل الرحلة */
+.ob-pay { margin-top: 1rem; }
+.ob-pay-card, .ob-pay-manual { margin-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }
+.ob-methods { display: flex; flex-direction: column; gap: .4rem; }
+.ob-method { text-align: start; border: 1px solid var(--ob-line); border-radius: .8rem; padding: .6rem .8rem; background: #fff; cursor: pointer; display: flex; flex-direction: column; }
+.ob-method.is-on { border-color: var(--ob-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--ob-primary) 25%, transparent); }
+.ob-method b { font-size: .85rem; } .ob-method span { font-size: .78rem; color: var(--ob-dim); }
+.ob-copy-num { display: flex; align-items: center; justify-content: space-between; gap: .5rem; background: #faf9f5; border: 1px solid var(--ob-line); border-radius: .6rem; padding: .5rem .8rem; font-weight: 700; font-size: .85rem; }
+.ob-copy-num button { border: none; background: var(--ob-primary); color: #fff; border-radius: .4rem; padding: .25rem .7rem; font-size: .72rem; cursor: pointer; }
+.ob-pay .w-full { width: 100%; } .ob-pay .mt-3 { margin-top: .75rem; } .ob-pay .mt-2 { margin-top: .5rem; }

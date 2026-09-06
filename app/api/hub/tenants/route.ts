@@ -8,6 +8,8 @@ import { audit } from "@/lib/hub/audit";
 import { SECTIONS, FEATURES } from "@/lib/hub/sections";
 import { provisionTenant } from "@/lib/hub/provision";
 import { subscriptionForTenant, setSubscriptionStatus } from "@/lib/hub/plans";
+import { listInvoices } from "@/lib/hub/invoices";
+import { activateFromInvoice } from "@/lib/hub/billing/activate";
 import type { HideableSection, TenantFeature, TenantLimits, TenantStatus } from "@/lib/hub/types";
 
 export const dynamic = "force-dynamic";
@@ -124,9 +126,15 @@ export async function PATCH(req: Request) {
         return NextResponse.json({ error: "هذه المنصّة ليست بانتظار الموافقة" }, { status: 400 });
       }
       const result = await provisionTenant(id);
-      const sub = await subscriptionForTenant(id);
-      if (sub && (sub.status === "pending_approval" || sub.status === "pending_payment")) {
-        await setSubscriptionStatus(sub.id, "active", "super");
+      /* الفاتورةُ اليدويّةُ المعلّقة تُعتمَد مع الموافقة — فالتفعيلُ قرارٌ واحد */
+      const pendingInv = (await listInvoices({ tenantId: id, status: "pending" }))[0];
+      if (pendingInv) {
+        await activateFromInvoice(pendingInv.id, "super");
+      } else {
+        const sub = await subscriptionForTenant(id);
+        if (sub && (sub.status === "pending_approval" || sub.status === "pending_payment")) {
+          await setSubscriptionStatus(sub.id, "active", "super");
+        }
       }
       await audit("tenant.approve", actor, { tenantId: id });
       return NextResponse.json({ ok: true, tenant: result.tenant });

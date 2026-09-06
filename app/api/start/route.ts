@@ -7,6 +7,8 @@ import { hubId } from "@/lib/hub/store";
 import { availableSlug, checkSlug } from "@/lib/hub/onboarding";
 import { visiblePlans, planById, createSubscription, subscriptionForTenant, setSubscriptionStatus } from "@/lib/hub/plans";
 import { getHubSettings } from "@/lib/hub/settings";
+import { createInvoice, updateInvoice, listInvoices } from "@/lib/hub/invoices";
+import { createCheckout, paymobConfigured } from "@/lib/hub/billing/paymob";
 import { presetById } from "@/lib/hub/presets";
 import { provisionTenant } from "@/lib/hub/provision";
 import { revealDelivery } from "@/lib/hub/delivery";
@@ -139,6 +141,11 @@ export async function POST(req: Request) {
 
       const settings = await getHubSettings();
       const sub = await subscriptionForTenant(draft.id);
+      const plan2 = sub ? await planById(sub.planId) : null;
+      /* خطّةٌ مدفوعةٌ بلا تجربة: تحتاج دفعاً قبل الإرسال */
+      if (plan2 && plan2.priceEGP > 0 && sub?.status === "pending_payment") {
+        return NextResponse.json({ ok: false, needPayment: true, error: "أكمل الدفع لتفعيل منصّتك" }, { status: 402 });
+      }
       const paid = sub?.status === "trialing" || sub?.status === "active";
 
       /* القبولُ التلقائيّ يُفعّل الآن (بعد الدفع في M5)؛ واليدويُّ ينتظر أدمن المنصّات */
@@ -152,6 +159,48 @@ export async function POST(req: Request) {
       await patchTenant(draft.id, { status: "pending_approval", onboardingStep: "done" });
       await audit("owner.submit_platform", { kind: "owner", id: owner.id, name: owner.name }, { tenantId: draft.id });
       return NextResponse.json({ ok: true, tenant: { ...draft, status: "pending_approval" }, pending: true });
+    }
+
+    /* الدفعُ — تحويلٌ يدويّ (إيصال) أو بطاقةٌ عبر بايموب */
+    case "pay": {
+      const draft = await currentDraft(owner.id);
+      if (!draft) return NextResponse.json({ error: "لا توجد منصّة" }, { status: 400 });
+      const sub = await subscriptionForTenant(draft.id);
+      if (!sub) return NextResponse.json({ error: "لا يوجد اشتراك" }, { status: 400 });
+      const plan = await planById(sub.planId);
+      if (!plan) return NextResponse.json({ error: "لا توجد خطّة" }, { status: 400 });
+      const settings = await getHubSettings();
+      const method = String(body.method ?? "manual");
+
+      if (method === "paymob") {
+        if (!paymobConfigured() || !settings.paymob.enabled) return NextResponse.json({ error: "الدفع بالبطاقة غير متاح حالياً" }, { status: 400 });
+        const inv = await createInvoice({ tenantId: draft.id, subscriptionId: sub.id, plan, provider: "paymob" });
+        try {
+          const { iframeUrl, orderId } = await createCheckout({
+            invoiceId: inv.id, amountEGP: inv.amountEGP, email: owner.email, name: owner.name,
+            returnUrl: `${new URL(req.url).origin}/start`,
+          });
+          await updateInvoice(inv.id, { providerRef: orderId });
+          return NextResponse.json({ ok: true, iframeUrl });
+        } catch (e) {
+          await updateInvoice(inv.id, { status: "failed", reviewNote: (e as Error).message });
+          return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+        }
+      }
+
+      /* تحويلٌ يدويّ: يرفع الإيصالَ ورقمَ المحوِّل، فتنتظر الفاتورةُ اعتماداً */
+      const receipt = typeof body.receipt === "string" ? body.receipt.slice(0, 400000) : undefined;
+      const senderNumber = String(body.senderNumber ?? "").slice(0, 40);
+      const kind = (["instapay", "wallet", "bank"].includes(String(body.kind)) ? body.kind : "wallet") as "instapay" | "wallet" | "bank";
+      if (!receipt) return NextResponse.json({ error: "أرفق صورة الإيصال" }, { status: 400 });
+      await createInvoice({
+        tenantId: draft.id, subscriptionId: sub.id, plan, provider: "manual",
+        manualMethod: { kind, senderNumber }, receiptUrl: receipt,
+      });
+      await patchTenant(draft.id, { status: "pending_approval", onboardingStep: "done" });
+      await setSubscriptionStatus(sub.id, "pending_approval", "owner");
+      await audit("owner.paid_manual", { kind: "owner", id: owner.id, name: owner.name }, { tenantId: draft.id });
+      return NextResponse.json({ ok: true, pending: true });
     }
 
     /* كشفُ بيانات الدخول — مرّةً واحدةً لصاحب المنصّة بعد تجهيزها */
@@ -190,9 +239,22 @@ export async function GET() {
   const active = mine.filter((t) => t.status === "active" || t.status === "suspended" || t.status === "expired");
   const plans = await visiblePlans();
   const sub = draft ? await subscriptionForTenant(draft.id) : null;
+  const plan = sub ? await planById(sub.planId) : null;
+  const settings = await getHubSettings();
+
+  /* ما يحتاجه الدفع: هل الخطّة مدفوعة؟ وطرقُ التحويل المتاحة، وحالةُ آخر فاتورة */
+  const needPayment = Boolean(plan && plan.priceEGP > 0 && sub?.status === "pending_payment");
+  const invoices = draft ? await listInvoices({ tenantId: draft.id }) : [];
+  const payment = {
+    needPayment,
+    amountEGP: plan?.priceEGP ?? 0,
+    manual: settings.manualPay.enabled ? settings.manualPay.methods.filter((m) => m.active) : [],
+    paymob: settings.paymob.enabled && paymobConfigured(),
+    lastInvoice: invoices[0] ? { status: invoices[0].status, provider: invoices[0].provider } : null,
+  };
 
   return NextResponse.json(
-    { owner: { name: owner.name, email: owner.email, picture: owner.picture }, draft, active, plans, planId: sub?.planId ?? null },
+    { owner: { name: owner.name, email: owner.email, picture: owner.picture }, draft, active, plans, planId: sub?.planId ?? null, subStatus: sub?.status ?? null, payment },
     { headers: { "Cache-Control": "no-store" } }
   );
 }
