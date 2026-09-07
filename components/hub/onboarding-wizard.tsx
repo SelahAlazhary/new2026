@@ -31,7 +31,7 @@ type StartState = {
   payment: Payment | null;
 };
 
-const STEPS = ["name", "logo", "design", "domain", "review"] as const;
+const STEPS = ["name", "logo", "design", "review"] as const;
 type Step = (typeof STEPS)[number];
 
 export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; presets: BrandPreset[] }) {
@@ -51,6 +51,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   const [presetId, setPresetId] = useState("midad");
   const [colors, setColors] = useState({ primary: "#233b8b", gold: "#c99a3b", paper: "#fbf9f5" });
   const [domain, setDomain] = useState("");
+  const [urlBase, setUrlBase] = useState("");
 
   const load = useCallback(async () => {
     const res = await fetch("/api/start", { cache: "no-store" });
@@ -79,6 +80,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
 
   useEffect(() => {
     load();
+    setUrlBase(window.location.origin);
   }, [load]);
 
   /* استطلاعُ الموافقة: المسودّةُ المنتظِرة تُفحص كلَّ خمس ثوانٍ */
@@ -294,12 +296,11 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
 
   /* مسودّة onboarding → الخطوات */
   const idx = STEPS.indexOf(step);
-  const allowDomain = draft.limits?.customDomain !== false;
 
   return (
     <Shell>
       <Panel wide>
-        <Progress step={step} allowDomain={allowDomain} />
+        <Progress step={step} />
         {error && <p className="ob-error">{error}</p>}
 
         {step === "name" && (
@@ -308,11 +309,14 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
             <input className="inp w-full" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} placeholder="مثال: أكاديمية النور" />
             <label className="lbl mt-3">وصف مختصر</label>
             <input className="inp w-full" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={300} placeholder="المادة والمرحلة — مثال: الرياضيات للثانوية العامة" />
-            <label className="lbl mt-3">رابط المنصّة</label>
+            <label className="lbl mt-3">معرّف المنصّة</label>
             <div className="ob-slug">
+              <span className="ob-slug-prefix" dir="ltr">/t/</span>
               <input className="inp flex-1" dir="ltr" value={slug} onChange={(e) => checkSlug(e.target.value.toLowerCase())} placeholder="al-noor" />
-              <span className="ob-slug-suffix" dir="ltr">.منصّتك</span>
             </div>
+            {urlBase && slug.length >= 3 && (
+              <p className="ob-url-preview" dir="ltr">{urlBase}/t/{slug}</p>
+            )}
             {slugMsg && <p className={`ob-slug-msg ${slugMsg.ok ? "ok" : "bad"}`}>{slugMsg.text}</p>}
             <Nav
               onNext={() => saveStep("logo", { name, description, slug })}
@@ -368,18 +372,9 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
             </div>
             <Nav
               onBack={() => setStep("logo")}
-              onNext={() => saveStep(allowDomain ? "domain" : "review", { presetId, colors })}
+              onNext={() => saveStep("review", { presetId, colors })}
               nextEnabled busy={busy}
             />
-          </Step>
-        )}
-
-        {step === "domain" && (
-          <Step title="الدومين المخصّص" desc="اربط منصّتك بدومينك الخاص — أو تخطَّ الآن واربطه لاحقاً.">
-            <label className="lbl">الدومين (اختياري)</label>
-            <input className="inp w-full" dir="ltr" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="academy.example.com" />
-            <p className="ob-hint">تحصل على رابطٍ فرعيّ مجّانيّ فوراً. ربط الدومين الخاص يتم من لوحتك بعد الإنشاء.</p>
-            <Nav onBack={() => setStep("design")} onNext={() => saveStep("review", { customDomain: domain })} nextEnabled busy={busy} skipLabel="تخطٍّ" />
           </Step>
         )}
 
@@ -387,14 +382,13 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
           <Step title="مراجعة وإنشاء" desc="تأكّد من البيانات، ثم أنشئ منصّتك.">
             <ul className="ob-review">
               <li><span>الاسم</span><b>{name || draft.name}</b></li>
-              <li><span>الرابط</span><b dir="ltr">{slug || draft.slug}</b></li>
+              <li><span>الرابط</span><b dir="ltr">{urlBase}/t/{slug || draft.slug}</b></li>
               {(description || draft.description) && <li><span>الوصف</span><b>{description || draft.description}</b></li>}
               <li><span>التصميم</span><b>{presets.find((p) => p.id === presetId)?.name}</b></li>
-              {(domain || draft.customDomain) && <li><span>الدومين</span><b dir="ltr">{domain || draft.customDomain}</b></li>}
             </ul>
             <p className="ob-hint">بعد الإنشاء نراجع طلبك ونفعّل منصّتك، ثم تظهر بيانات الدخول هنا.</p>
             <Nav
-              onBack={() => setStep(allowDomain ? "domain" : "design")}
+              onBack={() => setStep("design")}
               onNext={() => saveStep("submit", {})}
               nextEnabled busy={busy}
               nextLabel="أنشئ منصّتي"
@@ -437,16 +431,16 @@ function Nav({
     </div>
   );
 }
-function Progress({ step, allowDomain }: { step: Step; allowDomain: boolean }) {
-  const steps = STEPS.filter((s) => allowDomain || s !== "domain");
-  const idx = steps.indexOf(step);
-  const labels: Record<Step, string> = { name: "الاسم", logo: "الشعار", design: "التصميم", domain: "الدومين", review: "مراجعة" };
+function Progress({ step }: { step: Step }) {
+  const idx = STEPS.indexOf(step);
+  const labels: Record<Step, string> = { name: "الاسم", logo: "الشعار", design: "التصميم", review: "مراجعة" };
   return (
     <div className="ob-progress">
-      {steps.map((s, i) => (
-        <div key={s} className={`ob-progress-step ${i <= idx ? "done" : ""}`}>
-          <span className="ob-progress-dot">{i + 1}</span>
+      {STEPS.map((s, i) => (
+        <div key={s} className={`ob-progress-step ${i < idx ? "done" : ""} ${i === idx ? "active" : ""}`}>
+          <span className="ob-progress-dot">{i < idx ? "✓" : i + 1}</span>
           <span className="ob-progress-label">{labels[s]}</span>
+          {i < STEPS.length - 1 && <span className="ob-progress-line" />}
         </div>
       ))}
     </div>
@@ -477,7 +471,6 @@ function PlanGrid({ plans, onPick, busy, title }: { plans: SaasPlan[]; onPick: (
   );
 }
 function MyTenant({ t, onReveal }: { t: Tenant; onReveal: () => void }) {
-  const root = ""; // العنوان يُبنى في الخادم؛ هنا نعرض الـslug فقط
   return (
     <li className="ob-tenant">
       <span className="ob-tenant-logo">{(t.name || t.slug).charAt(0)}</span>
@@ -488,6 +481,9 @@ function MyTenant({ t, onReveal }: { t: Tenant; onReveal: () => void }) {
       <span className={`ob-tenant-status s-${t.status}`}>
         {t.status === "active" ? "نشطة" : t.status === "suspended" ? "موقوفة" : "منتهية"}
       </span>
+      {t.status === "active" && (
+        <button type="button" className="ob-tenant-reveal" onClick={onReveal}>بيانات الدخول</button>
+      )}
     </li>
   );
 }
