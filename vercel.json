@@ -4,8 +4,8 @@
   "regions": ["fra1"],
   "crons": [
     { "path": "/api/cron/backup", "schedule": "0 2 * * *" },
-    { "path": "/api/cron/hub-stats", "schedule": "0 * * * *" },
-    { "path": "/api/cron/domain-verify", "schedule": "*/15 * * * *" }
+    { "path": "/api/cron/hub-stats", "schedule": "0 0 * * *" },
+    { "path": "/api/cron/domain-verify", "schedule": "0 1 * * *" }
   ],
   "functions": {
     "app/api/upload/route.ts": { "maxDuration": 60 },
