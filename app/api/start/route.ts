@@ -213,7 +213,11 @@ export async function POST(req: Request) {
       const root = process.env.ROOT_DOMAIN?.trim();
       const base = t.customDomain
         ? `https://${t.customDomain}`
-        : root ? `https://${t.slug}.${root}` : `http://${t.slug}.localhost:3000`;
+        : root
+          ? root.endsWith(".vercel.app")
+            ? `https://${root}/t/${t.slug}`
+            : `https://${t.slug}.${root}`
+          : `http://${t.slug}.localhost:3000`;
       return NextResponse.json({
         ok: true,
         adminEmail: t.adminEmail,

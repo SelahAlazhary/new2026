@@ -74,7 +74,9 @@ export async function provisionTenant(tenantId: string): Promise<ProvisionResult
   const base = tenant.customDomain
     ? `https://${tenant.customDomain}`
     : root
-      ? `https://${tenant.slug}.${root}`
+      ? root.endsWith(".vercel.app")
+        ? `https://${root}/t/${tenant.slug}`
+        : `https://${tenant.slug}.${root}`
       : `http://${tenant.slug}.localhost:3000`;
 
   const ctx = await ctxForTenantId(tenantId);

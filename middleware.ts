@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { classifyHost, isHubPath, isTenantOnlyPath, type HostKind } from "@/lib/hub/resolve";
+import { classifyHost, isHubPath, isTenantOnlyPath, SLUG_RE, type HostKind } from "@/lib/hub/resolve";
 
 /**
  * الطبقة الأمامية للحماية (تعمل قبل أي صفحة أو مسار):
@@ -126,12 +126,13 @@ function floodBlocked(ip: string): boolean {
 const TENANT_HEADERS = ["x-host-kind", "x-tenant-slug", "x-tenant-id"];
 const DEV = !process.env.VERCEL;
 
-function resolveHost(req: NextRequest): HostKind {
+function resolveHost(req: NextRequest, pathname: string): HostKind {
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   let kind = classifyHost(host, process.env.ROOT_DOMAIN);
-  if (DEV && kind.kind === "root") {
-    const dev = req.cookies.get("dev_tenant")?.value?.trim().toLowerCase();
-    if (dev) kind = { kind: "tenant", slug: dev };
+  if (kind.kind === "root" && !isHubPath(pathname)) {
+    const cookieName = DEV ? "dev_tenant" : "tenant_slug";
+    const slug = req.cookies.get(cookieName)?.value?.trim().toLowerCase();
+    if (slug && SLUG_RE.test(slug)) kind = { kind: "tenant", slug };
   }
   return kind;
 }
@@ -161,8 +162,34 @@ export function middleware(req: NextRequest) {
     return report(req, "bot", pathname);
   }
 
+  /*
+    توجيهُ المسار `/t/{slug}` — كوكي يُثبَّت فيُخدم المستأجرُ من `/` العاديّ.
+    ------------------------------------------------------------------
+    Vercel لا يدعم النطاقات الفرعية على `.vercel.app`، فالمنصّاتُ تُخدم عبر
+    `/t/{slug}` الذي يضبط كوكي `tenant_slug` ويحوّل. وبعدها كلُّ المسارات
+    الداخلية (`/admin`, `/student`, …) تعمل بلا تعديل.
+  */
+  if (pathname.startsWith("/t/")) {
+    const parts = pathname.split("/");
+    const slug = (parts[2] ?? "").toLowerCase();
+    if (slug && SLUG_RE.test(slug)) {
+      const rest = "/" + parts.slice(3).join("/") || "/";
+      const url = req.nextUrl.clone();
+      url.pathname = rest;
+      const res = NextResponse.redirect(url);
+      res.cookies.set("tenant_slug", slug, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: !!process.env.VERCEL,
+        maxAge: 60 * 60 * 24 * 30,
+      });
+      return res;
+    }
+  }
+
   /* ــــ المستأجر ــــ */
-  const hostKind = resolveHost(req);
+  const hostKind = resolveHost(req, pathname);
 
   /* مضيفٌ لا يصلح منصّةً (مستوًى أعمق من الفرعي) → ٤٠٤ صامت */
   if (hostKind.kind === "invalid") {
@@ -260,7 +287,7 @@ function report(req: NextRequest, kind: "csrf" | "probe" | "bot", path: string) 
   headers.set("x-blocked-kind", kind);
   headers.set("x-blocked-path", path);
   /* يُدوَّن في سجلّ المنصّة التي وقع عليها الفحص */
-  stampTenant(headers, resolveHost(req));
+  stampTenant(headers, resolveHost(req, path));
   return NextResponse.rewrite(url, { request: { headers } });
 }
 
