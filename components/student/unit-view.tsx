@@ -62,7 +62,7 @@ export function toEmbed(url: string): { kind: "video" | "iframe"; src: string; d
   const bunny = u.match(/^(\d{3,7})\/([0-9a-f-]{20,})$/i);
   if (bunny) return { kind: "iframe", src: `https://iframe.mediadelivery.net/embed/${bunny[1]}/${bunny[2]}` };
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { kind: "video", src: u };
-  const yt = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+  const yt = u.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
   /* يوتيوب يُعرض بالمشغّل النظيف (`CleanYouTube`) — والعنوانُ هنا للتوافق مع من يقرأ `src` */
   if (yt) return { kind: "iframe", src: `https://www.youtube-nocookie.com/embed/${yt[1]}?${YT_PARAMS}`, yt: true, ytId: yt[1] };
   const vm = u.match(/vimeo\.com\/(\d+)/);

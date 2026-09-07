@@ -332,6 +332,6 @@ export function CleanYouTube({
 /** معرّفُ مقطع يوتيوب من أيّ صيغة رابط — أو null. */
 export function youtubeId(url?: string | null): string | null {
   if (!url) return null;
-  const m = url.trim().match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{6,})/);
+  const m = url.trim().match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{6,})/);
   return m ? m[1] : null;
 }

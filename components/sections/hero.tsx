@@ -35,7 +35,7 @@ import { ShariBackdrop } from "@/components/brand/shari-art";
  */
 function toEmbedSrc(url?: string): string | undefined {
   if (!url) return undefined;
-  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+  const yt = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
   if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
   return url;
 }
