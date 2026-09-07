@@ -43,8 +43,8 @@ export function Features() {
           desc="منهج مرتّب يبني القاعدة قبل الحفظ، وتطبيق بعد كل درس، ومتابعة حتى الإتقان."
         />
 
-        <div className={`sx-grid grid items-stretch gap-4 ${sxGridClass(SX.grid, content.features.length)}`}>
-          {content.features.map((f, i) => {
+        <div className={`sx-grid grid items-stretch gap-4 ${sxGridClass(SX.grid, (content.features ?? []).length)}`}>
+          {(content.features ?? []).map((f, i) => {
             const Icon = featureIcon(f.icon);
             return (
               <Reveal key={f.title} delay={i * 0.08} className={f.span}>

@@ -29,7 +29,7 @@ export function Faq() {
           desc="ولو عندك سؤال آخر، الدعم موجود على واتساب طوال الأسبوع."
         />
         <div className="fq-list">
-          {content.faqs.map((f, i) => {
+          {(content.faqs ?? []).map((f, i) => {
             const isOpen = open === i;
             return (
               <motion.div key={f.q} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}

@@ -127,7 +127,7 @@ export async function provisionTenant(tenantId: string): Promise<ProvisionResult
       await patchTenant(tenantId, {
         limits: plan.limits,
         features: Object.fromEntries(
-          FEATURE_KEYS.map((k) => [k, plan.features.includes(k)])
+          FEATURE_KEYS.map((k) => [k, (plan.features ?? []).includes(k)])
         ) as Tenant["features"],
       });
     }

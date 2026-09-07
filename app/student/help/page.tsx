@@ -86,7 +86,7 @@ export default function HelpPage() {
 
       <div className="mb-3 flex items-center gap-2"><IconLifebuoy className="size-5 text-primary" /><p className="font-display text-lg font-extrabold">الأسئلة الشائعة</p></div>
       <div className="space-y-3">
-        {content.faqs.map((f, i) => {
+        {(content.faqs ?? []).map((f, i) => {
           const isOpen = open === i;
           return (
             <div key={f.q} className={`glass overflow-hidden rounded-3xl border transition ${isOpen ? "border-primary/40" : "border-border"}`}>
