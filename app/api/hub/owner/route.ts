@@ -95,8 +95,8 @@ export async function POST(req: Request) {
     }
 
     /* لا فاتورة — يُنشئ جديدة (تجديد يدوي) */
-    const tid = owner.tenantIds[0];
-    if (!tid) return NextResponse.json({ error: "لا منصّة مرتبطة" }, { status: 400 });
+    const tid = String(body.tenantId ?? "").trim() || owner.tenantIds[0];
+    if (!tid || !owner.tenantIds.includes(tid)) return NextResponse.json({ error: "لا منصّة مرتبطة" }, { status: 400 });
     const tenant = await tenantById(tid);
     const sub = await subscriptionForTenant(tid);
     if (!sub) return NextResponse.json({ error: "لا اشتراك" }, { status: 400 });

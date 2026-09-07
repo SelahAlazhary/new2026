@@ -12,6 +12,8 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
   const [grace, setGrace] = useState(settings.gracePeriodDays);
   const [emailFrom, setEmailFrom] = useState(settings.emailFrom);
   const [paymobOn, setPaymobOn] = useState(settings.paymob.enabled);
+  const [paymobCard, setPaymobCard] = useState(settings.paymob.integrationIds?.card ?? "");
+  const [paymobWallet, setPaymobWallet] = useState(settings.paymob.integrationIds?.wallet ?? "");
   const [manualOn, setManualOn] = useState(settings.manualPay.enabled);
   const [methods, setMethods] = useState(settings.manualPay.methods.length ? settings.manualPay.methods : []);
   const [busy, setBusy] = useState(false);
@@ -34,7 +36,7 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
           approval,
           gracePeriodDays: grace,
           emailFrom,
-          paymob: { enabled: paymobOn },
+          paymob: { enabled: paymobOn, integrationIds: { card: paymobCard || undefined, wallet: paymobWallet || undefined } },
           manualPay: { enabled: manualOn, methods },
         }),
       });
@@ -117,6 +119,18 @@ export function HubSettingsForm({ settings }: { settings: HubSettings }) {
           <input type="checkbox" checked={paymobOn} onChange={(e) => setPaymobOn(e.target.checked)} className="size-4 accent-[#1b2a4a]" />
           الدفع بالبطاقة عبر بايموب (يتطلّب ضبط مفاتيح PAYMOB_* في البيئة)
         </label>
+        {paymobOn && (
+          <div className="mb-3 ms-6 grid gap-2 sm:grid-cols-2">
+            <label className="block">
+              <span className="text-[11px] text-muted-foreground">Card Integration ID</span>
+              <input className="inp mt-0.5 w-full text-[12px]" dir="ltr" type="number" value={paymobCard} onChange={(e) => setPaymobCard(e.target.value)} placeholder="مثال: 123456" />
+            </label>
+            <label className="block">
+              <span className="text-[11px] text-muted-foreground">Wallet Integration ID</span>
+              <input className="inp mt-0.5 w-full text-[12px]" dir="ltr" type="number" value={paymobWallet} onChange={(e) => setPaymobWallet(e.target.value)} placeholder="مثال: 789012" />
+            </label>
+          </div>
+        )}
         <label className="flex cursor-pointer items-center gap-2 text-[12.5px]">
           <input type="checkbox" checked={manualOn} onChange={(e) => setManualOn(e.target.checked)} className="size-4 accent-[#1b2a4a]" />
           التحويل اليدوي (إنستاباي / محفظة / بنك)

@@ -44,9 +44,17 @@ export async function PUT(req: Request) {
   }
   if (typeof body.emailFrom === "string") patch.emailFrom = body.emailFrom.trim().slice(0, 120);
 
-  /* بوّابة بايموب: علمُ التفعيل فقط — المفاتيحُ في متغيّرات البيئة لا في القاعدة */
+  /* بوّابة بايموب: علمُ التفعيل + معرّفات التكامل (card/wallet) */
   if (body.paymob && typeof body.paymob === "object") {
-    patch.paymob = { enabled: (body.paymob as Record<string, unknown>).enabled === true, integrationIds: {} };
+    const pm = body.paymob as Record<string, unknown>;
+    const ids = (pm.integrationIds ?? {}) as Record<string, unknown>;
+    patch.paymob = {
+      enabled: pm.enabled === true,
+      integrationIds: {
+        card: ids.card ? Number(ids.card) || undefined : undefined,
+        wallet: ids.wallet ? Number(ids.wallet) || undefined : undefined,
+      },
+    };
   }
 
   /* طرقُ التحويل اليدويّ */

@@ -60,6 +60,18 @@ export const DEFAULT_PLANS: SaasPlan[] = [
   },
 ];
 
+/* ---------- CRUD الخطط ---------- */
+
+export async function upsertPlan(plan: SaasPlan): Promise<SaasPlan> {
+  if (!plan.id) plan = { ...plan, id: hubId("plan") };
+  await hubSet(`saasPlans/${plan.id}`, plan);
+  return plan;
+}
+
+export async function deletePlan(id: string): Promise<void> {
+  await hubSet(`saasPlans/${id}`, null);
+}
+
 /* ---------- الاشتراك ---------- */
 
 export async function subscriptionById(id: string): Promise<SaasSubscription | null> {
