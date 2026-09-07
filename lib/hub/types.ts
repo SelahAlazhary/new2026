@@ -73,6 +73,7 @@ export type Tenant = {
   features: Partial<Record<TenantFeature, boolean>>;
   limits: TenantLimits;
   customDomain?: string;
+  subscriptionId?: string;
   adminEmail: string;
   stats?: TenantStats;
   notes?: string;
@@ -124,7 +125,7 @@ export type SaasInvoice = {
   status: "pending" | "paid" | "failed" | "refunded" | "rejected";
   providerRef?: string;
   receiptUrl?: string;
-  manualMethod?: { kind: "instapay" | "wallet" | "bank"; senderNumber?: string; note?: string };
+  manualMethod?: { kind: "instapay" | "wallet" | "bank"; senderNumber?: string; senderName?: string; transactionRef?: string; note?: string };
   createdAt: string; paidAt?: string; reviewedBy?: string; reviewNote?: string;
   idempotencyKey: string;
 };
