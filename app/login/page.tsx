@@ -176,7 +176,10 @@ export default function LoginPage() {
       await refresh();
       const params = new URLSearchParams(window.location.search);
       const next = params.get("next");
-      router.push(next || (data.role === "admin" ? "/admin" : "/student"));
+      const dest = next || (data.role === "admin" ? "/admin" : "/student");
+      const pp = window.location.pathname.split("/");
+      const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+      router.push(tp + dest);
       return;
     } catch {
       setProblem({

@@ -179,7 +179,9 @@ export function CommandPalette({ role }: { role: "admin" | "student" }) {
   const go = (h?: Hit) => {
     if (!h) return;
     setOpen(false);
-    router.push(h.href);
+    const pp = window.location.pathname.split("/");
+    const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+    router.push(tp + h.href);
   };
 
   const grouped = GROUP_ORDER.map((g) => ({ g, items: shown.filter((h) => h.group === g) })).filter((x) => x.items.length);

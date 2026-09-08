@@ -78,7 +78,12 @@ export function AdminShell({
 
   const notifs = db?.notifications ?? [];
 
-  const doLogout = async () => { await logout(); router.push("/login"); };
+  const doLogout = async () => {
+    await logout();
+    const pp = window.location.pathname.split("/");
+    const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+    router.push(tp + "/login");
+  };
 
   /* مجموعُ ما ينتظر عملاً في مجموعةٍ — يُعرض نقطةً على أيقونتها */
   const groupWaiting = (id: string) =>
@@ -118,7 +123,11 @@ export function AdminShell({
                 type="button"
                 title={g.label}
                 onMouseEnter={() => setPeek(g.id)}
-                onClick={() => router.push(g.items[0].href)}
+                onClick={() => {
+                  const pp = window.location.pathname.split("/");
+                  const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+                  router.push(tp + g.items[0].href);
+                }}
                 className={`ad-rail-btn ${(peek ?? activeGroup) === g.id ? "is-on" : ""}`}
               >
                 <LibIcon slot={SLOTS[g.icon] ?? "grid"} className="size-5" />

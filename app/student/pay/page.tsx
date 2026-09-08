@@ -82,7 +82,11 @@ function PayInner() {
   */
   const noSubject = !loading && Boolean(db) && !subject;
   useEffect(() => {
-    if (noSubject) router.replace("/student/subjects");
+    if (noSubject) {
+      const pp = window.location.pathname.split("/");
+      const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+      router.replace(tp + "/student/subjects");
+    }
   }, [noSubject, router]);
 
   if (loading || !db) return <StudentHomeSkeleton header statsInHeader cards={2} />;
@@ -147,7 +151,9 @@ function PayInner() {
     if (!res.ok) { setErr(data.error || "تعذّر التفعيل"); return; }
     setDone(true);
     await refresh();
-    setTimeout(() => router.push(`/student/course/${subject.id}`), 1400);
+    const pp = window.location.pathname.split("/");
+    const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+    setTimeout(() => router.push(tp + `/student/course/${subject.id}`), 1400);
   };
 
   return (
@@ -194,7 +200,11 @@ function PayInner() {
               <PayGate
                 plans={plans}
                 subject={subject}
-                onDone={() => router.push(`/student/course/${subject.id}`)}
+                onDone={() => {
+                  const pp = window.location.pathname.split("/");
+                  const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+                  router.push(tp + `/student/course/${subject.id}`);
+                }}
               />
             ) : (
               <div className="py-10 text-center">

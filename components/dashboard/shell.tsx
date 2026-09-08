@@ -97,7 +97,12 @@ export function DashboardShell({
     ? notifs.some((n) => !readIds.has(n.id))
     : adminBellItems.length > 0;
 
-  const doLogout = async () => { await logout(); router.push("/login"); };
+  const doLogout = async () => {
+    await logout();
+    const pp = window.location.pathname.split("/");
+    const tp = pp[1] === "t" && pp[2] ? `/t/${pp[2]}` : "";
+    router.push(tp + "/login");
+  };
 
   const isActive = (href: string) =>
     href === `/${role}` ? pathname === href : pathname.startsWith(href);

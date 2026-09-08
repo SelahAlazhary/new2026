@@ -166,30 +166,74 @@ export function middleware(req: NextRequest) {
   }
 
   /*
-    توجيهُ المسار `/t/{slug}` — كوكي يُثبَّت فيُخدم المستأجرُ من `/` العاديّ.
+    توجيهُ المسار `/t/{slug}` — بادئةٌ دائمةٌ لكلّ منصّة.
     ------------------------------------------------------------------
     Vercel لا يدعم النطاقات الفرعية على `.vercel.app`، فالمنصّاتُ تُخدم عبر
-    `/t/{slug}` الذي يضبط كوكي `tenant_slug` ويحوّل. وبعدها كلُّ المسارات
-    الداخلية (`/admin`, `/student`, …) تعمل بلا تعديل.
+    `/t/{slug}/...`. البادئةُ تبقى في العنوان دائماً:
+    · `/t/{slug}` بلا مسار → يُحوَّل إلى `/t/{slug}/student`
+    · `/t/{slug}/login` → يُعاد كتابته إلى `/login` مع بقاء العنوان
+    · والكوكي يُضبط في كلّ الأحوال ليعرفَ الخادمُ أيُّ منصّة.
   */
   if (pathname.startsWith("/t/")) {
     const parts = pathname.split("/");
     const slug = (parts[2] ?? "").toLowerCase();
     if (slug && SLUG_RE.test(slug)) {
-      let rest = "/" + parts.slice(3).join("/") || "/";
+      const rest = "/" + (parts.slice(3).join("/") || "");
       const rootIsHub2 = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
-      if (rest === "/" && rootIsHub2) rest = "/student";
+      const cookieName = DEV ? "dev_tenant" : "tenant_slug";
+      const cookieOpts = {
+        path: "/", httpOnly: true, sameSite: "lax" as const,
+        secure: !!process.env.VERCEL, maxAge: 60 * 60 * 24 * 30,
+      };
+
+      if (rest === "/") {
+        const url = req.nextUrl.clone();
+        url.pathname = `/t/${slug}/student`;
+        const res = NextResponse.redirect(url);
+        res.cookies.set(cookieName, slug, cookieOpts);
+        return res;
+      }
+
       const url = req.nextUrl.clone();
       url.pathname = rest;
-      const res = NextResponse.redirect(url);
-      res.cookies.set(DEV ? "dev_tenant" : "tenant_slug", slug, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: !!process.env.VERCEL,
-        maxAge: 60 * 60 * 24 * 30,
-      });
+      const fwd = new Headers(req.headers);
+      fwd.set("x-pathname", rest);
+      stampTenant(fwd, { kind: "tenant", slug });
+      const res = NextResponse.rewrite(url, { request: { headers: fwd } });
+      res.cookies.set(cookieName, slug, cookieOpts);
+      for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.headers.set(k, v);
+      res.headers.set("Content-Security-Policy", CSP);
+      if (/^\/(admin|student|login|api)(\/|$)/.test(rest)) {
+        res.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+      }
       return res;
+    }
+  }
+
+  /*
+    بادئةُ المنصّة الدائمة: من زار `/t/{slug}` ثبّت الكوكي.
+    فكلُّ مسارٍ خاصّ بمنصّةٍ (`/login`, `/student`, …) يظهر على الجذر
+    مع كوكي يُحوَّل إلى `/t/{slug}/path` — قبل `resolveHost` الذي يُحوّل
+    النوعَ من root إلى tenant فيفوت الشرط.
+  */
+  {
+    const rawHost = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+    const rawKind = classifyHost(rawHost, process.env.ROOT_DOMAIN);
+    if (rawKind.kind === "root" && isTenantOnlyPath(pathname)) {
+      const cookieName = DEV ? "dev_tenant" : "tenant_slug";
+      const savedSlug = req.cookies.get(cookieName)?.value?.trim().toLowerCase();
+      if (savedSlug && SLUG_RE.test(savedSlug)) {
+        const to = req.nextUrl.clone();
+        to.pathname = `/t/${savedSlug}${pathname}`;
+        return NextResponse.redirect(to);
+      }
+      const rootIsHub = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
+      if (rootIsHub) {
+        const to = req.nextUrl.clone();
+        to.pathname = "/start";
+        to.search = "";
+        return NextResponse.redirect(to);
+      }
     }
   }
 
@@ -204,20 +248,6 @@ export function middleware(req: NextRequest) {
   /* مساراتُ الـHub على الجذر وحده — على نطاق منصّةٍ لا وجودَ لها */
   if (hostKind.kind !== "root" && isHubPath(pathname)) {
     return new NextResponse("Not Found", { status: 404, headers: { "Cache-Control": "no-store" } });
-  }
-
-  /*
-    الجذرُ حين يكون «موقعَ إنشاء المنصّات» (ROOT_HOST_MODE=hub) لا يخدم
-    منصّةً: فمساراتُ الطالب والمشرف والدخول عليه لا معنى لها، وتُحوَّل
-    إلى «أنشئ منصّتك». والطالبُ لا علاقةَ له بالجذر أصلاً — منصّتُه على
-    نطاقها الفرعيّ.
-  */
-  const rootIsHub = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
-  if (hostKind.kind === "root" && rootIsHub && isTenantOnlyPath(pathname)) {
-    const to = req.nextUrl.clone();
-    to.pathname = "/start";
-    to.search = "";
-    return NextResponse.redirect(to);
   }
 
   /* تبديلُ منصّة التطوير: ?tenant=slug يُثبّت الكوكي، و?tenant= (فارغ) يمحوها */
