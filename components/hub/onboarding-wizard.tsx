@@ -457,8 +457,7 @@ function PlanGrid({ plans, onPick, busy, title }: { plans: SaasPlan[]; onPick: (
             <b className="ob-plan-name">{p.name}</b>
             {p.desc && <span className="ob-plan-desc">{p.desc}</span>}
             <div className="ob-plan-price">
-              {p.priceEGP === 0 ? <span className="ob-plan-free">مجاناً</span> :
-                <><b>{p.priceEGP.toLocaleString("ar-EG")}</b> <span>ج.م/{p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ش" : "سنة"}</span></>}
+              <><b>{p.priceEGP.toLocaleString("ar-EG")}</b> <span>ج.م/{p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ش" : "سنة"}</span></>
             </div>
             {/* trial removed */}
             <button type="button" className={`ob-plan-cta ${p.highlight ? "is-hot" : ""}`} disabled={busy} onClick={() => onPick(p.id)}>

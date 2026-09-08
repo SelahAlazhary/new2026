@@ -41,21 +41,21 @@ export function HubLoginForm() {
   };
 
   return (
-    <form onSubmit={submit} className="mt-6 space-y-3">
+    <form onSubmit={submit} className="mt-5 space-y-4">
       <div>
-        <label className="lbl" htmlFor="hub-email">البريد الإلكتروني</label>
+        <label className="mb-1.5 block text-[12px] font-bold text-slate-600" htmlFor="hub-email">البريد الإلكتروني</label>
         <input
           id="hub-email" type="email" required autoComplete="username" dir="ltr"
           value={email} onChange={(e) => setEmail(e.target.value)}
-          className="inp w-full" placeholder="you@example.com"
+          className="inp" placeholder="you@example.com"
         />
       </div>
       <div>
-        <label className="lbl" htmlFor="hub-pass">كلمة المرور</label>
+        <label className="mb-1.5 block text-[12px] font-bold text-slate-600" htmlFor="hub-pass">كلمة المرور</label>
         <input
           id="hub-pass" type="password" required autoComplete="current-password"
           value={password} onChange={(e) => setPassword(e.target.value)}
-          className="inp w-full"
+          className="inp" placeholder="••••••••"
         />
       </div>
 
@@ -66,12 +66,12 @@ export function HubLoginForm() {
       />
 
       {error && (
-        <p role="alert" className="rounded-xl bg-rose-500/10 px-3 py-2 text-[12px] font-bold text-rose-600">{error}</p>
+        <p role="alert" className="rounded-xl bg-rose-50 border border-rose-200 px-3 py-2.5 text-[12px] font-bold text-rose-600">{error}</p>
       )}
 
       <button
         type="submit" disabled={busy}
-        className="btn-glow w-full rounded-full px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+        className="w-full rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:shadow-xl hover:shadow-blue-900/25 hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-lg"
       >
         {busy ? "جارٍ الدخول…" : "دخول"}
       </button>

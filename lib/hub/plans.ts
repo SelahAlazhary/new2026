@@ -13,6 +13,17 @@ import { hubGet, hubList, hubSet, hubId } from "./store";
  * أوّل لحظةٍ ويعدّلها أدمنُ المنصّات لاحقاً.
  */
 
+async function migratePlans(list: SaasPlan[]): Promise<void> {
+  for (const def of DEFAULT_PLANS) {
+    const existing = list.find((p) => p.id === def.id);
+    if (!existing) continue;
+    let changed = false;
+    if (existing.priceEGP === 0 && def.priceEGP > 0) { existing.priceEGP = def.priceEGP; changed = true; }
+    if (existing.trialDays > 0) { existing.trialDays = 0; changed = true; }
+    if (changed) await hubSet(`saasPlans/${existing.id}`, existing);
+  }
+}
+
 export async function listPlans(): Promise<SaasPlan[]> {
   const all = await hubList<SaasPlan>("saasPlans");
   const list = Object.values(all).filter((p) => p && p.id);
@@ -20,6 +31,7 @@ export async function listPlans(): Promise<SaasPlan[]> {
     await seedPlans();
     return DEFAULT_PLANS;
   }
+  await migratePlans(list);
   return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
@@ -93,23 +105,18 @@ export function periodEnd(interval: SaasPlan["interval"], from = new Date()): st
 }
 
 /**
- * يُنشئ اشتراكاً لمنصّةٍ عند اختيار الخطّة.
- * التجربةُ المجانيّة (> ٠) تبدأ `trialing`، وغيرُها `pending_payment`.
- * (الدفعُ الفعليُّ في M5 — الآن التجربةُ تمرّ، والمدفوعةُ تنتظر تفعيلاً.)
+ * يُنشئ اشتراكاً لمنصّةٍ عند اختيار الخطّة — تبدأ `pending_payment` دائماً.
  */
 export async function createSubscription(tenantId: string, plan: SaasPlan): Promise<SaasSubscription> {
   const now = new Date().toISOString();
-  const trial = plan.trialDays > 0 || plan.priceEGP === 0;
   const sub: SaasSubscription = {
     id: hubId("sub"),
     tenantId,
     planId: plan.id,
-    status: trial ? "trialing" : "pending_payment",
+    status: "pending_payment",
     startedAt: now,
-    currentPeriodEnd: trial
-      ? new Date(Date.now() + (plan.trialDays || 30) * 86400_000).toISOString()
-      : periodEnd(plan.interval),
-    history: [{ at: now, from: "-", to: trial ? "trialing" : "pending_payment", by: "system" }],
+    currentPeriodEnd: periodEnd(plan.interval),
+    history: [{ at: now, from: "-", to: "pending_payment", by: "system" }],
   };
   await hubSet(`subscriptions/${sub.id}`, sub);
   return sub;

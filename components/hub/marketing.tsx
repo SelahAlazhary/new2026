@@ -113,8 +113,8 @@ const FAQS = [
     a: "نعم، يمكنك ربط أي دومين تملكه بمنصتك بكل سهولة، أو استخدام الدومين الفرعي المجاني الذي نمنحه لك فور التسجيل.",
   },
   {
-    q: "ماذا يحدث بعد انتهاء الفترة التجريبية المجانية؟",
-    a: "تبقى جميع دروسك وبيانات طلابك محفوظة بالكامل كما هي. يمكنك الترقية إلى أي خطة مدفوعة تناسب عدد طلابك وميزانيتك للاستمرار دون انقطاع.",
+    q: "كيف أغيّر خطّتي أو أترقّى لاحقاً؟",
+    a: "يمكنك الترقية أو تغيير خطتك في أي وقت من لوحة التحكم. جميع دروسك وبيانات طلابك تبقى محفوظة بالكامل عند التبديل بين الخطط.",
   },
 ];
 
@@ -399,18 +399,14 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                 {p.desc && <span className="mkt-plan-desc text-slate-500 text-xs">{p.desc}</span>}
 
                 <div className="mkt-plan-price my-2 border-y border-slate-100 py-3">
-                  {p.priceEGP === 0 ? (
-                    <span className="mkt-plan-free text-3xl font-black text-blue-700">مجاناً</span>
-                  ) : (
-                    <div className="flex items-baseline gap-1">
-                      <span className="mkt-plan-num text-3xl font-black text-slate-900">
-                        {price.price.toLocaleString("ar-EG")}
-                      </span>
-                      <span className="mkt-plan-cur text-xs font-bold text-slate-500">
-                        ج.م / {p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ أشهر" : "سنة"}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-baseline gap-1">
+                    <span className="mkt-plan-num text-3xl font-black text-slate-900">
+                      {price.price.toLocaleString("ar-EG")}
+                    </span>
+                    <span className="mkt-plan-cur text-xs font-bold text-slate-500">
+                      ج.م / {p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ أشهر" : "سنة"}
+                    </span>
+                  </div>
                 </div>
 
                 {/* trialDays removed */}

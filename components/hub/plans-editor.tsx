@@ -88,8 +88,7 @@ export function PlansEditor({ initial }: { initial: SaasPlan[] }) {
                 {!p.visible && <span className="rounded bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-600">مخفيّة</span>}
               </div>
               <p className="text-[12px] text-muted-foreground">
-                {p.priceEGP === 0 ? "مجانية" : `${p.priceEGP} ج.م/${p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ شهور" : "سنة"}`}
-                {p.trialDays > 0 && ` · تجربة ${p.trialDays} يوم`}
+                {`${p.priceEGP} ج.م/${p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ شهور" : "سنة"}`}
                 {` · ${p.features.length} ميزة`}
               </p>
             </div>
@@ -152,8 +151,8 @@ function PlanForm({ plan, onChange, onSave, onCancel, busy, msg }: {
             </select>
           </label>
           <label className="block">
-            <span className="text-[12px] text-muted-foreground">أيام التجربة</span>
-            <input className="inp mt-1 w-full" type="number" min={0} max={365} value={plan.trialDays} onChange={(e) => set("trialDays", Number(e.target.value) || 0)} />
+            <span className="text-[12px] text-muted-foreground">اللون</span>
+            <input className="inp mt-1 w-full" type="color" value={plan.color || "#3b6fb0"} onChange={(e) => set("color", e.target.value)} />
           </label>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
