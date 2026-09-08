@@ -129,7 +129,8 @@ const DEV = !process.env.VERCEL;
 function resolveHost(req: NextRequest, pathname: string): HostKind {
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   let kind = classifyHost(host, process.env.ROOT_DOMAIN);
-  if (kind.kind === "root" && !isHubPath(pathname)) {
+  const rootIsHub = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
+  if (kind.kind === "root" && !isHubPath(pathname) && !rootIsHub) {
     const cookieName = DEV ? "dev_tenant" : "tenant_slug";
     const slug = req.cookies.get(cookieName)?.value?.trim().toLowerCase();
     if (slug && SLUG_RE.test(slug)) kind = { kind: "tenant", slug };
@@ -208,11 +209,19 @@ export function middleware(req: NextRequest) {
     نطاقها الفرعيّ.
   */
   const rootIsHub = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
-  if (hostKind.kind === "root" && rootIsHub && isTenantOnlyPath(pathname)) {
-    const to = req.nextUrl.clone();
-    to.pathname = "/start";
-    to.search = "";
-    return NextResponse.redirect(to);
+  if (hostKind.kind === "root" && rootIsHub) {
+    if (isTenantOnlyPath(pathname)) {
+      const to = req.nextUrl.clone();
+      to.pathname = "/start";
+      to.search = "";
+      return NextResponse.redirect(to);
+    }
+    const staleCookie = req.cookies.get("tenant_slug")?.value;
+    if (staleCookie && !isHubPath(pathname)) {
+      const res = NextResponse.redirect(req.nextUrl);
+      res.cookies.delete("tenant_slug");
+      return res;
+    }
   }
 
   /* تبديلُ منصّة التطوير: ?tenant=slug يُثبّت الكوكي، و?tenant= (فارغ) يمحوها */
