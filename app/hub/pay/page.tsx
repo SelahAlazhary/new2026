@@ -199,7 +199,7 @@ export default function PayPage() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem" }}>
               <span style={{ color: "#526080", fontWeight: 600 }}>{planName} — {interval}</span>
-              <span style={{ fontWeight: 900, color: "#2655e8", letterSpacing: "-0.02em" }}>
+              <span style={{ fontWeight: 900, color: "#7B4FB0", letterSpacing: "-0.02em" }}>
                 {amount.toLocaleString("ar-EG")} ج.م
               </span>
             </div>

@@ -38,16 +38,16 @@ const STEPS = [
     t: "سجّل حسابك في ثوانٍ",
     d: "تسجيل فوري عبر جوجل أو البريد الإلكتروني بدون أي تعقيد أو بطاقة بنكية.",
     icon: Zap,
-    color: "#2655e8",
-    bg: "#eff6ff",
+    color: "#7B4FB0",
+    bg: "#f5f0ff",
   },
   {
     n: "02",
     t: "اختر خطّتك المناسبة",
     d: "اختر الخطة التي تناسب حجم طلابك واحتياجاتك مع إمكانية الترقية في أي وقت.",
     icon: Sparkles,
-    color: "#4f46e5",
-    bg: "#eef2ff",
+    color: "#5B3A8C",
+    bg: "#f3eeff",
   },
   {
     n: "03",
@@ -73,7 +73,7 @@ const FEATURES = [
     tag: "محتوى وفيديو",
     t: "بث ودروس فائقة السرعة",
     d: "مشغل فيديو مخصص وسريع بدون إعلانات مع دعم البث المباشر والواجبات المرتبطة بكل درس.",
-    accent: "#2655e8",
+    accent: "#7B4FB0",
   },
   {
     icon: Lock,
@@ -108,7 +108,7 @@ const FEATURES = [
     tag: "ذكاء الإدارة",
     t: "لوحة تحكم وتقارير دقيقة",
     d: "تقارير شاملة عن درجات الطلاب، نسب المشاهدة، الإيرادات اليومية، ومتابعة الحضور والغياب.",
-    accent: "#4f46e5",
+    accent: "#5B3A8C",
   },
 ];
 
@@ -172,21 +172,21 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="mkt font-sans selection:bg-indigo-500/20 selection:text-indigo-900">
+    <div className="mkt font-sans selection:bg-purple-500/20 selection:text-purple-900">
 
       {/* ════════════════ شريط التنقل ════════════════ */}
       <header className="mkt-bar">
         <div className="flex items-center gap-3">
           <span
             className="size-9 rounded-xl flex items-center justify-center font-black text-sm text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #2655e8, #4f46e5)" }}
+            style={{ background: "linear-gradient(135deg, #7B4FB0, #5B3A8C)" }}
           >
-            {brand.slice(0, 1) || "م"}
+            {brand.slice(0, 1) || "S"}
           </span>
           <span className="mkt-logo">{brand}</span>
           <span
             className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
-            style={{ background: "#eff6ff", color: "#2655e8", borderColor: "rgba(37,85,232,0.2)" }}
+            style={{ background: "#f5f0ff", color: "#7B4FB0", borderColor: "rgba(123,79,176,0.2)" }}
           >
             <Sparkles className="size-3" /> الجيل الثاني
           </span>
@@ -246,7 +246,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             أنشئ منصّتك الآن <ArrowLeft className="size-4" />
           </Link>
           <a href="#demo" className="mkt-ghost">
-            <Play className="size-4" style={{ color: "#2655e8", fill: "rgba(37,85,232,0.15)" }} />
+            <Play className="size-4" style={{ color: "#7B4FB0", fill: "rgba(123,79,176,0.15)" }} />
             استكشف المنصة
           </a>
         </motion.div>
@@ -286,7 +286,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
               >
                 <span
                   className="size-7 rounded-xl flex items-center justify-center"
-                  style={{ background: "#eff6ff", color: "#2655e8" }}
+                  style={{ background: "#f5f0ff", color: "#7B4FB0" }}
                 >
                   <Icon className="size-3.5" />
                 </span>
@@ -346,7 +346,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     activeTab === tab
                       ? {
                           background: "#fff",
-                          color: "#2655e8",
+                          color: "#7B4FB0",
                           boxShadow: "0 1px 4px rgba(10,20,60,0.08)",
                         }
                       : { color: "#526080" }
@@ -377,7 +377,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     {[
                       { l: "إجمالي الطلاب", v: "١٬٤٨٢", s: "+١٤٪ هذا الشهر", sc: "#059669", bg: "#f0fdf4" },
                       { l: "المبيعات الإجمالية", v: "٨٤٬٥٠٠ ج.م", s: "تسليم فوري ومباشر", sc: "#059669", bg: "#f0fdf4" },
-                      { l: "الدروس المكتملة", v: "٩٦.٤٪", s: "تفاعل قياسي", sc: "#4f46e5", bg: "#eef2ff" },
+                      { l: "الدروس المكتملة", v: "٩٦.٤٪", s: "تفاعل قياسي", sc: "#5B3A8C", bg: "#f3eeff" },
                       { l: "حماية الأجهزة", v: "١٠٠٪", s: "لا تسريب أو مشاركة", sc: "#526080", bg: "#f8faff" },
                     ].map((item, i) => (
                       <div
@@ -407,7 +407,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     <div className="flex items-center gap-4">
                       <div
                         className="size-12 rounded-2xl flex items-center justify-center font-bold text-lg"
-                        style={{ background: "#eff6ff", color: "#2655e8" }}
+                        style={{ background: "#f5f0ff", color: "#7B4FB0" }}
                       >
                         📚
                       </div>
@@ -438,11 +438,11 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                   <div
                     className="rounded-2xl p-6 text-white"
                     style={{
-                      background: "linear-gradient(135deg, #1a2a6c, #2655e8, #4f46e5)",
-                      boxShadow: "0 12px 40px -12px rgba(37,85,232,0.4)",
+                      background: "linear-gradient(135deg, #2D1B69, #7B4FB0, #5B3A8C)",
+                      boxShadow: "0 12px 40px -12px rgba(123,79,176,0.4)",
                     }}
                   >
-                    <span className="text-xs font-semibold" style={{ color: "#bfdbfe" }}>مرحباً بك يا بطل ✨</span>
+                    <span className="text-xs font-semibold" style={{ color: "#D4C4E8" }}>مرحباً بك يا بطل ✨</span>
                     <h3 className="text-lg font-bold mt-1">تابع دروسك واستعد للاختبار القادم</h3>
                     <div className="mt-4 flex flex-wrap gap-3 text-xs">
                       <span
@@ -487,13 +487,13 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     <div
                       className="size-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition hover:scale-105"
                       style={{
-                        background: "linear-gradient(135deg, #2655e8, #4f46e5)",
-                        boxShadow: "0 8px 32px rgba(37,85,232,0.5)",
+                        background: "linear-gradient(135deg, #7B4FB0, #5B3A8C)",
+                        boxShadow: "0 8px 32px rgba(123,79,176,0.5)",
                       }}
                     >
                       <Play className="size-7 fill-white ml-0.5" />
                     </div>
-                    <p className="mt-4 font-bold text-sm" style={{ color: "#bfdbfe" }}>مشغل محمي ضد برامج تصوير الشاشة والتحميل الخارجي</p>
+                    <p className="mt-4 font-bold text-sm" style={{ color: "#D4C4E8" }}>مشغل محمي ضد برامج تصوير الشاشة والتحميل الخارجي</p>
                   </div>
                 </motion.div>
               )}
@@ -508,7 +508,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <FadeIn>
             <span
               className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
-              style={{ color: "#2655e8", background: "#eff6ff", borderColor: "rgba(37,85,232,0.2)" }}
+              style={{ color: "#7B4FB0", background: "#f5f0ff", borderColor: "rgba(123,79,176,0.2)" }}
             >
               خطوات بسيطة وسريعة
             </span>
@@ -613,7 +613,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <div className="text-center mb-2">
             <span
               className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
-              style={{ color: "#2655e8", background: "#eff6ff", borderColor: "rgba(37,85,232,0.2)" }}
+              style={{ color: "#7B4FB0", background: "#f5f0ff", borderColor: "rgba(123,79,176,0.2)" }}
             >
               استثمار واضح بلا مفاجآت
             </span>
@@ -643,7 +643,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     {isHot && (
                       <span
                         className="size-8 rounded-full flex items-center justify-center"
-                        style={{ background: "#eff6ff", color: "#2655e8" }}
+                        style={{ background: "#f5f0ff", color: "#7B4FB0" }}
                       >
                         <Award className="size-4" />
                       </span>
@@ -669,7 +669,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                       "دعم فني سريع طوال الأسبوع",
                     ].map((feat, fi) => (
                       <li key={fi} className="flex items-center gap-2">
-                        <Check className="size-3.5 shrink-0" style={{ color: isHot ? "#2655e8" : "#059669" }} />
+                        <Check className="size-3.5 shrink-0" style={{ color: isHot ? "#7B4FB0" : "#059669" }} />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -711,13 +711,13 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                   className="overflow-hidden rounded-2xl transition-all"
                   style={{
                     border: isOpen
-                      ? "1.5px solid rgba(37,85,232,0.2)"
+                      ? "1.5px solid rgba(123,79,176,0.2)"
                       : "1px solid rgba(30,60,120,0.09)",
                     background: isOpen
                       ? "linear-gradient(135deg, #f8fbff, #ffffff)"
                       : "#ffffff",
                     boxShadow: isOpen
-                      ? "0 8px 24px -8px rgba(37,85,232,0.1)"
+                      ? "0 8px 24px -8px rgba(123,79,176,0.1)"
                       : "0 2px 8px -4px rgba(10,20,60,0.04)",
                   }}
                 >
@@ -725,14 +725,14 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
                     className="w-full p-4 text-right flex items-center justify-between gap-4 font-bold text-sm sm:text-base"
-                    style={{ color: isOpen ? "#2655e8" : "#0a0f1e" }}
+                    style={{ color: isOpen ? "#7B4FB0" : "#0a0f1e" }}
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
                       className="size-4 shrink-0 transition-transform duration-250"
                       style={{
                         transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        color: isOpen ? "#2655e8" : "#8496b5",
+                        color: isOpen ? "#7B4FB0" : "#8496b5",
                       }}
                     />
                   </button>
@@ -748,7 +748,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                           className="px-4 pb-4 pt-1 text-xs sm:text-sm leading-relaxed"
                           style={{
                             color: "#526080",
-                            borderTop: "1px solid rgba(37,85,232,0.08)",
+                            borderTop: "1px solid rgba(123,79,176,0.08)",
                           }}
                         >
                           {faq.a}
@@ -769,8 +769,8 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <div
             className="rounded-3xl p-8 sm:p-14 text-center text-white overflow-hidden relative"
             style={{
-              background: "linear-gradient(135deg, #0f1f5c 0%, #1a3a9c 35%, #2655e8 65%, #4f46e5 100%)",
-              boxShadow: "0 32px 80px -24px rgba(37,85,232,0.45)",
+              background: "linear-gradient(135deg, #1A0F3C 0%, #4A2D7A 35%, #7B4FB0 65%, #5B3A8C 100%)",
+              boxShadow: "0 32px 80px -24px rgba(123,79,176,0.45)",
             }}
           >
             {/* هالات ضوء */}
@@ -816,19 +816,19 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <div className="flex items-center gap-2">
             <span
               className="size-7 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-              style={{ background: "linear-gradient(135deg, #2655e8, #4f46e5)" }}
+              style={{ background: "linear-gradient(135deg, #7B4FB0, #5B3A8C)" }}
             >
-              {brand.slice(0, 1) || "م"}
+              {brand.slice(0, 1) || "S"}
             </span>
             <span className="font-bold" style={{ color: "#0a0f1e" }}>{brand}</span>
-            <span className="text-xs" style={{ color: "#8496b5" }}>· منصّة إنشاء المنصّات التعليمية</span>
+            <span className="text-xs" style={{ color: "#8496b5" }}>· منصّة إنشاء الأكاديميات التعليمية</span>
           </div>
 
           <div className="flex items-center gap-6 text-xs font-medium" style={{ color: "#526080" }}>
-            <a href="#plans"    className="transition hover:text-[#2655e8]">الأسعار</a>
-            <a href="#features" className="transition hover:text-[#2655e8]">المميزات</a>
-            <Link href="/login" className="transition hover:text-[#2655e8]">دخول لوحة التحكم</Link>
-            <Link href="/start" className="font-bold hover:opacity-80 transition" style={{ color: "#2655e8" }}>إنشاء منصة</Link>
+            <a href="#plans"    className="transition hover:text-[#7B4FB0]">الأسعار</a>
+            <a href="#features" className="transition hover:text-[#7B4FB0]">المميزات</a>
+            <Link href="/login" className="transition hover:text-[#7B4FB0]">دخول لوحة التحكم</Link>
+            <Link href="/start" className="font-bold hover:opacity-80 transition" style={{ color: "#7B4FB0" }}>إنشاء منصة</Link>
           </div>
         </div>
 

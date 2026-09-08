@@ -5334,28 +5334,28 @@ select.inp {
 
 /* ── المتغيرات الأساسية ─────────────────────────────────────── */
 .mkt {
-  --mk-bg:        #f0f4ff;
+  --mk-bg:        #f5f0ff;
   --mk-surface:   #ffffff;
-  --mk-surface-2: #f8faff;
-  --mk-ink:       #0a0f1e;
-  --mk-ink-2:     #1e2a45;
-  --mk-dim:       #526080;
-  --mk-dim-2:     #8496b5;
-  --mk-line:      rgba(30, 60, 120, 0.09);
-  --mk-line-2:    rgba(30, 60, 120, 0.05);
-  --mk-primary:   #2655e8;
-  --mk-primary-2: #1a3ebf;
-  --mk-indigo:    #4f46e5;
-  --mk-gold:      #d97706;
+  --mk-surface-2: #faf8ff;
+  --mk-ink:       #1A0F3C;
+  --mk-ink-2:     #2D1B69;
+  --mk-dim:       #6B5B8A;
+  --mk-dim-2:     #9B8CB5;
+  --mk-line:      rgba(123, 79, 176, 0.09);
+  --mk-line-2:    rgba(123, 79, 176, 0.05);
+  --mk-primary:   #7B4FB0;
+  --mk-primary-2: #5B3A8C;
+  --mk-indigo:    #5B3A8C;
+  --mk-gold:      #F5A623;
   --mk-gold-2:    #f59e0b;
   --mk-card:      #ffffff;
   --mk-radius:    1.5rem;
   --mk-radius-sm: 0.875rem;
-  --mk-shadow-xs: 0 1px 3px rgba(10, 20, 60, 0.06), 0 1px 2px rgba(10, 20, 60, 0.04);
-  --mk-shadow-sm: 0 4px 16px -4px rgba(10, 20, 60, 0.08), 0 2px 6px -2px rgba(10, 20, 60, 0.05);
-  --mk-shadow-md: 0 12px 40px -8px rgba(10, 20, 60, 0.12), 0 4px 12px -4px rgba(10, 20, 60, 0.07);
-  --mk-shadow-lg: 0 24px 64px -16px rgba(10, 20, 60, 0.18), 0 8px 24px -8px rgba(10, 20, 60, 0.1);
-  --mk-shadow-blue: 0 20px 56px -12px rgba(38, 85, 232, 0.35);
+  --mk-shadow-xs: 0 1px 3px rgba(45, 27, 105, 0.06), 0 1px 2px rgba(45, 27, 105, 0.04);
+  --mk-shadow-sm: 0 4px 16px -4px rgba(45, 27, 105, 0.08), 0 2px 6px -2px rgba(45, 27, 105, 0.05);
+  --mk-shadow-md: 0 12px 40px -8px rgba(45, 27, 105, 0.12), 0 4px 12px -4px rgba(45, 27, 105, 0.07);
+  --mk-shadow-lg: 0 24px 64px -16px rgba(45, 27, 105, 0.18), 0 8px 24px -8px rgba(45, 27, 105, 0.1);
+  --mk-shadow-blue: 0 20px 56px -12px rgba(123, 79, 176, 0.35);
   --mk-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --mk-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
@@ -5374,7 +5374,7 @@ select.inp {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(38, 85, 232, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 20% 10%, rgba(123, 79, 176, 0.07) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.06) 0%, transparent 50%),
     radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.04) 0%, transparent 60%);
 }
@@ -5396,8 +5396,8 @@ select.inp {
   background: rgba(240, 244, 255, 0.75);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border-bottom: 1px solid rgba(38, 85, 232, 0.08);
-  box-shadow: 0 1px 0 rgba(38, 85, 232, 0.06), 0 4px 24px -8px rgba(10, 20, 60, 0.06);
+  border-bottom: 1px solid rgba(123, 79, 176, 0.08);
+  box-shadow: 0 1px 0 rgba(123, 79, 176, 0.06), 0 4px 24px -8px rgba(10, 20, 60, 0.06);
 }
 
 .mkt-logo {
@@ -5424,7 +5424,7 @@ select.inp {
 
 .mkt-bar-nav a:not(.mkt-bar-cta):hover {
   color: var(--mk-primary);
-  background: rgba(38, 85, 232, 0.07);
+  background: rgba(123, 79, 176, 0.07);
 }
 
 .mkt-bar-cta {
@@ -5437,13 +5437,13 @@ select.inp {
   font-size: 0.85rem;
   color: #fff !important;
   background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 100%);
-  box-shadow: 0 4px 14px -4px rgba(38, 85, 232, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 4px 14px -4px rgba(123, 79, 176, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
   transition: all 0.22s var(--mk-ease);
 }
 
 .mkt-bar-cta:hover {
   transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 8px 24px -6px rgba(38, 85, 232, 0.55);
+  box-shadow: 0 8px 24px -6px rgba(123, 79, 176, 0.55);
 }
 
 .mkt-bar-cta:active { transform: translateY(0) scale(0.99); }
@@ -5467,7 +5467,7 @@ select.inp {
   width: 56rem;
   height: 28rem;
   background: radial-gradient(ellipse at center top,
-    rgba(38, 85, 232, 0.12) 0%,
+    rgba(123, 79, 176, 0.12) 0%,
     rgba(79, 70, 229, 0.07) 40%,
     transparent 70%);
   pointer-events: none;
@@ -5551,8 +5551,8 @@ select.inp {
   font-size: 1rem;
   letter-spacing: -0.01em;
   box-shadow:
-    0 16px 40px -10px rgba(38, 85, 232, 0.45),
-    0 4px 12px -4px rgba(38, 85, 232, 0.25),
+    0 16px 40px -10px rgba(123, 79, 176, 0.45),
+    0 4px 12px -4px rgba(123, 79, 176, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.28s var(--mk-ease);
   position: relative;
@@ -5577,8 +5577,8 @@ select.inp {
 .mkt-primary:hover {
   transform: translateY(-3px);
   box-shadow:
-    0 24px 56px -10px rgba(38, 85, 232, 0.55),
-    0 8px 20px -6px rgba(38, 85, 232, 0.3),
+    0 24px 56px -10px rgba(123, 79, 176, 0.55),
+    0 8px 20px -6px rgba(123, 79, 176, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -5595,7 +5595,7 @@ select.inp {
   gap: 0.5rem;
   padding: 0.95rem 2rem;
   border-radius: 999px;
-  border: 1.5px solid rgba(38, 85, 232, 0.2);
+  border: 1.5px solid rgba(123, 79, 176, 0.2);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
   font-weight: 700;
@@ -5661,7 +5661,7 @@ select.inp {
 .mkt-step:hover {
   transform: translateY(-4px);
   box-shadow: var(--mk-shadow-md);
-  border-color: rgba(38, 85, 232, 0.15);
+  border-color: rgba(123, 79, 176, 0.15);
 }
 
 .mkt-step-n {
@@ -5671,12 +5671,12 @@ select.inp {
   place-items: center;
   border-radius: 0.75rem;
   background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  border: 1px solid rgba(38, 85, 232, 0.12);
+  border: 1px solid rgba(123, 79, 176, 0.12);
   color: var(--mk-primary);
   font-weight: 900;
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
-  box-shadow: 0 2px 6px -2px rgba(38, 85, 232, 0.15);
+  box-shadow: 0 2px 6px -2px rgba(123, 79, 176, 0.15);
 }
 
 .mkt-step-t {
@@ -5734,7 +5734,7 @@ select.inp {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(38, 85, 232, 0.04) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(123, 79, 176, 0.04) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -5745,7 +5745,7 @@ select.inp {
 .mkt-feat:hover {
   transform: translateY(-5px);
   box-shadow: var(--mk-shadow-md);
-  border-color: rgba(38, 85, 232, 0.18);
+  border-color: rgba(123, 79, 176, 0.18);
 }
 
 .mkt-feat-t {
@@ -5800,9 +5800,9 @@ select.inp {
 .mkt-plan.is-hot {
   border-color: var(--mk-primary);
   box-shadow:
-    0 0 0 1px rgba(38, 85, 232, 0.15),
+    0 0 0 1px rgba(123, 79, 176, 0.15),
     var(--mk-shadow-blue),
-    inset 0 0 0 1px rgba(38, 85, 232, 0.08);
+    inset 0 0 0 1px rgba(123, 79, 176, 0.08);
   transform: translateY(-8px) scale(1.015);
   background: linear-gradient(160deg, #ffffff 0%, #f0f5ff 100%);
 }
@@ -5899,11 +5899,11 @@ select.inp {
   margin-top: auto;
   padding: 0.9rem 1.4rem;
   border-radius: 999px;
-  border: 1.5px solid rgba(38, 85, 232, 0.3);
+  border: 1.5px solid rgba(123, 79, 176, 0.3);
   color: var(--mk-primary) !important;
   font-weight: 700;
   font-size: 0.9rem;
-  background: rgba(38, 85, 232, 0.04);
+  background: rgba(123, 79, 176, 0.04);
   transition: all 0.22s var(--mk-ease);
 }
 
@@ -5912,18 +5912,18 @@ select.inp {
   border-color: var(--mk-primary);
   color: #fff !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px -6px rgba(38, 85, 232, 0.4);
+  box-shadow: 0 8px 24px -6px rgba(123, 79, 176, 0.4);
 }
 
 .mkt-plan-cta.is-hot {
   background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 100%);
   border-color: transparent;
   color: #fff !important;
-  box-shadow: 0 8px 28px -6px rgba(38, 85, 232, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 8px 28px -6px rgba(123, 79, 176, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .mkt-plan-cta.is-hot:hover {
-  box-shadow: 0 14px 40px -8px rgba(38, 85, 232, 0.55);
+  box-shadow: 0 14px 40px -8px rgba(123, 79, 176, 0.55);
   transform: translateY(-2px);
 }
 

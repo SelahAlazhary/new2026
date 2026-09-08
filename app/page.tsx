@@ -53,7 +53,7 @@ export default async function Home() {
   */
   if (await isHubRootRequest()) {
     const plans = await visiblePlans();
-    const brand = (await getHubSettings()).brand.name || "منصّات";
+    const brand = (await getHubSettings()).brand.name || "SpotLight Studio";
     return <Marketing plans={plans} brand={brand} />;
   }
 

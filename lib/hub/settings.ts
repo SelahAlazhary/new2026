@@ -11,7 +11,7 @@ import { hubGet, hubSet } from "./store";
 export function defaultHubSettings(): HubSettings {
   return {
     rootDomain: process.env.ROOT_DOMAIN?.trim() ?? "",
-    brand: { name: "منصّات", primary: "#233b8b" },
+    brand: { name: "SpotLight Studio", primary: "#7B4FB0" },
     paymob: { enabled: false, integrationIds: {} },
     manualPay: { enabled: false, methods: [] },
     approval: "manual",
@@ -24,10 +24,12 @@ export async function getHubSettings(): Promise<HubSettings> {
   const saved = await hubGet<Partial<HubSettings>>("settings");
   const base = defaultHubSettings();
   if (!saved) return base;
+  const mergedBrand = { ...base.brand, ...(saved.brand ?? {}) };
+  if (mergedBrand.name === "منصّات") mergedBrand.name = base.brand.name;
   return {
     ...base,
     ...saved,
-    brand: { ...base.brand, ...(saved.brand ?? {}) },
+    brand: mergedBrand,
     paymob: { ...base.paymob, ...(saved.paymob ?? {}), integrationIds: { ...(saved.paymob?.integrationIds ?? {}) } },
     manualPay: {
       enabled: saved.manualPay?.enabled ?? base.manualPay.enabled,
