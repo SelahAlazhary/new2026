@@ -1,7 +1,11 @@
 import { getPublicDB, loadDB } from "@/lib/db/db";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "شروط الاستخدام" };
+export const metadata = {
+  title: "شروط الاستخدام",
+  description: "شروط استخدام المنصّة التعليمية — الاشتراك، حقوق المحتوى، والخصوصية.",
+  robots: { index: true, follow: true },
+};
 
 /**
  * شروط الاستخدام — تصف قواعد المنصّة كما ينفّذها الكود فعلاً

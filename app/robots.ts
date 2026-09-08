@@ -11,9 +11,10 @@ export const dynamic = "force-dynamic";
  * الصفحة العامة وحدها مفتوحة للفهرسة. كل ما خلف تسجيل الدخول محجوب:
  * لوحة الإدارة وبوابة الطالب ومسارات الـAPI — لا لأنها سرّ (الخادم
  * يحميها) بل لأن فهرستها بلا معنى وتستهلك ميزانية زحف محرّك البحث.
+ *
+ * `/t/` محجوبٌ أيضاً: مسارُ تحويلٍ يضبط كوكي فحسب، ولا محتوى فيه.
  */
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  /* الجذرُ في وضع الـHub: صفحةٌ عامّةٌ واحدة، لا منصّةَ خلفها */
   if (await isHubRootRequest()) {
     return { rules: [{ userAgent: "*", allow: "/", disallow: ["/hub", "/api/", "/start"] }] };
   }
@@ -26,7 +27,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/student", "/student/", "/api/"],
+        disallow: ["/admin", "/admin/", "/student", "/student/", "/api/", "/t/"],
       },
     ],
     ...(base ? { sitemap: `${base}/sitemap.xml`, host: base } : {}),

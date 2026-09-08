@@ -102,7 +102,8 @@ export function buildJsonLd(
     logo: image,
     image,
     inLanguage: "ar",
-    areaServed: "EG",
+    availableLanguage: ["ar"],
+    areaServed: { "@type": "Country", name: "EG" },
     sameAs: socials,
     employee: person,
     contactPoint: c.whatsapp
@@ -117,7 +118,7 @@ export function buildJsonLd(
       : undefined,
   });
 
-  /* ---------- الموقع + مربّع البحث ---------- */
+  /* ---------- الموقع ---------- */
   const website = site
     ? clean({
         "@context": "https://schema.org",
@@ -125,6 +126,7 @@ export function buildJsonLd(
         "@id": `${site}/#website`,
         url: site,
         name: c.brand,
+        description: c.teacher.bio,
         inLanguage: "ar",
         publisher: { "@id": `${site}/#org` },
       })

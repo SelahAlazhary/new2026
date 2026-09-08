@@ -139,13 +139,13 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website", locale: "ar_EG", url: site || undefined, siteName: c.brand,
       title: `${c.teacher.subject} مع ${c.teacher.name}`,
-      description: c.teacher.tagline,
+      description: c.teacher.tagline || c.teacher.bio,
       images: [{ url: icon, width: 1200, height: 630, alt: c.brand }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${c.teacher.subject} مع ${c.teacher.name}`,
-      description: c.teacher.tagline,
+      description: c.teacher.tagline || c.teacher.bio,
       images: [icon],
     },
     keywords: buildKeywords(c, pub.subjects ?? []),
@@ -153,8 +153,10 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: c.teacher.name,
     publisher: c.brand,
     category: "education",
-    // العنوان القانوني يمنع تشتّت الترتيب بين نسخ الرابط (بـwww وبدونه…)
-    alternates: site ? { canonical: site } : undefined,
+    alternates: {
+      ...(site ? { canonical: site } : {}),
+      languages: { "ar": site || "/" },
+    },
     robots: {
       index: true,
       follow: true,

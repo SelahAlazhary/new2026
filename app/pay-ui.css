@@ -1,151 +1,886 @@
 /* ============================================================
-   بوّابة الدفع — البنية
+   بوّابةُ الدفع — نظام بصري premium
    ------------------------------------------------------------
-   الهيئاتُ العشرون في `globals.css` تُبدّل **السطحَ والحافّة**: زجاجٌ
-   أو لوحٌ مقصوصٌ أو حدٌّ وحدَه. وهذا الملفُّ يُبدّل ما هو أسبقُ منها —
-   **الترتيبَ والوزن**: أين يقع البصرُ أوّلاً، وما الذي يُقرأ قبل ما،
-   وأيُّ رقمٍ يكبر.
-
-   ولا يُلمس محدِّدٌ من محدّدات الهيئات: `.pay-method` و`.pay-step`
-   و`.pay-details` تبقى بأسمائها، فتظلّ العشرون تعمل. والمضافُ هنا
-   أصنافٌ جديدةٌ حولَها لا بدلاً منها.
-
-   ولا لونَ جديد: كلُّه من `--pg-a` وورقِ الثيم.
+   تصميم يليق بالمعاملات المالية: ثقة، وضوح، احترافية.
+   كل عنصر مصمم ليوجّه المستخدم بثقة نحو الإتمام.
    ============================================================ */
 
-/*
-  ١ ــ الخطوات تُسمَّى.
-  ------------------------------------------------------------------
-  كان المؤشّرُ ثلاثَ نقاطٍ بلا اسم، والاسمُ في `title` لا يظهر إلّا
-  بمرور الفأرة — ولا فأرةَ في الجوّال. فالطالبُ يرى «●●●» ولا يعرف أين
-  هو ولا كم بقي.
+/* ══════════════════════════════════════════════════════════
+   متغيرات بوابة الدفع
+   ══════════════════════════════════════════════════════════ */
+:root {
+  --pg-a: hsl(var(--primary, 218 66% 27%));
+  --pg-r: 1rem;
+  --pg-r-out: 1.4rem;
+}
 
-  **والدفعُ أحوجُ ما يكون إلى ذلك**: من لا يعرف كم بقي يظنّ أنّه التزم
-  بما لم يلتزم، فيتردّد أو ينصرف. فيُكتب الاسمُ تحت العلامة، ويُوصل
-  بينها بقضيبٍ يمتلئ بما تمّ.
+/* ══════════════════════════════════════════════════════════
+   ١ — هيكل الصفحة
+   ══════════════════════════════════════════════════════════ */
+.pay-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(37, 85, 232, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(79, 70, 229, 0.05) 0%, transparent 55%),
+    #f0f4ff;
+}
 
-  والعلامةُ نفسُها تبقى `.pay-step` — فهيئاتُ اللوحة تُلوّنها وتُشكّلها
-  كما كانت، والمضافُ غلافٌ حولها واسمٌ تحتها.
-*/
-/* `.pay-gate` بادئةً لا زينة: هذا الملفُّ يُستورَد في أوّل
-   `globals.css`، فقواعدُه تسبق قواعدَ الهيئات فيه. وعند تساوي القوّة
-   يفوز المتأخّر — أي الهيئات. فما أُريد له أن يغلب تُرفع قوّتُه. */
+.pay-card {
+  width: 100%;
+  max-width: 34rem;
+  background: #ffffff;
+  border: 1px solid rgba(30, 60, 120, 0.1);
+  border-radius: 1.75rem;
+  padding: 2.25rem 2rem;
+  box-shadow:
+    0 4px 6px -1px rgba(10, 20, 60, 0.04),
+    0 12px 28px -8px rgba(10, 20, 60, 0.08),
+    0 32px 64px -24px rgba(10, 20, 60, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* خط علوي ملوّن يمنح الشخصية */
+.pay-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2655e8, #4f46e5, #2655e8);
+  background-size: 200% 100%;
+  animation: shimmerLine 3s ease infinite;
+}
+
+@keyframes shimmerLine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٢ — ترويسة البطاقة
+   ══════════════════════════════════════════════════════════ */
+.pay-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.pay-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(37, 85, 232, 0.15);
+  color: #2655e8;
+  margin-bottom: 1rem;
+  box-shadow:
+    0 4px 12px -4px rgba(37, 85, 232, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.pay-logo-icon { width: 1.85rem; height: 1.85rem; }
+
+.pay-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #0a0f1e;
+  margin-bottom: 0.35rem;
+}
+
+.pay-subtitle {
+  font-size: 0.875rem;
+  color: #526080;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٣ — لوح ملخص الاشتراك
+   ══════════════════════════════════════════════════════════ */
+.pay-plan {
+  background: linear-gradient(135deg, #f0f5ff 0%, #f8faff 100%);
+  border: 1px solid rgba(37, 85, 232, 0.12);
+  border-radius: 1.1rem;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.pay-plan-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.pay-plan-label {
+  color: #526080;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.pay-plan-value { font-weight: 700; color: #0a0f1e; }
+
+.pay-plan-amount {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #2655e8;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٤ — عنوان القسم
+   ══════════════════════════════════════════════════════════ */
+.pay-section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #0a0f1e;
+  margin-bottom: 0.85rem;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٥ — بطاقات طرق الدفع
+   ══════════════════════════════════════════════════════════ */
+.pay-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.pay-method {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.1rem;
+  border: 1.5px solid rgba(30, 60, 120, 0.1);
+  background: #ffffff;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 8px -4px rgba(10, 20, 60, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.pay-method::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #2655e8, #4f46e5);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+.pay-method:hover::before { opacity: 1; }
+
+.pay-method:hover {
+  border-color: rgba(37, 85, 232, 0.3);
+  background: linear-gradient(135deg, #f8fbff, #ffffff);
+  transform: translateY(-2px) translateX(-1px);
+  box-shadow:
+    0 6px 20px -6px rgba(37, 85, 232, 0.18),
+    0 2px 8px -4px rgba(10, 20, 60, 0.08);
+}
+
+.pay-method:active { transform: translateY(0); }
+
+.pay-method-icon {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, #f0f5ff, #e8eeff);
+  border: 1px solid rgba(37, 85, 232, 0.1);
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.pay-method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.pay-method-name {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #0a0f1e;
+  letter-spacing: -0.01em;
+}
+
+.pay-method-num {
+  font-size: 0.8rem;
+  color: #526080;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.pay-method-arrow {
+  color: #8496b5;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.pay-method:hover .pay-method-arrow {
+  transform: translateX(-3px);
+  color: #2655e8;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٦ — لوح التحويل (Destination)
+   ══════════════════════════════════════════════════════════ */
+.pay-dest {
+  background: linear-gradient(135deg, #eef3ff 0%, #f0f5ff 100%);
+  border: 1.5px solid rgba(37, 85, 232, 0.18);
+  border-radius: 1.1rem;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 4px 12px -4px rgba(37, 85, 232, 0.1);
+}
+
+.pay-dest-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2655e8;
+  margin-bottom: 0.6rem;
+}
+
+.pay-dest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.4rem 0;
+}
+
+.pay-dest-num {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1a3ebf;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-dest-hint {
+  font-size: 0.8rem;
+  color: #3b6fd4;
+  margin-top: 0.55rem;
+  line-height: 1.6;
+}
+
+.pay-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #ffffff;
+  border: 1.5px solid rgba(37, 85, 232, 0.25);
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #2655e8;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px -2px rgba(37, 85, 232, 0.15);
+}
+
+.pay-copy:hover {
+  background: #2655e8;
+  color: #fff;
+  border-color: #2655e8;
+  box-shadow: 0 4px 12px -4px rgba(37, 85, 232, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٧ — النموذج والحقول
+   ══════════════════════════════════════════════════════════ */
+.pay-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pay-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pay-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e2a45;
+  letter-spacing: -0.005em;
+}
+
+.pay-req {
+  color: #dc2626;
+  margin-inline-start: 0.2rem;
+}
+
+.pay-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid rgba(30, 60, 120, 0.12);
+  background: #fafbff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0a0f1e;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  box-shadow: inset 0 1px 2px rgba(10, 20, 60, 0.04);
+}
+
+.pay-input::placeholder {
+  color: #8496b5;
+  font-weight: 400;
+}
+
+.pay-input:focus {
+  border-color: #2655e8;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(37, 85, 232, 0.1),
+    inset 0 1px 2px rgba(10, 20, 60, 0.04);
+}
+
+.pay-input:hover:not(:focus) {
+  border-color: rgba(37, 85, 232, 0.25);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٨ — رفع الإيصال
+   ══════════════════════════════════════════════════════════ */
+.pay-upload {
+  border: 2px dashed rgba(37, 85, 232, 0.2);
+  border-radius: 1rem;
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  background: #fafbff;
+}
+
+.pay-upload:hover {
+  border-color: #2655e8;
+  background: linear-gradient(135deg, #f0f5ff, #fafbff);
+  box-shadow: 0 0 0 4px rgba(37, 85, 232, 0.06);
+}
+
+.pay-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.pay-upload-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(37, 85, 232, 0.12);
+  color: #2655e8;
+  margin-bottom: 0.25rem;
+}
+
+.pay-upload-placeholder > span {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #1e2a45;
+}
+
+.pay-upload-empty {
+  color: #8496b5;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.pay-upload-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pay-upload-preview img {
+  max-height: 9rem;
+  border-radius: 0.75rem;
+  object-fit: contain;
+  box-shadow: 0 4px 12px -4px rgba(10, 20, 60, 0.12);
+}
+
+.pay-receipt-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0a0f1e;
+}
+
+.pay-receipt-preview {
+  max-height: 10rem;
+  border-radius: 0.65rem;
+  box-shadow: 0 4px 12px -4px rgba(10, 20, 60, 0.12);
+}
+
+.pay-receipt-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #2655e8;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ٩ — رسائل الخطأ والتنبيه
+   ══════════════════════════════════════════════════════════ */
+.pay-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, #fef2f2, #fff5f5);
+  border: 1px solid rgba(220, 38, 38, 0.18);
+  color: #b91c1c;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px -4px rgba(220, 38, 38, 0.12);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ١٠ — زر الإرسال الرئيسي
+   ══════════════════════════════════════════════════════════ */
+.pay-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.75rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2655e8 0%, #4f46e5 100%);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 10px 28px -8px rgba(37, 85, 232, 0.45),
+    0 4px 10px -4px rgba(37, 85, 232, 0.25),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  letter-spacing: -0.01em;
+}
+
+/* shimmer sweep */
+.pay-btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+    transparent 30%,
+    rgba(255,255,255,0.16) 50%,
+    transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.pay-btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.pay-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 40px -8px rgba(37, 85, 232, 0.55),
+    0 6px 16px -6px rgba(37, 85, 232, 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.pay-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow:
+    0 6px 16px -6px rgba(37, 85, 232, 0.35),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.pay-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pay-btn-full { width: 100%; }
+
+/* ══════════════════════════════════════════════════════════
+   ١١ — عناصر مساعدة
+   ══════════════════════════════════════════════════════════ */
+.pay-center { text-align: center; }
+
+.pay-footer-hint {
+  font-size: 0.78rem;
+  color: #8496b5;
+  text-align: center;
+  margin-top: 0.85rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.pay-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #526080;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 1.1rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.6rem;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.pay-back:hover {
+  color: #2655e8;
+  background: rgba(37, 85, 232, 0.06);
+}
+
+.pay-muted {
+  color: #8496b5;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.pay-link {
+  color: #2655e8;
+  text-decoration: underline;
+  font-weight: 700;
+  transition: opacity 0.15s ease;
+}
+
+.pay-link:hover { opacity: 0.75; }
+
+/* ══════════════════════════════════════════════════════════
+   ١٢ — الشارات والحالة
+   ══════════════════════════════════════════════════════════ */
+.pay-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.pay-badge-sm {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ١٣ — شاشة الفراغ والانتظار
+   ══════════════════════════════════════════════════════════ */
+.pay-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #526080;
+}
+
+.pay-empty p { font-size: 0.9rem; }
+
+/* مؤشر التحميل */
+.pay-spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 2.5px solid rgba(37, 85, 232, 0.15);
+  border-top-color: #2655e8;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto 0.75rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════════════════
+   ١٤ — شاشة النجاح
+   ══════════════════════════════════════════════════════════ */
+.pay-done {
+  text-align: center;
+  padding: 1rem 0.5rem 0.5rem;
+}
+
+.pay-done-icon {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  color: #059669;
+  font-size: 2.25rem;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1.25rem;
+  box-shadow:
+    0 0 0 8px rgba(16, 185, 129, 0.08),
+    0 8px 24px -8px rgba(16, 185, 129, 0.3);
+  animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes successPop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.pay-done-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  color: #0a0f1e;
+  margin-bottom: 0.65rem;
+}
+
+.pay-done-text {
+  font-size: 0.9rem;
+  color: #526080;
+  line-height: 1.75;
+  margin-bottom: 1.75rem;
+  max-width: 22rem;
+  margin-inline: auto;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ١٥ — سجل الفواتير
+   ══════════════════════════════════════════════════════════ */
+.pay-history {
+  margin-top: 1.75rem;
+  border-top: 1px solid rgba(30, 60, 120, 0.08);
+  padding-top: 1.5rem;
+}
+
+.pay-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(30, 60, 120, 0.08);
+}
+
+.pay-table {
+  width: 100%;
+  font-size: 0.85rem;
+  border-collapse: collapse;
+}
+
+.pay-table th {
+  text-align: right;
+  color: #526080;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 0.9rem;
+  background: #f8faff;
+  border-bottom: 1px solid rgba(30, 60, 120, 0.08);
+}
+
+.pay-table td {
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid rgba(30, 60, 120, 0.05);
+  color: #1e2a45;
+  font-weight: 500;
+}
+
+.pay-table tr:last-child td { border-bottom: none; }
+
+.pay-table tr:hover td {
+  background: rgba(37, 85, 232, 0.025);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ١٦ — خطوات التقدم
+   ══════════════════════════════════════════════════════════ */
+.pay-gate { container-type: inline-size; container-name: paygate; }
+
 .pay-gate .pay-steps { align-items: flex-start; gap: 0; }
+
 .pay-stepi {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   flex: 1 1 0;
   min-width: 0;
 }
-/* القضيبُ بين علامتين — يُرسم خلفَ العلامة لا فوقها */
+
+/* القضيب الرابط */
 .pay-stepi::before {
   content: "";
   position: absolute;
-  inset-block-start: 0.7rem;
-  /* من منتصف هذه إلى منتصف التالية — والاتّجاهُ منطقيٌّ فيصحّ في RTL */
-  inset-inline-start: calc(50% + 1.1rem);
-  inline-size: calc(100% - 2.2rem);
+  inset-block-start: 0.8rem;
+  inset-inline-start: calc(50% + 1.2rem);
+  inline-size: calc(100% - 2.4rem);
   block-size: 2px;
-  background: hsl(var(--border));
+  background: rgba(30, 60, 120, 0.12);
   border-radius: 999px;
 }
+
 .pay-stepi:last-child::before { display: none; }
-.pay-stepi[data-done="1"]::before { background: var(--pg-a); }
+
+.pay-stepi[data-done="1"]::before {
+  background: linear-gradient(90deg, #2655e8, #4f46e5);
+  opacity: 0.7;
+}
 
 .pay-step-t {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
-  color: hsl(var(--muted-foreground));
+  color: #8496b5;
   transition: color 0.2s ease;
 }
-.pay-stepi[data-at="1"] .pay-step-t { color: hsl(var(--foreground)); }
 
-/* العلامةُ الافتراضيّةُ قرصٌ مرقَّم — والهيئاتُ تغلبه حيث تشاء */
+.pay-stepi[data-at="1"] .pay-step-t { color: #1e2a45; }
+
+/* دوائر الخطوات */
 .pay-steps .pay-step {
   display: grid;
   place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.65rem;
+  height: 1.65rem;
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 800;
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
+  background: rgba(30, 60, 120, 0.08);
+  color: #8496b5;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
 }
-.pay-steps .pay-step[data-on="1"] { background: var(--pg-a); color: #fff; }
+
+.pay-steps .pay-step[data-on="1"] {
+  background: linear-gradient(135deg, #2655e8, #4f46e5);
+  color: #fff;
+  box-shadow: 0 4px 10px -3px rgba(37, 85, 232, 0.4);
+}
+
 .pay-steps .pay-step-num { display: block; }
 
-/*
-  والهيئاتُ الصغيرةُ تبقى صغيرة.
-  «النقاط» و«الشريط» اختارهما المشرفُ ليخفّ المؤشّر، فلا تُكبَّر علامتُهما
-  — لكنّ الاسمَ يبقى تحتها، فهو ليس زينةً بل موضعُ الطالب.
-*/
+/* الأنواع البديلة */
 .pg-steps-dots .pay-steps .pay-step,
-.pg-steps-bar .pay-steps .pay-step { font-size: 0; }
+.pg-steps-bar  .pay-steps .pay-step { font-size: 0; }
+
 .pg-steps-dots .pay-steps .pay-step {
-  width: 0.5rem; height: 0.5rem;
-  background: hsl(var(--border));
+  width: 0.55rem;
+  height: 0.55rem;
+  background: rgba(30, 60, 120, 0.15);
 }
-.pg-steps-dots .pay-steps .pay-step[data-on="1"] { background: var(--pg-a); }
-.pg-steps-dots .pay-stepi::before { inset-block-start: 0.24rem; }
 
-.pay-gate.pg-steps-bar .pay-stepi { justify-items: stretch; gap: 0.4rem; }
+.pg-steps-dots .pay-steps .pay-step[data-on="1"] {
+  background: linear-gradient(135deg, #2655e8, #4f46e5);
+  box-shadow: 0 0 0 3px rgba(37, 85, 232, 0.15);
+}
+
+.pg-steps-dots .pay-stepi::before { inset-block-start: 0.25rem; }
+
+.pay-gate.pg-steps-bar .pay-stepi { justify-items: stretch; gap: 0.45rem; }
+
 .pg-steps-bar .pay-steps .pay-step {
-  width: auto; height: 0.28rem; border-radius: 999px;
-  background: hsl(var(--border));
+  width: auto;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: rgba(30, 60, 120, 0.1);
 }
-.pg-steps-bar .pay-steps .pay-step[data-on="1"] { background: var(--pg-a); }
-/* الشريطُ يصل بنفسه، فلا قضيبَ بين علاماته */
-.pg-steps-bar .pay-stepi::before { display: none; }
 
-/* «بلا مؤشّر» يُخفي الكلَّ — والقرارُ قرارُ المشرف */
+.pg-steps-bar .pay-steps .pay-step[data-on="1"] {
+  background: linear-gradient(90deg, #2655e8, #4f46e5);
+}
+
+.pg-steps-bar .pay-stepi::before { display: none; }
 .pg-steps-none .pay-steps { display: none; }
 
-
-/*
-  ٢ ــ ملخّصُ الطلب — ما يُشترى وبكم.
-  ------------------------------------------------------------------
-  كان اسمُ الخطة ومبلغُها سطراً صغيراً `text-xs` مقصوصاً بـ`truncate`
-  في رأس الخطوة — وهو **أهمُّ ما في الشاشة**: من يدفع يريد أن يرى ما
-  يدفع مقابله وكم، في كلّ لحظةٍ حتّى الإرسال.
-
-  فيُرفع إلى لوحٍ أعلى البوّابة: الاسمُ والمدّةُ في جهة، والمبلغُ في
-  الأخرى بحجمٍ يليق برقمٍ يُدفع. ويبقى معروضاً في الخطوتين معاً، فلا
-  يُسأل الطالبُ أن يتذكّر.
-*/
+/* ══════════════════════════════════════════════════════════
+   ١٧ — ملخص الطلب الجانبي
+   ══════════════════════════════════════════════════════════ */
 .pay-sum {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.85rem 1rem;
+  padding: 1rem 1.1rem;
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--pg-a) 7%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pg-a) 22%, transparent);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--pg-a) 8%, transparent),
+    color-mix(in srgb, var(--pg-a) 4%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pg-a) 20%, transparent);
 }
+
 .pay-sum-n { min-width: 0; }
+
 .pay-sum-t {
   display: block;
   font-family: var(--font-display, inherit);
   font-size: 0.95rem;
   font-weight: 800;
   line-height: 1.35;
+  letter-spacing: -0.01em;
 }
+
 .pay-sum-s {
   display: flex;
   align-items: center;
   gap: 0.35rem;
   flex-wrap: wrap;
   margin-top: 0.15rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: hsl(var(--muted-foreground));
 }
-/* المبلغُ لا يُقصّ ولا يلتفّ — رقمٌ يُدفع يُقرأ كاملاً أو لا يُعرض */
+
 .pay-amt {
   display: flex;
   align-items: baseline;
@@ -153,15 +888,18 @@
   flex: none;
   white-space: nowrap;
 }
+
 .pay-amt-v {
   font-family: var(--font-display, inherit);
-  font-size: 1.65rem;
-  font-weight: 800;
+  font-size: 1.75rem;
+  font-weight: 900;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--pg-a);
+  letter-spacing: -0.03em;
 }
-.pay-amt-c { font-size: 0.72rem; font-weight: 700; color: hsl(var(--muted-foreground)); }
+
+.pay-amt-c  { font-size: 0.72rem; font-weight: 700; color: hsl(var(--muted-foreground)); }
 .pay-amt-was {
   font-size: 0.72rem;
   font-weight: 700;
@@ -169,131 +907,103 @@
   text-decoration: line-through;
 }
 
-
-/*
-  ٣ ــ صفُّ بياناتٍ يُنسخ.
-  ------------------------------------------------------------------
-  عطلان في الصفّ القديم: `truncate` على القيمة، و`title` وحدَه دليلاً
-  على أنّها تُنسخ.
-
-  **والقصُّ أخطرُهما.** رقمُ المحفظة يُقصّ إلى «٠١٠١٢٣…» على شاشةٍ
-  ضيّقة، ومن يقرؤه ليحوّل عليه يقرأ رقماً ناقصاً — والنسخُ يُعطيه كاملاً
-  لكنّ من كتبه بيده حوّل إلى غير أهله. فالرقمُ لا يُقصّ: يلتفّ إن ضاق.
-
-  **والثاني أنّ النسخَ لا يُرى.** `title` لا يظهر باللمس أصلاً، فالطالبُ
-  يقرأ الرقمَ ويكتبه بيده ولا يعلم أنّ ضغطةً تكفي. فتُوضع أيقونةٌ ظاهرة.
-*/
-/*
-  والعنوانُ في عمودٍ بمقاسه، والقيمةُ تليه.
-  ------------------------------------------------------------------
-  كان `justify-between` يدفع الاثنين إلى الحافّتين. وهو صحيحٌ في صندوقٍ
-  ضيّق؛ أمّا في لوحٍ عرضُه ألفٌ ومئةُ بكسل فيقع «اسم صاحب الحساب» في
-  أقصى اليمين و«محمد» في أقصى اليسار بينهما تسعُ مئةِ بكسلٍ خواء —
-  فلا يُقرآن زوجاً، ويُضطرّ البصرُ أن يقطع اللوحَ ليعرف قيمةَ ما قرأ.
-
-  فالعنوانُ عمودٌ بعرض أطولِ عنوان، والقيمةُ تبدأ بعده مباشرة — يُقرآن
-  معاً مهما اتّسع اللوح.
-*/
+/* ══════════════════════════════════════════════════════════
+   ١٨ — صفوف البيانات القابلة للنسخ
+   ══════════════════════════════════════════════════════════ */
 .pay-row {
   display: grid;
   grid-template-columns: minmax(6rem, max-content) minmax(0, 1fr);
   align-items: center;
   gap: 0.85rem;
   width: 100%;
-  /* لا هامشَ سالب: هيئةُ «العادي» تُصفّر حشوةَ اللوح الأفقيّة
-     (`.pg-details-plain`)، فالسالبُ يُخرج الصفَّ من حدّه. */
-  padding: 0.5rem 0.55rem;
-  border-radius: 0.7rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: 0.75rem;
   text-align: start;
   transition: background 0.15s ease;
 }
+
 .pay-row:hover { background: color-mix(in srgb, var(--pg-a) 8%, transparent); }
+
 .pay-row-l {
   flex: none;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: hsl(var(--muted-foreground));
 }
+
 .pay-row-v {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
   font-weight: 700;
-  /* تبدأ بعد عنوانها لا في الحافّة المقابلة */
   justify-content: flex-start;
   text-align: start;
 }
-/* لا قصَّ — الرقمُ يلتفّ ولا يُبتر */
+
 .pay-row-v .pay-value {
   min-width: 0;
   overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
 }
+
 .pay-row-big .pay-value { font-size: 0.95rem; letter-spacing: 0.02em; }
-.pay-row-i { flex: none; opacity: 0.45; transition: opacity 0.15s ease; }
+.pay-row-i { flex: none; opacity: 0.4; transition: opacity 0.15s ease; }
 .pay-row:hover .pay-row-i { opacity: 0.9; }
 .pay-row[data-copied="1"] { background: color-mix(in srgb, var(--pg-a) 14%, transparent); }
 .pay-row[data-copied="1"] .pay-row-i { opacity: 1; color: var(--pg-a); }
 
-
-/*
-  ٤ ــ بطاقةُ الطريقة.
-  ------------------------------------------------------------------
-  كانت العلامةُ والاسمُ والزرُّ في صفٍّ واحد، ونصُّ الزرّ «حوّلت عليها»
-  — فيُضغط الصفُّ كلُّه على ٣٧٥ بكسلاً ولا يبقى للاسم إلّا حرفان.
-
-  فيُنزل الزرُّ سطراً وحدَه تحت البيانات على الضيّق، ويرجع إلى الصفّ
-  حيث يتّسع. والرقمُ يبقى ظاهراً بلا ضغط — فمن جاء ليحوّل يجد ما يحوّل
-  عليه من أوّل نظرة.
-*/
+/* ══════════════════════════════════════════════════════════
+   ١٩ — بطاقة طريقة الدفع (الداخلية)
+   ══════════════════════════════════════════════════════════ */
 .pay-m-head {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.7rem;
   min-width: 0;
 }
+
 .pay-m-name { min-width: 0; flex: 1 1 auto; }
-.pay-m-t { display: block; font-size: 0.9rem; font-weight: 800; line-height: 1.3; }
+.pay-m-t {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.01em;
+}
 .pay-m-h { display: block; margin-top: 0.05rem; font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
 
-/* علامةُ الاختيار في الرأس — تُغني عن تلوين البطاقة كلِّها */
 .pay-m-on {
   flex: none;
   display: grid;
   place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
   border-radius: 999px;
-  background: var(--pg-a);
+  background: linear-gradient(135deg, #2655e8, #4f46e5);
   color: #fff;
+  box-shadow: 0 4px 10px -3px rgba(37, 85, 232, 0.4);
 }
 
-/*
-  الرقمُ — بطلُ البطاقة.
-  ------------------------------------------------------------------
-  كان صفّاً بوزن «بيانات إضافية» داخل شريطٍ رماديّ، فبدا حقلاً معطّلاً
-  لا رقماً يُؤخذ. وهو **الغرضُ من البطاقة كلِّها**: من فتح هذه الشاشة
-  جاء ليأخذه.
-
-  فيُرفع إلى أكبر خطٍّ فيها، بخطٍّ ثابتٍ متساوي الأرقام — فيُقرأ رقماً
-  رقماً ولا تتشابه خانتان — وبجانبه زرُّ نسخٍ **مكتوبٌ نصُّه**: أيقونةٌ
-  وحدَها تُفسَّر، وكلمةُ «نسخ» لا تُفسَّر.
-*/
 .pay-m-num {
-  margin-top: 0.75rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.85rem;
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.95rem;
   background: color-mix(in srgb, var(--pg-a) 6%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pg-a) 18%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--pg-a) 18%, transparent);
 }
+
 .pay-m-num-l {
   display: block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   color: hsl(var(--muted-foreground));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
+
 .pay-m-num-r {
   display: flex;
   align-items: center;
@@ -301,124 +1011,89 @@
   gap: 0.6rem;
   flex-wrap: wrap;
 }
+
 .pay-m-num-v {
   min-width: 0;
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   line-height: 1.25;
   letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
-  /* لا يُبتر: يلتفّ إن ضاق — رقمٌ ناقصٌ يُحوَّل به إلى غير أهله */
   overflow-wrap: anywhere;
 }
-/* والطولُ يُنقص الخطَّ لا يُنقص الرقم */
-.pay-m-num-v[data-len="l"] { font-size: 1rem; letter-spacing: 0.02em; }
-.pay-m-num-v[data-len="xl"] { font-size: 0.85rem; letter-spacing: 0; }
+
+.pay-m-num-v[data-len="l"]  { font-size: 1.05rem; letter-spacing: 0.02em; }
+.pay-m-num-v[data-len="xl"] { font-size: 0.9rem;  letter-spacing: 0; }
+
 .pay-m-copy {
   flex: none;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  min-height: 2rem;
-  padding: 0 0.65rem;
-  border-radius: 0.6rem;
+  min-height: 2.1rem;
+  padding: 0 0.75rem;
+  border-radius: 0.65rem;
   background: hsl(var(--card));
-  box-shadow: inset 0 0 0 1px hsl(var(--border));
+  box-shadow: inset 0 0 0 1.5px hsl(var(--border));
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
   color: hsl(var(--muted-foreground));
-  transition: color 0.15s ease, box-shadow 0.15s ease;
+  transition: color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
-.pay-m-copy:hover { color: hsl(var(--foreground)); box-shadow: inset 0 0 0 1px var(--pg-a); }
-.pay-m-copy[data-copied="1"] { color: var(--pg-a); box-shadow: inset 0 0 0 1px var(--pg-a); }
 
-.pay-m-body { margin-top: 0.55rem; }
+.pay-m-copy:hover {
+  color: #2655e8;
+  box-shadow: inset 0 0 0 1.5px #2655e8;
+  background: rgba(37, 85, 232, 0.04);
+}
+
+.pay-m-copy[data-copied="1"] {
+  color: #2655e8;
+  box-shadow: inset 0 0 0 1.5px #2655e8;
+  background: rgba(37, 85, 232, 0.06);
+}
+
+.pay-m-body { margin-top: 0.6rem; }
 .pay-m-note {
-  margin-top: 0.5rem;
+  margin-top: 0.55rem;
   font-size: 0.75rem;
-  line-height: 1.6;
+  line-height: 1.65;
   color: hsl(var(--muted-foreground));
 }
 
-/*
-  والفعلُ آخرَ البطاقة بعرضها.
-  كان في الصفّ الأوّل يزاحم الاسمَ ويُعرض قبل الرقم — والزرُّ إقرارٌ
-  بتحويلٍ وقع، فلا يُعرض قبل ما يُحوَّل عليه.
-*/
 .pay-m-pick {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   width: 100%;
-  min-height: 2.5rem;
-  margin-top: 0.75rem;
-  border-radius: 0.85rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  box-shadow: inset 0 0 0 1px hsl(var(--border));
+  min-height: 2.6rem;
+  margin-top: 0.85rem;
+  border-radius: 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1.5px hsl(var(--border));
   color: hsl(var(--muted-foreground));
   transition: color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  letter-spacing: -0.01em;
 }
-.pay-m-pick:hover { color: hsl(var(--foreground)); box-shadow: inset 0 0 0 1.5px var(--pg-a); }
+
+.pay-m-pick:hover {
+  color: #2655e8;
+  box-shadow: inset 0 0 0 2px #2655e8;
+  background: rgba(37, 85, 232, 0.04);
+}
+
 .pay-method[data-on="1"] .pay-m-pick {
-  background: var(--pg-a);
+  background: linear-gradient(135deg, #2655e8, #4f46e5);
   color: #fff;
-  box-shadow: none;
-}
-/*
-  والضيّقُ يُنزل الزرَّ سطراً — **بعرض البوّابة لا بعرض الشاشة**.
-  ------------------------------------------------------------------
-  كُتبت هذه القاعدةُ أوّلاً بـ`@media (max-width: 30rem)` فلم تعمل: البوّابةُ
-  تُعرض في عمودٍ من `lg:grid-cols-[1fr,20rem]`، فعرضُها نحو ٤٤٠ بكسلاً
-  والشاشةُ ٩٨٠ — والاستعلامُ يسأل الشاشةَ فيقول «واسعة» والبطاقةُ ضيّقة.
-
-  والقياسُ أثبته: اسمُ «فودافون كاش» عرضُ محتواه ٤٨ بكسلاً في صندوقٍ
-  عرضُه ١٢ — مسحوقٌ بين الأيقونة والزرّ.
-
-  فالسؤالُ يُوجَّه إلى الحاوية: `@container` يقيس البوّابةَ نفسَها، فتصحّ
-  في العمود الضيّق وفي الصفحة العريضة معاً.
-*/
-.pay-gate { container-type: inline-size; container-name: paygate; }
-@container paygate (max-width: 30rem) {
-  .pay-m-head { flex-wrap: wrap; }
-  .pay-m-name { flex: 1 1 8rem; }
-  /* والرقمُ يصغر قليلاً كي يبقى في سطرٍ واحدٍ ما أمكن */
-  .pay-m-num-v { font-size: 1.05rem; }
-  .pay-m-num-v[data-len="l"] { font-size: 0.95rem; }
-  .pay-m-num-v[data-len="xl"] { font-size: 0.8rem; }
+  box-shadow: 0 6px 16px -6px rgba(37, 85, 232, 0.4);
 }
 
-/*
-  والأضيقُ من ذلك يُنزل القيمةَ سطراً.
-  ------------------------------------------------------------------
-  قيست البوّابةُ بعرض ٣٠١ بكسلاً فبقي رقمُ المحفظة مقصوصاً: العنوانُ
-  والقيمةُ والأيقونةُ في سطرٍ واحد، فما بقي للرقم أضيقُ منه. و`رقمٌ
-  مقصوصٌ` هو العطلُ الذي أُصلح أوّلاً — فلا يُترك يعود من باب الضيق.
-
-  فالعنوانُ يصعد سطراً والقيمةُ تنزل بعرض الصفّ كلِّه: أطولُ رقمٍ يُقرأ.
-*/
-@container paygate (max-width: 22rem) {
-  .pay-row { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
-  .pay-row-v { width: 100%; justify-content: space-between; }
-  /* وشبكةُ الخطط تعود عموداً — بطاقتان في ٣٠٠ بكسلٍ لا تسعان اسماً */
-  .pay-gate.pg-list-grid .pay-methods { grid-template-columns: minmax(0, 1fr); }
-
-/* قائمةُ الخطط — عمودٌ دائماً، لا تتبع «ترتيبَ طرق الدفع» */
-.pay-plans { display: grid; gap: 0.65rem; }
-
-}
-/* الاسمُ لا يُسحق مهما ضاق: يلتفّ ولا يُبتر */
-.pay-m-t { overflow-wrap: anywhere; }
-
-
-/*
-  ٥ ــ بطاقةُ الخطة.
-  ------------------------------------------------------------------
-  السعرُ في جهةٍ والاسمُ في الأخرى، والمسافةُ بينهما تتّسع فيتباعدان
-  حتّى لا يُقرآ معاً. فيُثبَّت السعرُ في عمودٍ بعرضه، ويبقى ملاصقاً.
-*/
+/* ══════════════════════════════════════════════════════════
+   ٢٠ — بطاقة الخطة (الداخلية)
+   ══════════════════════════════════════════════════════════ */
 .pay-plan {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -428,6 +1103,7 @@
   padding: 0.9rem;
   text-align: start;
 }
+
 .pay-plan-n { min-width: 0; }
 .pay-plan-t {
   display: block;
@@ -435,11 +1111,12 @@
   font-size: 0.95rem;
   font-weight: 800;
   line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 .pay-plan-d {
   display: block;
   margin-top: 0.1rem;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: hsl(var(--muted-foreground));
 }
@@ -448,7 +1125,7 @@
   align-items: center;
   gap: 0.25rem;
   margin-top: 0.35rem;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: hsl(var(--muted-foreground));
 }
 .pay-plan-p { flex: none; text-align: end; }
@@ -457,206 +1134,141 @@
   align-items: center;
   gap: 0.2rem;
   margin-bottom: 0.3rem;
-  padding: 0.1rem 0.45rem;
+  padding: 0.12rem 0.5rem;
   border-radius: 999px;
   background: hsl(var(--primary));
   color: #fff;
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
-/*
-  والخطةُ في العمود الضيّق تصير عموداً واحداً: السعرُ تحت اسمه لا بجانبه.
-  ------------------------------------------------------------------
-  وموضعُ هذه الكتلة مقصود. كُتبت أوّلاً مع كتلة القسم الرابع — أي **قبل**
-  تعريف `.pay-plan` — وقوّتُهما سواء، فغلب المتأخّرُ وهو التعريفُ نفسُه،
-  وبقيت البطاقةُ عمودين في حاويةٍ عرضُها ٢٨٦ بكسلاً. والقياسُ كشفه:
-  `grid-template-columns` تقرأ `176.95px 65.88px` حيث يُنتظر عمودٌ واحد.
-
-  فالكتلةُ تُوضع بعد ما تغلبه — لا تُرفع قوّتُها. ورفعُ القوّة يُصلح
-  الأثرَ ويُبقي الفخّ: من يضيف قاعدةً بعدها يقع فيه ثانية.
-*/
-@container paygate (max-width: 30rem) {
-  .pay-plan { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
-  .pay-plan-p { text-align: start; }
-  .pay-plan-badge { margin-bottom: 0; }
-}
-
-
-/*
-  ٦ ــ الحقول.
-  ------------------------------------------------------------------
-  كانت خمسةَ حقولٍ كلٌّ منها بسلسلة أصنافٍ مكتوبةٍ بيدها — فاختلفت
-  حشواتُها ومقاساتُ نصّها. والاستمارةُ يُقرأ اتّساقُها قبل أن يُقرأ
-  محتواها: ما اختلف ارتفاعُه يبدو معطوباً ولو عمل.
-*/
+/* ══════════════════════════════════════════════════════════
+   ٢١ — حقول النموذج (النظام الداخلي)
+   ══════════════════════════════════════════════════════════ */
 .pay-f { display: block; }
 .pay-f-l {
   display: block;
-  margin-bottom: 0.3rem;
-  font-size: 0.7rem;
-  font-weight: 600;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: hsl(var(--muted-foreground));
+  letter-spacing: 0.01em;
 }
 .pay-f-r { color: hsl(0 72% 51%); }
 .pay-f-i {
   width: 100%;
-  min-height: 2.75rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: 0.9rem;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 0.95rem;
   background: color-mix(in srgb, hsl(var(--card)) 60%, transparent);
-  box-shadow: inset 0 0 0 1px hsl(var(--border));
-  font-size: 0.875rem;
+  box-shadow: inset 0 0 0 1.5px hsl(var(--border));
+  font-size: 0.9rem;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: box-shadow 0.18s ease, background 0.18s ease;
 }
-.pay-f-i:focus { box-shadow: inset 0 0 0 2px var(--pg-a); }
-.pay-f-i::placeholder { color: hsl(var(--muted-foreground) / 0.7); }
-/* الحقلُ الخاطئُ يُعلَّم عند موضعه، ورسالتُه تحته */
-.pay-f-i.pay-f-bad { box-shadow: inset 0 0 0 1.5px hsl(0 72% 51%); }
+.pay-f-i:focus {
+  box-shadow: inset 0 0 0 2px #2655e8, 0 0 0 3px rgba(37, 85, 232, 0.1);
+  background: hsl(var(--card));
+}
+.pay-f-i::placeholder { color: hsl(var(--muted-foreground) / 0.6); }
+.pay-f-i.pay-f-bad { box-shadow: inset 0 0 0 2px hsl(0 72% 51%); }
 .pay-f-msg {
   display: block;
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: hsl(0 72% 45%);
 }
-textarea.pay-f-i { min-height: 4.5rem; resize: vertical; }
+textarea.pay-f-i { min-height: 4.75rem; resize: vertical; }
 
-/* رفعُ الإيصال — منطقةٌ تُسقط فيها الصورةُ لا زرٌّ صغير */
+/* رفع الإيصال (النظام الداخلي) */
 .pay-drop {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.8rem;
   width: 100%;
-  min-height: 3.5rem;
-  padding: 0.7rem 0.9rem;
-  border-radius: 0.9rem;
-  border: 1.5px dashed hsl(var(--border));
+  min-height: 3.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.95rem;
+  border: 2px dashed rgba(37, 85, 232, 0.2);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  background: rgba(37, 85, 232, 0.02);
 }
-.pay-drop:hover { border-color: var(--pg-a); background: color-mix(in srgb, var(--pg-a) 5%, transparent); }
-.pay-drop-t { font-size: 0.78rem; font-weight: 700; }
-.pay-drop-s { display: block; font-size: 0.68rem; font-weight: 400; color: hsl(var(--muted-foreground)); }
-.pay-drop img { flex: none; width: 2.75rem; height: 2.75rem; border-radius: 0.6rem; object-fit: cover; }
 
+.pay-drop:hover {
+  border-color: #2655e8;
+  background: rgba(37, 85, 232, 0.05);
+  box-shadow: 0 0 0 4px rgba(37, 85, 232, 0.06);
+}
 
-/* ٧ ــ الإجراءُ الأخير — زرٌّ بعرض اللوح لا يُخطئه أحد */
+.pay-drop-t { font-size: 0.82rem; font-weight: 800; }
+.pay-drop-s { display: block; font-size: 0.72rem; font-weight: 500; color: hsl(var(--muted-foreground)); margin-top: 0.1rem; }
+.pay-drop img { flex: none; width: 2.85rem; height: 2.85rem; border-radius: 0.65rem; object-fit: cover; }
+
+/* ══════════════════════════════════════════════════════════
+   ٢٢ — زر الإجراء الرئيسي (النظام الداخلي)
+   ══════════════════════════════════════════════════════════ */
 .pay-go {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   width: 100%;
-  min-height: 3rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  min-height: 3.1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 800;
   color: #fff;
+  background: linear-gradient(135deg, #2655e8, #4f46e5);
+  box-shadow: 0 10px 28px -8px rgba(37, 85, 232, 0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  letter-spacing: -0.01em;
 }
-.pay-go:disabled { opacity: 0.6; }
+
+.pay-go:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -8px rgba(37, 85, 232, 0.55), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.pay-go:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .pay-err {
-  padding: 0.55rem 0.8rem;
-  border-radius: 0.8rem;
-  background: hsl(0 72% 51% / 0.1);
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08), rgba(220, 38, 38, 0.05));
+  border: 1px solid rgba(220, 38, 38, 0.15);
   color: hsl(0 72% 45%);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
 }
 
-/* ٨ ــ الإيقاع — فاصلٌ واحدٌ في البوّابة كلّها */
-.pay-stack { display: grid; gap: 0.85rem; }
+/* ══════════════════════════════════════════════════════════
+   ٢٣ — الإيقاع العام
+   ══════════════════════════════════════════════════════════ */
+.pay-stack { display: grid; gap: 0.9rem; }
 
-/*
-  والقصيرُ يصطفّ اثنين اثنين حيث يتّسع.
-  رقمُ الهاتف واسمُ المحوِّل لا يحتاج أحدُهما سطراً كاملاً، وعمودٌ من
-  حقولٍ كلُّها بعرض اللوح يُطيل الشاشةَ بلا فائدة ويجعل الاستمارةَ تبدو
-  أطولَ ممّا هي — فيُحجم من يملؤها قبل أن يبدأ.
-
-  والسؤالُ للحاوية لا للشاشة: البوّابةُ في عمودٍ عرضُه غيرُ عرض النافذة.
-*/
 @container paygate (min-width: 30rem) {
   .pay-stack-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pay-stack-2 .pay-f-wide { grid-column: 1 / -1; }
 }
+
 .pay-sec-t {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-
-/* ============================================================
-   ٩ ــ اللمسُ والقراءةُ — ما قِيس فأُصلح
-   ------------------------------------------------------------
-   قيست البوّابةُ بهيئاتها الخمس على عرضٍ ضيّق، فخرج عطلان:
-
-   **أهدافُ لمسٍ دون الأربعين.** زرُّ «حوّلت عليها» ٣٦ بكسلاً، وصفُّ نسخِ
-   رقم المحفظة ٣٩ — وهما أكثرُ ما يُضغط في الشاشة. والإصبعُ يُصيب نحوَ
-   ٤٤، فما دونها يُصاب بالتقريب: تُضغط الطريقةُ الخطأ، ويُنسخ الرقمُ
-   الخطأ، ويُحوَّل إلى غير أهله.
-
-   **ونصوصٌ بحجم ١٠٫٩.** اسمُ الخطوة ووصفُ الخطة — وهما ممّا يُقرأ لا
-   ممّا يُلمح. والعربيّةُ تحتاج حجماً أكبرَ من اللاتينيّة عند القياس
-   نفسِه: تفاصيلُها في النقاط والهمزات.
-
-   والشاراتُ تبقى صغيرةً — `--badge` و«ج.م» والمشطوب: تلك تُلمح.
-   ============================================================ */
-@media (pointer: coarse) {
-  .pay-m-pick { min-height: 2.75rem; }
-  .pay-m-copy { min-height: 2.75rem; padding-inline: 0.9rem; }
-  .pay-row { min-height: 2.75rem; }
-  .pay-plan { padding-block: 1rem; }
-}
-
-/* أصغرُ ما يُقرأ في البوّابة ١٢ بكسلاً — والشاراتُ خارجَها */
-.pay-step-t,
-.pay-plan-m,
-.pay-plan-d,
-.pay-sum-s,
-.pay-sec-t,
-.pay-row-l,
-.pay-f-l,
-.pay-m-h,
-.pay-drop-s { font-size: 0.75rem; }
-
-
-/* ============================================================
-   ١٠ ــ حافّةٌ ناعمة
-   ------------------------------------------------------------
-   لا حادّةٌ ولا دائرية: انحناءةٌ واحدةٌ صغيرة تُلطّف الركنَ ولا تُدوّره.
-
-   **والقيمةُ واحدةٌ في البوّابة كلِّها.** كانت الاستداراتُ مبعثرة —
-   ١٦ و١٧٫٦ و١٤٫٤ و٢٠ بكسلاً بحسب هيئة السطح، و٩٩٩٩ على الشارات
-   والعلامات، و٢٤ على الغلاف. وأركانٌ تختلف انحناءتُها في اللوح الواحد
-   تُقرأ فوضى لا تنوّعاً: البصرُ يقيس الركنَ بالركن الذي بجانبه.
-
-   فتُجمع في مقدارٍ واحدٍ يُضبط من سطرٍ واحد، ودرجتان لا أكثر: الغلافُ
-   أوسعُ قليلاً من محتواه — وهو ما تفعله الأركانُ المتداخلةُ في الطبيعة،
-   الخارجُ أوسعُ انحناءً من الداخل وإلّا بدا الداخلُ ضاغطاً عليه.
-
-   **والقوّةُ مرفوعةٌ بـ`[class]`**: هذا الملفُّ يُستورَد في أوّل
-   `globals.css`، وهيئاتُ الأسطح فيه تكتب `border-radius` بقوّةٍ مساوية
-   فيفوز المتأخّرُ وهو الهيئات. و`*` لا يزيد القوّة شيئاً — جُرّب فبقيت
-   ستٌّ وخمسون حافّةً على حالها — و`[class]` يُضيف درجةً فيرجح. ولا
-   `!important`: يبقى النقضُ من فوقه ممكناً.
-   ============================================================ */
+/* ══════════════════════════════════════════════════════════
+   ٢٤ — الحافة الموحدة
+   ══════════════════════════════════════════════════════════ */
 .pay-gate,
 .pay-shell {
-  /*
-    والمقدارُ يُقرأ منحنياً لا ملطَّفاً.
-    ------------------------------------------------------------------
-    جُرّب نصفُ رِيم (٨ بكسلاً) فقُرئ حادّاً. وذلك أنّ الانحناءَ يُقاس
-    **بمساحة الركن لا برقمه**: ثمانيةُ بكسلاتٍ في ركنِ لوحٍ عرضُه ٤٠٠
-    نسبةٌ لا يكاد البصرُ يلتقطها، فيقرؤه مربّعاً وإن لم يكن.
-
-    فرُفع إلى ١٦ للمحتوى و٢٢ للغلاف — منحنًى يُرى، ودون القرص.
-  */
-  --pay-r: 1rem;        /* المحتوى */
-  --pay-r-out: 1.4rem;  /* الغلاف — أوسعُ انحناءً من محتواه */
+  --pay-r: 1rem;
+  --pay-r-out: 1.4rem;
 }
 
 .pay-gate.pay-gate,
@@ -667,86 +1279,61 @@ textarea.pay-f-i { min-height: 4.5rem; resize: vertical; }
 .pay-gate.pay-gate [class]::before,
 .pay-gate.pay-gate [class]::after { border-radius: var(--pay-r); }
 
-/* والغلافُ الذي تجلس فيه البوّابةُ يتبعها — وإلّا بدت ناعمةً داخل
-   صندوقٍ شديدِ الاستدارة، فيُقرأ الاختلافُ عطلاً. */
 .pay-shell .glass,
 .pay-shell [class*="rounded"] { border-radius: var(--pay-r-out); }
 
-/*
-  ويُستثنى ما ليس حافّةً بل شكلاً:
-  «اللوحُ المقصوص» (`plaque`) أركانُه مقطوعةٌ بـ`clip-path` لا مستديرة،
-  وهي هويّةُ الهيئة — فتبقى كما اختارها المشرف.
-*/
+/* ══════════════════════════════════════════════════════════
+   ٢٥ — اللمس والقراءة
+   ══════════════════════════════════════════════════════════ */
+@media (pointer: coarse) {
+  .pay-m-pick { min-height: 2.85rem; }
+  .pay-m-copy { min-height: 2.85rem; padding-inline: 0.95rem; }
+  .pay-row    { min-height: 2.85rem; }
+  .pay-plan   { padding-block: 1rem; }
+  .pay-method { padding: 1.1rem; }
+}
 
-/* أصناف مساعدة لصفحات الدفع */
-.pay-page { min-height: 100vh; display: grid; place-items: center; padding: 2rem 1rem; background: #f8fafc; }
-.pay-card { width: 100%; max-width: 32rem; background: var(--mk-card, #fff); border: 1px solid var(--mk-line, #e2e8f0); border-radius: 1.25rem; padding: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
-.pay-header { text-align: center; margin-bottom: 1.5rem; }
-.pay-logo { display: inline-grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 1rem; background: #eff6ff; color: var(--mk-primary, #233b8b); margin-bottom: 0.75rem; }
-.pay-logo-icon { width: 1.75rem; height: 1.75rem; }
-.pay-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; }
-.pay-subtitle { font-size: 0.875rem; color: var(--mk-dim, #64748b); }
-.pay-plan { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.pay-plan-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
-.pay-plan-label { color: var(--mk-dim, #64748b); }
-.pay-plan-value { font-weight: 700; }
-.pay-plan-amount { font-size: 1.15rem; font-weight: 800; color: var(--mk-primary, #233b8b); }
-.pay-muted { color: var(--mk-dim, #64748b); font-size: 0.8rem; }
-.pay-section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; }
-.pay-methods { display: flex; flex-direction: column; gap: 0.6rem; }
-.pay-method { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: #fff; text-align: right; cursor: pointer; transition: all 0.15s; }
-.pay-method:hover { border-color: var(--mk-primary, #233b8b); background: #f8fafc; }
-.pay-method-icon { font-size: 1.5rem; }
-.pay-method-info { flex: 1; display: flex; flex-direction: column; }
-.pay-method-name { font-weight: 700; font-size: 0.9rem; }
-.pay-method-num { font-size: 0.8rem; color: var(--mk-dim, #64748b); }
-.pay-method-arrow { color: var(--mk-dim, #94a3b8); }
-.pay-empty { text-align: center; padding: 2rem 1rem; color: var(--mk-dim, #64748b); }
-.pay-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--mk-dim, #64748b); font-size: 0.875rem; text-decoration: none; margin-bottom: 1rem; cursor: pointer; background: none; border: none; }
-.pay-back:hover { color: var(--mk-ink, #0f172a); }
-.pay-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; }
-.pay-badge-sm { display: inline-flex; align-items: center; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }
-.pay-dest { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.25rem; }
-.pay-dest-label { font-size: 0.75rem; font-weight: 700; color: #1e40af; }
-.pay-dest-row { display: flex; justify-content: space-between; align-items: center; margin: 0.35rem 0; }
-.pay-dest-num { font-family: monospace; font-size: 1.25rem; font-weight: 800; color: #1e3a8a; }
-.pay-dest-hint { font-size: 0.8rem; color: #1e40af; margin-top: 0.25rem; }
-.pay-copy { background: #fff; border: 1px solid #93c5fd; border-radius: 0.5rem; padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: #1d4ed8; cursor: pointer; }
-.pay-copy:hover { background: #dbeafe; }
-.pay-form { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-.pay-field { display: flex; flex-direction: column; gap: 0.35rem; }
-.pay-label { font-size: 0.85rem; font-weight: 600; }
-.pay-input { width: 100%; padding: 0.75rem 1rem; border-radius: 0.6rem; border: 1px solid #cbd5e1; font-size: 0.9rem; }
-.pay-input:focus { outline: none; border-color: var(--mk-primary, #233b8b); }
-.pay-upload { border: 2px dashed #cbd5e1; border-radius: 0.75rem; padding: 1.25rem; text-align: center; cursor: pointer; transition: border 0.15s; }
-.pay-upload:hover { border-color: var(--mk-primary, #233b8b); }
-.pay-upload-preview { max-height: 8rem; object-fit: contain; margin: 0 auto; }
-.pay-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
-.pay-upload-icon { font-size: 1.75rem; }
-.pay-error { color: #dc2626; background: #fee2e2; padding: 0.6rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; margin-bottom: 1rem; }
-.pay-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: 0.85rem 1.75rem; border-radius: 9999px; background: var(--mk-primary, #233b8b); color: #fff; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s, transform 0.15s; }
-.pay-btn-primary:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.95; }
-.pay-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.pay-btn-full { width: 100%; }
-.pay-center { text-align: center; }
-.pay-footer-hint { font-size: 0.78rem; color: var(--mk-dim, #64748b); text-align: center; margin-top: 0.75rem; }
-.pay-done { text-align: center; padding: 2rem 1rem; }
-.pay-done-icon { width: 4rem; height: 4rem; border-radius: 50%; background: #dcfce7; color: #16a34a; font-size: 2rem; display: grid; place-items: center; margin: 0 auto 1rem; }
-.pay-done-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem; }
-.pay-done-text { font-size: 0.9rem; color: var(--mk-dim, #64748b); line-height: 1.7; margin-bottom: 1.5rem; }
-.pay-history { margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem; }
-.pay-table-wrap { overflow-x: auto; }
-.pay-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
-.pay-table th { text-align: right; color: var(--mk-dim, #64748b); padding: 0.5rem; border-bottom: 1px solid #e2e8f0; }
-.pay-table td { padding: 0.6rem 0.5rem; border-bottom: 1px solid #f1f5f9; }
-.pay-link { color: var(--mk-primary, #233b8b); text-decoration: underline; }
-.pay-manual { margin-top: 1rem; }
-.pay-receipt-change { font-size: 0.75rem; color: var(--mk-primary, #233b8b); margin-top: 0.5rem; }
-.pay-receipt-name { font-size: 0.85rem; font-weight: 600; }
-.pay-receipt-preview { max-height: 10rem; border-radius: 0.5rem; }
-.pay-req { color: #dc2626; margin-inline-start: 0.2rem; }
-.pay-spinner { width: 1.25rem; height: 1.25rem; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
-.pay-upload-empty { color: var(--mk-dim, #64748b); font-size: 0.85rem; }
+/* أصغر ما يُقرأ ١٢ بكسلاً */
+.pay-step-t,
+.pay-plan-m,
+.pay-plan-d,
+.pay-sum-s,
+.pay-sec-t,
+.pay-row-l,
+.pay-f-l,
+.pay-m-h,
+.pay-drop-s { font-size: 0.75rem; }
 
+/* ══════════════════════════════════════════════════════════
+   ٢٦ — الحاويات الضيقة
+   ══════════════════════════════════════════════════════════ */
+@container paygate (max-width: 30rem) {
+  .pay-m-head { flex-wrap: wrap; }
+  .pay-m-name { flex: 1 1 8rem; }
+  .pay-m-num-v { font-size: 1.05rem; }
+  .pay-m-num-v[data-len="l"]  { font-size: 0.95rem; }
+  .pay-m-num-v[data-len="xl"] { font-size: 0.82rem; }
+  .pay-plan { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .pay-plan-p { text-align: start; }
+  .pay-plan-badge { margin-bottom: 0; }
+}
 
+@container paygate (max-width: 22rem) {
+  .pay-row { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+  .pay-row-v { width: 100%; justify-content: space-between; }
+  .pay-gate.pg-list-grid .pay-methods { grid-template-columns: minmax(0, 1fr); }
+  .pay-plans { display: grid; gap: 0.7rem; }
+}
 
+/* قائمة الخطط */
+.pay-plans { display: grid; gap: 0.7rem; }
+
+/* ══════════════════════════════════════════════════════════
+   ٢٧ — أنيميشن عام
+   ══════════════════════════════════════════════════════════ */
+@keyframes payFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pay-card { animation: payFadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; }

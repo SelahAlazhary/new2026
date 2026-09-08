@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
 import { planPrice } from "@/lib/business/plans";
 import {
@@ -22,11 +22,14 @@ import {
   Play,
   Award,
   Check,
+  TrendingUp,
+  Users,
+  Star,
 } from "lucide-react";
 
 /**
  * صفحةُ الموقع الأمّ — «أنشئ منصّتك التعليمية».
- * واجهة عصرية فائقة الاحترافية (World-class EdTech SaaS)
+ * واجهة عصرية فائقة الاحترافية — premium human-engineered design
  */
 
 const STEPS = [
@@ -35,63 +38,77 @@ const STEPS = [
     t: "سجّل حسابك في ثوانٍ",
     d: "تسجيل فوري عبر جوجل أو البريد الإلكتروني بدون أي تعقيد أو بطاقة بنكية.",
     icon: Zap,
+    color: "#2655e8",
+    bg: "#eff6ff",
   },
   {
     n: "02",
     t: "اختر خطّتك المناسبة",
     d: "اختر الخطة التي تناسب حجم طلابك واحتياجاتك مع إمكانية الترقية في أي وقت.",
     icon: Sparkles,
+    color: "#4f46e5",
+    bg: "#eef2ff",
   },
   {
     n: "03",
     t: "خصّص هويتك وشعارك",
     d: "أدخل اسمك، ألوانك الخاصة، وشعارك من بين تصاميم عصرية جاهزة.",
     icon: Layers,
+    color: "#7c3aed",
+    bg: "#f5f3ff",
   },
   {
     n: "04",
     t: "أطلق منصتك واستقبل طلابك",
     d: "رابط مخصص لطلابك ولوحة تحكم متكاملة لإدارة الكورسات، الدفع، والاختبارات.",
     icon: Globe,
+    color: "#059669",
+    bg: "#ecfdf5",
   },
 ];
 
 const FEATURES = [
   {
     icon: Video,
-    tag: "شروحات وفيديو",
+    tag: "محتوى وفيديو",
     t: "بث ودروس فائقة السرعة",
-    d: "مشغل فيديو مخصص وسريع بدون إعلانات مع دعم البث المباشر المباشر والواجبات المرتبطة بكل درس.",
+    d: "مشغل فيديو مخصص وسريع بدون إعلانات مع دعم البث المباشر والواجبات المرتبطة بكل درس.",
+    accent: "#2655e8",
   },
   {
     icon: Lock,
     tag: "أمان متقدم",
     t: "حماية المحتوى والعلامة المائية",
     d: "تقييد الحساب بجهاز واحد، علامة مائية ديناميكية برقم وهاتف الطالب، وحظر برامج تسجيل الشاشة.",
+    accent: "#7c3aed",
   },
   {
     icon: CreditCard,
     tag: "أموالك ومبيعاتك",
     t: "بوابات دفع محلية وأكواد",
     d: "استلم أموالك عبر فودافون كاش، إنستاباي، والفيزا مع نظام أكواد شحن فورية واشتراكات تلقائية.",
+    accent: "#059669",
   },
   {
     icon: Globe,
     tag: "علامتك التجارية",
     t: "دومين وهوية خاصة بك",
     d: "اربط منصتك بنطاقك المخصص (.com أو .net) لتظهر كأكاديمية مستقلة تماماً باسمك وشعارك.",
+    accent: "#d97706",
   },
   {
     icon: Smartphone,
     tag: "تجربة الطلاب",
     t: "تطبيق PWA لجميع الأجهزة",
     d: "منصتك تعمل كتطبيق هاتف خفيف وسريع على أجهزة أندرويد وآيفون والكمبيوتر بدون تحميل من المتجر.",
+    accent: "#0891b2",
   },
   {
     icon: BarChart3,
     tag: "ذكاء الإدارة",
     t: "لوحة تحكم وتقارير دقيقة",
     d: "تقارير شاملة عن درجات الطلاب، نسب المشاهدة، الإيرادات اليومية، ومتابعة الحضور والغياب.",
+    accent: "#4f46e5",
   },
 ];
 
@@ -118,425 +135,710 @@ const FAQS = [
   },
 ];
 
+const STATS = [
+  { v: "+٢,٤٠٠", l: "معلم ومحاضر", icon: Users },
+  { v: "+٨٦,٠٠٠", l: "طالب مسجّل", icon: TrendingUp },
+  { v: "٩٨.٤٪", l: "معدل رضا المستخدمين", icon: Star },
+];
+
+/* ── مكوّن ظهور عند الدخول في نطاق الرؤية ── */
+function FadeIn({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  return (
+    <div ref={ref} className={className}>
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+        transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
 export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }) {
   const [activeTab, setActiveTab] = useState<"teacher" | "student" | "player">("teacher");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <div className="mkt font-sans selection:bg-indigo-500/20 selection:text-indigo-900">
-      {/* ---------------- شريط علويّ زجاجي عائم ---------------- */}
+
+      {/* ════════════════ شريط التنقل ════════════════ */}
       <header className="mkt-bar">
         <div className="flex items-center gap-3">
-          <span className="mkt-logo text-xl tracking-tight text-slate-900 flex items-center gap-2">
-            <span className="size-8 rounded-xl bg-gradient-to-br from-blue-700 to-indigo-800 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-900/20">
-              {brand.slice(0, 1) || "م"}
-            </span>
-            {brand}
+          <span
+            className="size-9 rounded-xl flex items-center justify-center font-black text-sm text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg, #2655e8, #4f46e5)" }}
+          >
+            {brand.slice(0, 1) || "م"}
           </span>
-          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+          <span className="mkt-logo">{brand}</span>
+          <span
+            className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
+            style={{ background: "#eff6ff", color: "#2655e8", borderColor: "rgba(37,85,232,0.2)" }}
+          >
             <Sparkles className="size-3" /> الجيل الثاني
           </span>
         </div>
 
         <nav className="mkt-bar-nav">
-          <a href="#how" className="hidden sm:block font-semibold text-slate-600 transition hover:text-blue-700">كيف يعمل؟</a>
-          <a href="#features" className="hidden sm:block font-semibold text-slate-600 transition hover:text-blue-700">المميزات</a>
-          <a href="#plans" className="font-semibold text-slate-600 transition hover:text-blue-700">الأسعار</a>
-          <a href="#faq" className="hidden md:block font-semibold text-slate-600 transition hover:text-blue-700">الأسئلة</a>
-          <Link href="/start" className="mkt-bar-cta inline-flex items-center gap-1.5 shadow-md shadow-blue-700/25">
+          <a href="#how"      className="hidden sm:block">كيف يعمل؟</a>
+          <a href="#features" className="hidden sm:block">المميزات</a>
+          <a href="#plans"                               >الأسعار</a>
+          <a href="#faq"      className="hidden md:block">الأسئلة</a>
+          <Link href="/start" className="mkt-bar-cta">
             ابدأ الآن <ArrowLeft className="size-3.5" />
           </Link>
         </nav>
       </header>
 
-      {/* ---------------- قسم الهيرو الرئيسي ---------------- */}
-      <section className="mkt-hero relative overflow-hidden">
-        {/* هالات ضوئية ناعمة في الخلفية */}
-        <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-[42rem] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-400/20 via-indigo-400/15 to-amber-300/15 blur-3xl" />
+      {/* ════════════════ الهيرو ════════════════ */}
+      <section className="mkt-hero">
 
-        <div className="mkt-eyebrow inline-flex items-center gap-2">
-          <span className="flex size-2 rounded-full bg-amber-500 animate-pulse" />
-          <span>المنصة السحابية الأولى لإطلاق أكاديميتك التعليمية أونلاين</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="mkt-eyebrow">
+            <span className="flex size-2 rounded-full bg-amber-500 animate-pulse" />
+            <span>المنصة السحابية الأولى لإطلاق أكاديميتك التعليمية أونلاين</span>
+          </div>
+        </motion.div>
 
-        <h1 className="mkt-title mt-4 text-slate-950 font-black tracking-tight [text-wrap:balance]">
+        <motion.h1
+          className="mkt-title"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+        >
           أنشئ منصّتك التعليمية المتكاملة
-          <br />
           <span className="mkt-title-em">باسمك وهويّتك الكاملة</span>
-        </h1>
+        </motion.h1>
 
-        <p className="mkt-sub text-slate-600 font-medium">
+        <motion.p
+          className="mkt-sub"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
+        >
           كل ما تحتاجه كمعلم ومحاضر للتدريس أونلاين باحترافية: كورسات، دروس فيديو محمية، اختبارات تلقائية، بث مباشر، وبوابات دفع — على منصة مستقلة برابطك الخاص وبدون كتابة سطر كود واحد.
-        </p>
+        </motion.p>
 
-        <div className="mkt-hero-cta">
-          <Link href="/start" className="mkt-primary mkt-primary-lg inline-flex items-center gap-2 font-bold shadow-xl shadow-blue-700/25">
+        <motion.div
+          className="mkt-hero-cta"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Link href="/start" className="mkt-primary mkt-primary-lg">
             أنشئ منصّتك الآن <ArrowLeft className="size-4" />
           </Link>
-          <a href="#demo" className="mkt-ghost inline-flex items-center gap-2">
-            <Play className="size-4 text-blue-700 fill-blue-700/20" /> استكشف المنصة
+          <a href="#demo" className="mkt-ghost">
+            <Play className="size-4" style={{ color: "#2655e8", fill: "rgba(37,85,232,0.15)" }} />
+            استكشف المنصة
           </a>
-        </div>
+        </motion.div>
 
-        <p className="mkt-note flex items-center justify-center gap-2 text-xs font-semibold text-slate-500">
-          <CheckCircle2 className="size-3.5 text-emerald-600" /> إطلاق فوري في دقيقة
-          <span className="text-slate-300">•</span>
-          <CheckCircle2 className="size-3.5 text-emerald-600" /> دعم فني متواصل
-          <span className="text-slate-300">•</span>
-          <CheckCircle2 className="size-3.5 text-emerald-600" /> حماية متقدمة لمحتواك
-        </p>
+        <motion.p
+          className="mkt-note flex items-center justify-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.36 }}
+        >
+          <CheckCircle2 className="size-3.5" style={{ color: "#059669" }} /> إطلاق فوري في دقيقة
+          <span style={{ color: "#cbd5e1" }}>•</span>
+          <CheckCircle2 className="size-3.5" style={{ color: "#059669" }} /> دعم فني متواصل
+          <span style={{ color: "#cbd5e1" }}>•</span>
+          <CheckCircle2 className="size-3.5" style={{ color: "#059669" }} /> حماية متقدمة لمحتواك
+        </motion.p>
 
-        {/* ---------------- معاينة الواجهة التفاعلية (Interactive Showcase) ---------------- */}
-        <div id="demo" className="mt-14 w-full max-w-5xl mx-auto rounded-3xl border border-slate-200/80 bg-white/80 p-3 shadow-2xl shadow-blue-900/10 backdrop-blur-xl">
-          {/* شريط التحكم بالمعاينة */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 pb-3 pt-2">
+        {/* ─── إحصائيات الثقة ─── */}
+        <motion.div
+          className="mt-10 flex flex-wrap justify-center gap-6"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.44 }}
+        >
+          {STATS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div
+                key={s.l}
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
+                style={{
+                  background: "rgba(255,255,255,0.85)",
+                  border: "1px solid rgba(30,60,120,0.09)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 2px 12px -4px rgba(10,20,60,0.08)",
+                }}
+              >
+                <span
+                  className="size-7 rounded-xl flex items-center justify-center"
+                  style={{ background: "#eff6ff", color: "#2655e8" }}
+                >
+                  <Icon className="size-3.5" />
+                </span>
+                <div className="text-right">
+                  <div className="font-black text-sm" style={{ color: "#0a0f1e", letterSpacing: "-0.02em" }}>{s.v}</div>
+                  <div className="text-xs font-medium" style={{ color: "#8496b5" }}>{s.l}</div>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
+
+        {/* ─── معاينة الواجهة التفاعلية ─── */}
+        <motion.div
+          id="demo"
+          className="mt-14 w-full max-w-5xl mx-auto"
+          style={{
+            borderRadius: "1.5rem",
+            border: "1px solid rgba(30,60,120,0.1)",
+            background: "rgba(255,255,255,0.9)",
+            padding: "0.75rem",
+            boxShadow: "0 4px 6px -1px rgba(10,20,60,0.04), 0 24px 56px -16px rgba(10,20,60,0.12)",
+            backdropFilter: "blur(16px)",
+          }}
+          initial={{ opacity: 0, y: 32, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.65, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {/* شريط التحكم */}
+          <div
+            className="flex flex-wrap items-center justify-between gap-3 px-4 pb-3 pt-2"
+            style={{ borderBottom: "1px solid rgba(30,60,120,0.07)" }}
+          >
             <div className="flex items-center gap-1.5">
               <span className="size-3 rounded-full bg-rose-400/80" />
               <span className="size-3 rounded-full bg-amber-400/80" />
               <span className="size-3 rounded-full bg-emerald-400/80" />
-              <span className="mr-3 text-xs font-mono font-bold text-slate-400">yourname.platform.edu</span>
+              <span
+                className="mr-3 text-xs font-mono font-bold"
+                style={{ color: "#8496b5" }}
+              >
+                yourname.platform.edu
+              </span>
             </div>
 
-            <div className="flex items-center gap-1 rounded-xl bg-slate-100/80 p-1 text-xs font-bold">
-              <button
-                type="button"
-                onClick={() => setActiveTab("teacher")}
-                className={`rounded-lg px-3 py-1.5 transition ${activeTab === "teacher" ? "bg-white text-blue-700 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
-              >
-                لوحة المعلم
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("student")}
-                className={`rounded-lg px-3 py-1.5 transition ${activeTab === "student" ? "bg-white text-blue-700 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
-              >
-                بوابة الطالب
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("player")}
-                className={`rounded-lg px-3 py-1.5 transition ${activeTab === "player" ? "bg-white text-blue-700 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
-              >
-                مشغل الفيديو المحمي
-              </button>
+            <div
+              className="flex items-center gap-1 rounded-xl p-1 text-xs font-bold"
+              style={{ background: "rgba(30,60,120,0.06)" }}
+            >
+              {(["teacher", "student", "player"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className="rounded-lg px-3 py-1.5 transition-all"
+                  style={
+                    activeTab === tab
+                      ? {
+                          background: "#fff",
+                          color: "#2655e8",
+                          boxShadow: "0 1px 4px rgba(10,20,60,0.08)",
+                        }
+                      : { color: "#526080" }
+                  }
+                >
+                  {tab === "teacher" ? "لوحة المعلم" : tab === "student" ? "بوابة الطالب" : "مشغل الفيديو المحمي"}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* محتوى الشاشة التجريبية */}
-          <div className="overflow-hidden rounded-2xl bg-gradient-to-b from-slate-50/50 to-white p-6 text-right">
-            {activeTab === "teacher" && (
-              <div className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                  <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <span className="text-xs font-bold text-slate-400">إجمالي الطلاب</span>
-                    <p className="mt-1 text-2xl font-black text-slate-900">١,٤٨٢</p>
-                    <span className="mt-1 inline-flex items-center text-[11px] font-bold text-emerald-600">+١٤٪ هذا الشهر</span>
+          <div
+            className="overflow-hidden rounded-2xl p-6 text-right"
+            style={{ background: "linear-gradient(160deg, #f8faff 0%, #ffffff 100%)" }}
+          >
+            <AnimatePresence mode="wait">
+              {activeTab === "teacher" && (
+                <motion.div
+                  key="teacher"
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { l: "إجمالي الطلاب", v: "١٬٤٨٢", s: "+١٤٪ هذا الشهر", sc: "#059669", bg: "#f0fdf4" },
+                      { l: "المبيعات الإجمالية", v: "٨٤٬٥٠٠ ج.م", s: "تسليم فوري ومباشر", sc: "#059669", bg: "#f0fdf4" },
+                      { l: "الدروس المكتملة", v: "٩٦.٤٪", s: "تفاعل قياسي", sc: "#4f46e5", bg: "#eef2ff" },
+                      { l: "حماية الأجهزة", v: "١٠٠٪", s: "لا تسريب أو مشاركة", sc: "#526080", bg: "#f8faff" },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="rounded-2xl p-4"
+                        style={{
+                          background: "#fff",
+                          border: "1px solid rgba(30,60,120,0.07)",
+                          boxShadow: "0 2px 8px -4px rgba(10,20,60,0.06)",
+                        }}
+                      >
+                        <span className="text-xs font-bold" style={{ color: "#8496b5" }}>{item.l}</span>
+                        <p className="mt-1 text-xl font-black" style={{ color: "#0a0f1e", letterSpacing: "-0.03em" }}>{item.v}</p>
+                        <span className="mt-1 inline-flex items-center text-[11px] font-bold" style={{ color: item.sc }}>{item.s}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <span className="text-xs font-bold text-slate-400">المبيعات الإجمالية</span>
-                    <p className="mt-1 text-2xl font-black text-blue-700">٨٤,٥٠٠ <span className="text-xs">ج.م</span></p>
-                    <span className="mt-1 inline-flex items-center text-[11px] font-bold text-emerald-600">تسليم فوري ومباشر</span>
-                  </div>
-                  <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <span className="text-xs font-bold text-slate-400">الدروس المكتملة</span>
-                    <p className="mt-1 text-2xl font-black text-slate-900">٩٦.٤٪</p>
-                    <span className="mt-1 inline-flex items-center text-[11px] font-bold text-indigo-600">تفاعل قياسي</span>
-                  </div>
-                  <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <span className="text-xs font-bold text-slate-400">حماية الأجهزة النشطة</span>
-                    <p className="mt-1 text-2xl font-black text-emerald-600">١٠٠٪</p>
-                    <span className="mt-1 inline-flex items-center text-[11px] font-bold text-slate-500">لا تسريب أو مشاركة</span>
-                  </div>
-                </div>
 
-                <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="size-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
-                      📚
+                  <div
+                    className="rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+                    style={{
+                      background: "#fff",
+                      border: "1px solid rgba(30,60,120,0.07)",
+                      boxShadow: "0 2px 8px -4px rgba(10,20,60,0.06)",
+                    }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="size-12 rounded-2xl flex items-center justify-center font-bold text-lg"
+                        style={{ background: "#eff6ff", color: "#2655e8" }}
+                      >
+                        📚
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm" style={{ color: "#0a0f1e" }}>مراجعة ليلة الامتحان — الصف الثالث الثانوي</h4>
+                        <p className="text-xs mt-0.5" style={{ color: "#8496b5" }}>٣ فصول · ١٢ فيديو مسجل · ٤ اختبارات تدريبية</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-base">مراجعة ليلة الامتحان — الصف الثالث الثانوي</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">٣ فصول · ١٢ فيديو مسجل · ٤ اختبارات تدريبية</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-bold border"
+                      style={{ background: "#f0fdf4", color: "#059669", borderColor: "rgba(5,150,105,0.2)" }}
+                    >
                       نشط ومنشور للطلاب
                     </span>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {activeTab === "student" && (
-              <div className="space-y-4">
-                <div className="rounded-2xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-6 shadow-md">
-                  <span className="text-xs font-semibold text-blue-200">مرحباً بك يا بطل ✨</span>
-                  <h3 className="text-xl font-bold mt-1">تابع دروسك واستعد للاختبار القادم</h3>
-                  <div className="mt-4 flex flex-wrap gap-4 text-xs">
-                    <span className="bg-white/10 px-3 py-1 rounded-full">الفرع: النحو والبلاغة</span>
-                    <span className="bg-white/10 px-3 py-1 rounded-full">الواجب القادم: الأحد ٨ مساءً</span>
+              {activeTab === "student" && (
+                <motion.div
+                  key="student"
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-4"
+                >
+                  <div
+                    className="rounded-2xl p-6 text-white"
+                    style={{
+                      background: "linear-gradient(135deg, #1a2a6c, #2655e8, #4f46e5)",
+                      boxShadow: "0 12px 40px -12px rgba(37,85,232,0.4)",
+                    }}
+                  >
+                    <span className="text-xs font-semibold" style={{ color: "#bfdbfe" }}>مرحباً بك يا بطل ✨</span>
+                    <h3 className="text-lg font-bold mt-1">تابع دروسك واستعد للاختبار القادم</h3>
+                    <div className="mt-4 flex flex-wrap gap-3 text-xs">
+                      <span
+                        className="px-3 py-1 rounded-full font-semibold"
+                        style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(4px)" }}
+                      >
+                        الفرع: النحو والبلاغة
+                      </span>
+                      <span
+                        className="px-3 py-1 rounded-full font-semibold"
+                        style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(4px)" }}
+                      >
+                        الواجب القادم: الأحد ٨ مساءً
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {activeTab === "player" && (
-              <div className="space-y-3">
-                <div className="relative aspect-video w-full rounded-2xl bg-slate-950 flex flex-col items-center justify-center text-white overflow-hidden shadow-inner">
-                  <div className="absolute top-4 right-4 rounded-lg bg-black/60 px-3 py-1 text-[11px] font-mono text-amber-300 backdrop-blur-md">
-                    WATERMARK: 010****XXXX (اسم الطالب)
+              {activeTab === "player" && (
+                <motion.div
+                  key="player"
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-3"
+                >
+                  <div
+                    className="relative aspect-video w-full rounded-2xl flex flex-col items-center justify-center text-white overflow-hidden"
+                    style={{
+                      background: "linear-gradient(135deg, #0a0f1e, #1a2240)",
+                      boxShadow: "inset 0 0 60px rgba(0,0,0,0.4)",
+                    }}
+                  >
+                    <div
+                      className="absolute top-3 right-3 rounded-lg px-3 py-1 text-[11px] font-mono"
+                      style={{ background: "rgba(0,0,0,0.5)", color: "#fbbf24", backdropFilter: "blur(8px)" }}
+                    >
+                      WATERMARK: 010****XXXX (اسم الطالب)
+                    </div>
+                    <div
+                      className="size-16 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition hover:scale-105"
+                      style={{
+                        background: "linear-gradient(135deg, #2655e8, #4f46e5)",
+                        boxShadow: "0 8px 32px rgba(37,85,232,0.5)",
+                      }}
+                    >
+                      <Play className="size-7 fill-white ml-0.5" />
+                    </div>
+                    <p className="mt-4 font-bold text-sm" style={{ color: "#bfdbfe" }}>مشغل محمي ضد برامج تصوير الشاشة والتحميل الخارجي</p>
                   </div>
-                  <div className="size-16 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg shadow-blue-500/40 cursor-pointer hover:scale-105 transition">
-                    <Play className="size-7 fill-white ml-0.5" />
-                  </div>
-                  <p className="mt-4 font-bold text-sm text-slate-200">مشغل محمي ضد برامج تصوير الشاشة والتحميل الخارجي</p>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* ---------------- الخطوات الأربع ---------------- */}
+      {/* ════════════════ الخطوات ════════════════ */}
       <section id="how" className="mkt-steps">
-        <div className="col-span-full text-center mb-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/50">
-            خطوات بسيطة وسريعة
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">كيف تبدأ تدريسك في ٤ خطوات؟</h2>
+        <div className="col-span-full text-center mb-6">
+          <FadeIn>
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
+              style={{ color: "#2655e8", background: "#eff6ff", borderColor: "rgba(37,85,232,0.2)" }}
+            >
+              خطوات بسيطة وسريعة
+            </span>
+            <h2 className="mkt-h2 mt-3">كيف تبدأ تدريسك في ٤ خطوات؟</h2>
+          </FadeIn>
         </div>
 
-        {STEPS.map((s) => {
+        {STEPS.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={s.n} className="mkt-step group relative transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-300">
-              <div className="flex items-center justify-between mb-2">
-                <span className="mkt-step-n font-mono">{s.n}</span>
-                <span className="size-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center transition group-hover:bg-blue-700 group-hover:text-white">
-                  <Icon className="size-4" />
-                </span>
+            <FadeIn key={s.n} delay={i * 0.07}>
+              <div className="mkt-step group h-full">
+                <div className="flex items-center justify-between mb-3">
+                  <span
+                    className="mkt-step-n font-mono"
+                    style={{ color: s.color, background: s.bg, borderColor: `${s.color}22` }}
+                  >
+                    {s.n}
+                  </span>
+                  <span
+                    className="size-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                    style={{
+                      background: s.bg,
+                      color: s.color,
+                      border: `1px solid ${s.color}22`,
+                    }}
+                  >
+                    <Icon className="size-4.5" />
+                  </span>
+                </div>
+                <b className="mkt-step-t">{s.t}</b>
+                <span className="mkt-step-d">{s.d}</span>
               </div>
-              <b className="mkt-step-t text-slate-900">{s.t}</b>
-              <span className="mkt-step-d text-slate-600">{s.d}</span>
-            </div>
+            </FadeIn>
           );
         })}
       </section>
 
-      {/* ---------------- المزايا بنظام Bento Grid ---------------- */}
+      {/* ════════════════ المميزات ════════════════ */}
       <section id="features" className="mkt-features">
-        <div className="text-center mb-8">
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/50">
-            كل ما تحتاجه للنجاح
-          </span>
-          <h2 className="mkt-h2 mt-2 text-slate-950 font-black">أدوات متطورة مصممة خصيصاً للمدرسين</h2>
-          <p className="text-slate-500 text-sm max-w-xl mx-auto mt-2">
-            تم بناء المنصة على تجربة آلاف الطلاب والمعلمين في مصر والشرق الأوسط لتوفر لك أعلى نسب التزام وأسهل إدارة لمحتواك.
-          </p>
-        </div>
+        <FadeIn>
+          <div className="text-center mb-10">
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
+              style={{ color: "#d97706", background: "#fffbeb", borderColor: "rgba(217,119,6,0.25)" }}
+            >
+              كل ما تحتاجه للنجاح
+            </span>
+            <h2 className="mkt-h2 mt-3">أدوات متطورة مصممة خصيصاً للمدرسين</h2>
+            <p className="text-sm max-w-xl mx-auto mt-3 leading-relaxed" style={{ color: "#526080" }}>
+              تم بناء المنصة على تجربة آلاف الطلاب والمعلمين في مصر والشرق الأوسط لتوفر لك أعلى نسب التزام وأسهل إدارة لمحتواك.
+            </p>
+          </div>
+        </FadeIn>
 
         <div className="mkt-grid">
-          {FEATURES.map((f) => {
+          {FEATURES.map((f, i) => {
             const Icon = f.icon;
             return (
-              <div key={f.t} className="mkt-feat group relative overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-300">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="size-11 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 flex items-center justify-center group-hover:scale-110 transition duration-300">
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-400 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-100">
-                    {f.tag}
-                  </span>
+              <FadeIn key={f.t} delay={i * 0.06}>
+                <div className="mkt-feat group h-full relative overflow-hidden">
+                  {/* خط جانبي ملوّن */}
+                  <div
+                    className="absolute inset-inline-end-0 top-6 bottom-6 w-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: f.accent }}
+                  />
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className="size-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        background: `${f.accent}14`,
+                        color: f.accent,
+                        border: `1px solid ${f.accent}22`,
+                        boxShadow: `0 4px 12px -4px ${f.accent}25`,
+                      }}
+                    >
+                      <Icon className="size-5" />
+                    </span>
+                    <span
+                      className="text-[11px] font-bold px-2.5 py-1 rounded-full border"
+                      style={{
+                        color: f.accent,
+                        background: `${f.accent}10`,
+                        borderColor: `${f.accent}22`,
+                      }}
+                    >
+                      {f.tag}
+                    </span>
+                  </div>
+                  <b className="mkt-feat-t block">{f.t}</b>
+                  <p className="mkt-feat-d">{f.d}</p>
                 </div>
-                <b className="mkt-feat-t text-slate-900 text-lg block">{f.t}</b>
-                <p className="mkt-feat-d text-slate-600 text-sm mt-2 leading-relaxed">{f.d}</p>
-              </div>
+              </FadeIn>
             );
           })}
         </div>
       </section>
 
-      {/* ---------------- الخطط والأسعار ---------------- */}
+      {/* ════════════════ الأسعار ════════════════ */}
       <section id="plans" className="mkt-plans">
-        <div className="text-center mb-8">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/50">
-            استثمار واضح بلا مفاجآت
-          </span>
-          <h2 className="mkt-h2 mt-2 text-slate-950 font-black">خطط مرنة تنمو مع تزايد طلابك</h2>
-          <p className="text-slate-500 text-sm max-w-lg mx-auto mt-2">
-            اختر الخطة المناسبة لك ويمكنك الترقية أو التبديل في أي وقت حسب احتياجاتك.
-          </p>
-        </div>
+        <FadeIn>
+          <div className="text-center mb-2">
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
+              style={{ color: "#2655e8", background: "#eff6ff", borderColor: "rgba(37,85,232,0.2)" }}
+            >
+              استثمار واضح بلا مفاجآت
+            </span>
+            <h2 className="mkt-h2 mt-3">خطط مرنة تنمو مع تزايد طلابك</h2>
+            <p className="text-sm max-w-lg mx-auto mt-3 leading-relaxed" style={{ color: "#526080" }}>
+              اختر الخطة المناسبة لك ويمكنك الترقية أو التبديل في أي وقت حسب احتياجاتك.
+            </p>
+          </div>
+        </FadeIn>
 
         <div className="mkt-plan-grid">
-          {plans.map((p) => {
+          {plans.map((p, i) => {
             const price = planPrice({ price: p.priceEGP, discount: p.discount });
             const isHot = Boolean(p.highlight);
 
             return (
-              <div
-                key={p.id}
-                className={`mkt-plan transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/10 ${
-                  isHot ? "is-hot ring-2 ring-blue-700" : ""
-                }`}
-              >
-                {p.badge && (
-                  <span className="mkt-plan-badge flex items-center gap-1 font-bold shadow-md shadow-amber-500/20">
-                    <Sparkles className="size-3" /> {p.badge}
-                  </span>
-                )}
-
-                <div className="flex items-center justify-between">
-                  <b className="mkt-plan-name text-slate-900 text-xl">{p.name}</b>
-                  {isHot && (
-                    <span className="size-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center">
-                      <Award className="size-4" />
+              <FadeIn key={p.id} delay={i * 0.07}>
+                <div className={`mkt-plan h-full ${isHot ? "is-hot" : ""}`}>
+                  {p.badge && (
+                    <span className="mkt-plan-badge">
+                      <Sparkles className="size-3" /> {p.badge}
                     </span>
                   )}
-                </div>
 
-                {p.desc && <span className="mkt-plan-desc text-slate-500 text-xs">{p.desc}</span>}
+                  <div className="flex items-center justify-between mt-1">
+                    <b className="mkt-plan-name">{p.name}</b>
+                    {isHot && (
+                      <span
+                        className="size-8 rounded-full flex items-center justify-center"
+                        style={{ background: "#eff6ff", color: "#2655e8" }}
+                      >
+                        <Award className="size-4" />
+                      </span>
+                    )}
+                  </div>
 
-                <div className="mkt-plan-price my-2 border-y border-slate-100 py-3">
-                  <div className="flex items-baseline gap-1">
-                    <span className="mkt-plan-num text-3xl font-black text-slate-900">
+                  {p.desc && <span className="mkt-plan-desc">{p.desc}</span>}
+
+                  <div className="mkt-plan-price">
+                    <span className="mkt-plan-num">
                       {price.price.toLocaleString("ar-EG")}
                     </span>
-                    <span className="mkt-plan-cur text-xs font-bold text-slate-500">
+                    <span className="mkt-plan-cur">
                       ج.م / {p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ أشهر" : "سنة"}
                     </span>
                   </div>
+
+                  <ul className="my-4 space-y-2.5 text-xs font-medium" style={{ color: "#526080" }}>
+                    {[
+                      p.limits?.maxStudents ? `حتى ${p.limits.maxStudents} طالب` : "عدد طلاب غير محدود",
+                      p.limits?.customDomain ? "دومين خاص مخصص" : "دومين فرعي سريع مجاني",
+                      "حماية متقدمة وعلامة مائية",
+                      "دعم فني سريع طوال الأسبوع",
+                    ].map((feat, fi) => (
+                      <li key={fi} className="flex items-center gap-2">
+                        <Check className="size-3.5 shrink-0" style={{ color: isHot ? "#2655e8" : "#059669" }} />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href="/start"
+                    className={`mkt-plan-cta ${isHot ? "is-hot" : ""}`}
+                  >
+                    اختر {p.name} <ArrowLeft className="size-3.5" />
+                  </Link>
                 </div>
-
-                {/* trialDays removed */}
-
-                <ul className="my-4 space-y-2 text-xs font-medium text-slate-600">
-                  <li className="flex items-center gap-2">
-                    <Check className="size-3.5 text-blue-700" />
-                    <span>{p.limits?.maxStudents ? `حتى ${p.limits.maxStudents} طالب` : "عدد طلاب غير محدود"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="size-3.5 text-blue-700" />
-                    <span>{p.limits?.customDomain ? "دومين خاص مخصص" : "دومين فرعي سريع مجاني"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="size-3.5 text-blue-700" />
-                    <span>حماية متقدمة وعلامة مائية</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="size-3.5 text-blue-700" />
-                    <span>دعم فني سريع طوال الأسبوع</span>
-                  </li>
-                </ul>
-
-                <Link
-                  href="/start"
-                  className={`mkt-plan-cta mt-auto font-bold inline-flex items-center justify-center gap-1.5 shadow-sm ${
-                    isHot ? "is-hot shadow-md shadow-blue-700/25" : ""
-                  }`}
-                >
-                  اختر {p.name} <ArrowLeft className="size-3.5" />
-                </Link>
-              </div>
+              </FadeIn>
             );
           })}
         </div>
       </section>
 
-      {/* ---------------- الأسئلة الشائعة ---------------- */}
-      <section id="faq" className="max-w-3xl mx-auto px-4 mt-20">
-        <div className="text-center mb-8">
-          <span className="text-xs font-bold uppercase tracking-widest text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-            إجابات واضحة
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">الأسئلة الأكثر شيوعاً</h2>
-        </div>
+      {/* ════════════════ الأسئلة الشائعة ════════════════ */}
+      <section id="faq" className="max-w-3xl mx-auto px-5 mt-24">
+        <FadeIn>
+          <div className="text-center mb-10">
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border"
+              style={{ color: "#526080", background: "#f8faff", borderColor: "rgba(30,60,120,0.1)" }}
+            >
+              إجابات واضحة
+            </span>
+            <h2 className="mkt-h2 mt-3">الأسئلة الأكثر شيوعاً</h2>
+          </div>
+        </FadeIn>
 
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {FAQS.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
-              <div
-                key={idx}
-                className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white transition hover:border-slate-300"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full p-4 text-right flex items-center justify-between gap-4 font-bold text-slate-900 text-sm sm:text-base"
+              <FadeIn key={idx} delay={idx * 0.04}>
+                <div
+                  className="overflow-hidden rounded-2xl transition-all"
+                  style={{
+                    border: isOpen
+                      ? "1.5px solid rgba(37,85,232,0.2)"
+                      : "1px solid rgba(30,60,120,0.09)",
+                    background: isOpen
+                      ? "linear-gradient(135deg, #f8fbff, #ffffff)"
+                      : "#ffffff",
+                    boxShadow: isOpen
+                      ? "0 8px 24px -8px rgba(37,85,232,0.1)"
+                      : "0 2px 8px -4px rgba(10,20,60,0.04)",
+                  }}
                 >
-                  <span>{faq.q}</span>
-                  <ChevronDown
-                    className={`size-4 shrink-0 text-slate-400 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-blue-700" : ""
-                    }`}
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <div className="px-4 pb-4 pt-1 text-xs sm:text-sm leading-relaxed text-slate-600 border-t border-slate-100">
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full p-4 text-right flex items-center justify-between gap-4 font-bold text-sm sm:text-base"
+                    style={{ color: isOpen ? "#2655e8" : "#0a0f1e" }}
+                  >
+                    <span>{faq.q}</span>
+                    <ChevronDown
+                      className="size-4 shrink-0 transition-transform duration-250"
+                      style={{
+                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                        color: isOpen ? "#2655e8" : "#8496b5",
+                      }}
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <div
+                          className="px-4 pb-4 pt-1 text-xs sm:text-sm leading-relaxed"
+                          style={{
+                            color: "#526080",
+                            borderTop: "1px solid rgba(37,85,232,0.08)",
+                          }}
+                        >
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </FadeIn>
             );
           })}
         </div>
       </section>
 
-      {/* ---------------- دعوة ختامية فائقة الجاذبية ---------------- */}
-      <section className="mkt-final relative">
-        <div className="rounded-3xl bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-950 p-8 sm:p-14 text-center text-white shadow-2xl shadow-blue-900/30 overflow-hidden relative">
-          <div className="pointer-events-none absolute -top-12 -right-12 size-60 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-12 -left-12 size-60 rounded-full bg-amber-400/15 blur-3xl" />
-
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-amber-300 border border-white/15 mb-4">
-            <Sparkles className="size-3.5" /> ابدأ اليوم
-          </span>
-          <h2 className="mkt-final-h text-2xl sm:text-4xl font-black text-white leading-tight">
-            جاهز لتصبح صاحب أكاديمية تعليمية متكاملة؟
-          </h2>
-          <p className="text-blue-200/90 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
-            انضم الآن لمئات المعلمين الذين نقلوا تدريسهم إلى مستوى احترافي غير مسبوق وضاعفوا أعداد طلابهم.
-          </p>
-          <Link
-            href="/start"
-            className="mkt-primary mkt-primary-lg inline-flex items-center gap-2 font-bold bg-white !text-blue-950 hover:bg-slate-100 shadow-2xl"
+      {/* ════════════════ الدعوة الختامية ════════════════ */}
+      <section className="mkt-final">
+        <FadeIn>
+          <div
+            className="rounded-3xl p-8 sm:p-14 text-center text-white overflow-hidden relative"
+            style={{
+              background: "linear-gradient(135deg, #0f1f5c 0%, #1a3a9c 35%, #2655e8 65%, #4f46e5 100%)",
+              boxShadow: "0 32px 80px -24px rgba(37,85,232,0.45)",
+            }}
           >
-            أنشئ منصّتك الآن <ArrowLeft className="size-4" />
-          </Link>
-        </div>
+            {/* هالات ضوء */}
+            <div
+              className="pointer-events-none absolute -top-16 -right-16 size-72 rounded-full opacity-30"
+              style={{ background: "radial-gradient(circle, rgba(255,255,255,0.25), transparent)" }}
+            />
+            <div
+              className="pointer-events-none absolute -bottom-16 -left-16 size-72 rounded-full opacity-25"
+              style={{ background: "radial-gradient(circle, rgba(251,191,36,0.4), transparent)" }}
+            />
+
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5"
+              style={{ background: "rgba(255,255,255,0.12)", color: "#fbbf24", border: "1px solid rgba(255,255,255,0.15)" }}
+            >
+              <Sparkles className="size-3.5" /> ابدأ اليوم
+            </span>
+
+            <h2 className="mkt-final-h">
+              جاهز لتصبح صاحب أكاديمية تعليمية متكاملة؟
+            </h2>
+            <p
+              className="text-sm sm:text-base max-w-xl mx-auto mb-10 leading-relaxed"
+              style={{ color: "rgba(191,219,254,0.9)" }}
+            >
+              انضم الآن لمئات المعلمين الذين نقلوا تدريسهم إلى مستوى احترافي غير مسبوق وضاعفوا أعداد طلابهم.
+            </p>
+            <Link
+              href="/start"
+              className="mkt-primary mkt-primary-lg inline-flex items-center gap-2 font-bold"
+              style={{ background: "#fff", color: "#1a3ebf" }}
+            >
+              أنشئ منصّتك الآن <ArrowLeft className="size-4" />
+            </Link>
+          </div>
+        </FadeIn>
       </section>
 
-      {/* ---------------- الفوتر ---------------- */}
+      {/* ════════════════ الفوتر ════════════════ */}
       <footer className="mkt-foot">
         <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-5xl px-4 py-4 gap-4">
           <div className="flex items-center gap-2">
-            <span className="size-6 rounded-lg bg-blue-700 text-white flex items-center justify-center text-xs font-bold">
+            <span
+              className="size-7 rounded-lg flex items-center justify-center text-xs font-bold text-white"
+              style={{ background: "linear-gradient(135deg, #2655e8, #4f46e5)" }}
+            >
               {brand.slice(0, 1) || "م"}
             </span>
-            <span className="font-bold text-slate-800">{brand}</span>
-            <span className="text-xs text-slate-400">· منصّة إنشاء المنصّات التعليمية</span>
+            <span className="font-bold" style={{ color: "#0a0f1e" }}>{brand}</span>
+            <span className="text-xs" style={{ color: "#8496b5" }}>· منصّة إنشاء المنصّات التعليمية</span>
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-slate-500 font-medium">
-            <a href="#plans" className="hover:text-blue-700 transition">الأسعار</a>
-            <a href="#features" className="hover:text-blue-700 transition">المميزات</a>
-            <Link href="/login" className="hover:text-blue-700 transition">دخول لوحة التحكم</Link>
-            <Link href="/start" className="hover:text-blue-700 transition font-bold text-blue-700">إنشاء منصة</Link>
+          <div className="flex items-center gap-6 text-xs font-medium" style={{ color: "#526080" }}>
+            <a href="#plans"    className="transition hover:text-[#2655e8]">الأسعار</a>
+            <a href="#features" className="transition hover:text-[#2655e8]">المميزات</a>
+            <Link href="/login" className="transition hover:text-[#2655e8]">دخول لوحة التحكم</Link>
+            <Link href="/start" className="font-bold hover:opacity-80 transition" style={{ color: "#2655e8" }}>إنشاء منصة</Link>
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400 mt-2 border-t border-slate-100 pt-3 w-full text-center">
+        <div
+          className="text-[11px] mt-2 pt-3 w-full text-center"
+          style={{
+            borderTop: "1px solid rgba(30,60,120,0.07)",
+            color: "#8496b5",
+          }}
+        >
           جميع الحقوق محفوظة © {new Date().getFullYear()} {brand}. تم التصميم بأعلى معايير الجودة والأمان.
         </div>
       </footer>

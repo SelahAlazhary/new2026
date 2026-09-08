@@ -176,11 +176,13 @@ export function middleware(req: NextRequest) {
     const parts = pathname.split("/");
     const slug = (parts[2] ?? "").toLowerCase();
     if (slug && SLUG_RE.test(slug)) {
-      const rest = "/" + parts.slice(3).join("/") || "/";
+      let rest = "/" + parts.slice(3).join("/") || "/";
+      const rootIsHub2 = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
+      if (rest === "/" && rootIsHub2) rest = "/student";
       const url = req.nextUrl.clone();
       url.pathname = rest;
       const res = NextResponse.redirect(url);
-      res.cookies.set("tenant_slug", slug, {
+      res.cookies.set(DEV ? "dev_tenant" : "tenant_slug", slug, {
         path: "/",
         httpOnly: true,
         sameSite: "lax",

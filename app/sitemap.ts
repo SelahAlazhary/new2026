@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 /**
  * خريطة الموقع.
  * ------------------------------------------------------------------
- * الصفحات العامة وحدها: الرئيسية وأقسامها، والدخول والتسجيل.
+ * الصفحات العامة وحدها: الرئيسية، والتسجيل، والقانونية.
+ * محرّكات البحث تتجاهل الأجزاء (fragments) في الروابط (#plans · #faq)
+ * فلا تُدرج — تُفهرس كنسخ من الصفحة الرئيسية وتُضعف ميزانية الزحف.
+ *
  * صفحات الكورسات لا تُدرج — محتواها خلف الاشتراك، وإدراج روابط تعيد
  * تحويل الزائر إلى صفحة الدخول يُضعف جودة الفهرسة لا يقوّيها.
  */
@@ -23,10 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
-    { url: `${base}/#features`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/#plans`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/#faq`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/login`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/legal/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/legal/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 }

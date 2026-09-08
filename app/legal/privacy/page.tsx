@@ -1,7 +1,11 @@
 import { getPublicDB, loadDB } from "@/lib/db/db";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "سياسة الخصوصية" };
+export const metadata = {
+  title: "سياسة الخصوصية",
+  description: "سياسة الخصوصية — ما نجمعه من بيانات، وكيف نحميها ونستخدمها.",
+  robots: { index: true, follow: true },
+};
 
 /**
  * سياسة الخصوصية — تصف ما تجمعه المنصّة فعلاً لا أكثر.
