@@ -283,7 +283,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
           <div className="ob-head-row">
             <div>
               <h1 className="ob-title">اختر خطّتك</h1>
-              <p className="ob-sub">تبدأ بتجربة مجانية — بلا بطاقة بنكية.</p>
+              <p className="ob-sub">اختر الخطة المناسبة لحجم طلابك واحتياجاتك.</p>
             </div>
             <OwnerBar owner={state.owner} />
           </div>
@@ -460,7 +460,7 @@ function PlanGrid({ plans, onPick, busy, title }: { plans: SaasPlan[]; onPick: (
               {p.priceEGP === 0 ? <span className="ob-plan-free">مجاناً</span> :
                 <><b>{p.priceEGP.toLocaleString("ar-EG")}</b> <span>ج.م/{p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ش" : "سنة"}</span></>}
             </div>
-            {p.trialDays > 0 && <span className="ob-plan-trial">تجربة {p.trialDays.toLocaleString("ar-EG")} يوماً</span>}
+            {/* trial removed */}
             <button type="button" className={`ob-plan-cta ${p.highlight ? "is-hot" : ""}`} disabled={busy} onClick={() => onPick(p.id)}>
               اختر هذه الخطّة
             </button>

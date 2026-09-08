@@ -5136,16 +5136,12 @@ body {
   --mk-primary: #2563eb;
   --mk-primary-deep: #1d4ed8;
   --mk-gold: #d97706;
-  --mk-paper: #f8fafc;
+  --mk-paper: #ffffff;
   --mk-card: #ffffff;
-  --mk-line: #e2e8f0;
+  --mk-line: #e5e7eb;
   --mk-dim: #64748b;
   min-height: 100dvh;
-  background:
-    radial-gradient(1200px 700px at 50% -5%, #e0e7ff 0%, transparent 60%),
-    radial-gradient(900px 600px at 5% 15%, #fef3c7 0%, transparent 50%),
-    radial-gradient(800px 500px at 95% 40%, #ede9fe 0%, transparent 50%),
-    var(--mk-paper);
+  background: #ffffff;
   color: var(--mk-ink);
 }
 .mkt a { color: inherit; text-decoration: none; }
@@ -5290,13 +5286,10 @@ body {
 .ob {
   --ob-primary: #233b8b; --ob-gold: #c99a3b; --ob-ink: #16213e;
   --ob-line: #e2dfd6; --ob-dim: #6b6f7c; --ob-card: #fff;
-  --ob-bg: #f5f3ee; --ob-accent: #4f63c5;
+  --ob-bg: #ffffff; --ob-accent: #4f63c5;
   min-height: 100dvh; display: grid; place-items: start center;
   padding: clamp(1.5rem, 5vw, 3.5rem) 1rem;
-  background:
-    radial-gradient(ellipse 900px 450px at 80% -5%, rgba(79,99,197,.12) 0, transparent 60%),
-    radial-gradient(ellipse 700px 400px at 10% 5%, rgba(201,154,59,.08) 0, transparent 55%),
-    var(--ob-bg);
+  background: #ffffff;
   color: var(--ob-ink);
 }
 .ob-panel {

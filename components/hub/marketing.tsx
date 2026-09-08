@@ -39,7 +39,7 @@ const STEPS = [
   {
     n: "02",
     t: "اختر خطّتك المناسبة",
-    d: "ابدأ بتجربة مجانية فورية مع وصول كامل لكافة الأدوات ومميزات التدريس.",
+    d: "اختر الخطة التي تناسب حجم طلابك واحتياجاتك مع إمكانية الترقية في أي وقت.",
     icon: Sparkles,
   },
   {
@@ -144,7 +144,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <a href="#plans" className="font-semibold text-slate-600 transition hover:text-blue-700">الأسعار</a>
           <a href="#faq" className="hidden md:block font-semibold text-slate-600 transition hover:text-blue-700">الأسئلة</a>
           <Link href="/start" className="mkt-bar-cta inline-flex items-center gap-1.5 shadow-md shadow-blue-700/25">
-            ابدأ الآن مجاناً <ArrowLeft className="size-3.5" />
+            ابدأ الآن <ArrowLeft className="size-3.5" />
           </Link>
         </nav>
       </header>
@@ -171,7 +171,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
         <div className="mkt-hero-cta">
           <Link href="/start" className="mkt-primary mkt-primary-lg inline-flex items-center gap-2 font-bold shadow-xl shadow-blue-700/25">
-            أنشئ منصّتك مجاناً الآن <ArrowLeft className="size-4" />
+            أنشئ منصّتك الآن <ArrowLeft className="size-4" />
           </Link>
           <a href="#demo" className="mkt-ghost inline-flex items-center gap-2">
             <Play className="size-4 text-blue-700 fill-blue-700/20" /> استكشف المنصة
@@ -179,11 +179,11 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         </div>
 
         <p className="mkt-note flex items-center justify-center gap-2 text-xs font-semibold text-slate-500">
-          <CheckCircle2 className="size-3.5 text-emerald-600" /> تجربة مجانية كاملة 14 يوماً
-          <span className="text-slate-300">•</span>
           <CheckCircle2 className="size-3.5 text-emerald-600" /> إطلاق فوري في دقيقة
           <span className="text-slate-300">•</span>
-          <CheckCircle2 className="size-3.5 text-emerald-600" /> بدون بطاقة ائتمانية
+          <CheckCircle2 className="size-3.5 text-emerald-600" /> دعم فني متواصل
+          <span className="text-slate-300">•</span>
+          <CheckCircle2 className="size-3.5 text-emerald-600" /> حماية متقدمة لمحتواك
         </p>
 
         {/* ---------------- معاينة الواجهة التفاعلية (Interactive Showcase) ---------------- */}
@@ -365,7 +365,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           </span>
           <h2 className="mkt-h2 mt-2 text-slate-950 font-black">خطط مرنة تنمو مع تزايد طلابك</h2>
           <p className="text-slate-500 text-sm max-w-lg mx-auto mt-2">
-            ابدأ بتجربة مجانية فورية ويمكنك الترقية أو التبديل في أي وقت حسب احتياجاتك.
+            اختر الخطة المناسبة لك ويمكنك الترقية أو التبديل في أي وقت حسب احتياجاتك.
           </p>
         </div>
 
@@ -413,11 +413,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                   )}
                 </div>
 
-                {p.trialDays > 0 && (
-                  <span className="mkt-plan-trial inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 w-fit">
-                    <CheckCircle2 className="size-3" /> تجربة {p.trialDays.toLocaleString("ar-EG")} يوماً مجاناً
-                  </span>
-                )}
+                {/* trialDays removed */}
 
                 <ul className="my-4 space-y-2 text-xs font-medium text-slate-600">
                   <li className="flex items-center gap-2">
@@ -508,7 +504,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <div className="pointer-events-none absolute -bottom-12 -left-12 size-60 rounded-full bg-amber-400/15 blur-3xl" />
 
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-amber-300 border border-white/15 mb-4">
-            <Sparkles className="size-3.5" /> ابدأ مجاناً اليوم
+            <Sparkles className="size-3.5" /> ابدأ اليوم
           </span>
           <h2 className="mkt-final-h text-2xl sm:text-4xl font-black text-white leading-tight">
             جاهز لتصبح صاحب أكاديمية تعليمية متكاملة؟
@@ -520,7 +516,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             href="/start"
             className="mkt-primary mkt-primary-lg inline-flex items-center gap-2 font-bold bg-white !text-blue-950 hover:bg-slate-100 shadow-2xl"
           >
-            أنشئ منصّتك الآن مجاناً <ArrowLeft className="size-4" />
+            أنشئ منصّتك الآن <ArrowLeft className="size-4" />
           </Link>
         </div>
       </section>

@@ -39,14 +39,14 @@ async function seedPlans(): Promise<void> {
 export const DEFAULT_PLANS: SaasPlan[] = [
   {
     id: "starter", name: "البداية", desc: "لبدء منصّتك — كل الأساسيات",
-    interval: "month", priceEGP: 0, trialDays: 14,
+    interval: "month", priceEGP: 199, trialDays: 0,
     limits: { maxStudents: 60, maxSubjects: 4, maxAdmins: 1, maxStorageMB: 500, customDomain: false },
     features: ["exams", "codes", "studentPayments", "webPush", "captureGuard"],
     order: 0, visible: true, color: "#3b6fb0",
   },
   {
     id: "pro", name: "الاحترافية", desc: "لمنصّة تنمو — بلا حدود على الطلاب",
-    interval: "month", priceEGP: 499, trialDays: 7,
+    interval: "month", priceEGP: 499, trialDays: 0,
     limits: { maxStudents: null, maxSubjects: null, maxAdmins: 3, maxStorageMB: 5000, customDomain: true },
     features: ["exams", "codes", "studentPayments", "webPush", "captureGuard", "liveMeet", "youtube", "drive", "backup", "team", "telegramBot"],
     order: 1, visible: true, highlight: true, badge: "الأكثر اختياراً", color: "#c99a3b",
