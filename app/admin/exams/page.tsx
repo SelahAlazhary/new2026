@@ -14,8 +14,8 @@ import {
 import { PageHeader, Card, StatusBadge, Progress, DataTable } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { TRACKS } from "@/lib/data";
-import type { Exam, ExamQuestion, LiveAudience } from "@/lib/types";
+import { TRACKS } from "@/lib/utils/data";
+import type { Exam, ExamQuestion, LiveAudience } from "@/lib/utils/types";
 
 type Draft = {
   title: string;

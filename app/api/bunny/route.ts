@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
-import { bunnyConfig, bunnyConfigured } from "@/lib/bunny";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
+import { getDB, saveDB, loadDB, flushDB } from "@/lib/db/db";
+import { bunnyConfig, bunnyConfigured } from "@/lib/integrations/bunny";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

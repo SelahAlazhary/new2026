@@ -29,9 +29,9 @@ import { Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { VideoWatermark } from "@/components/student/video-watermark";
 import { CleanYouTube } from "@/components/student/clean-youtube";
-import { allLessons, usableMaterials } from "@/lib/course-units";
-import type { Lesson, Material, Subject, Unit } from "@/lib/types";
-import { setPref } from "@/lib/consent";
+import { allLessons, usableMaterials } from "@/lib/business/course-units";
+import type { Lesson, Material, Subject, Unit } from "@/lib/utils/types";
+import { setPref } from "@/lib/auth/consent";
 
 /** تحويل رابط الفيديو إلى صيغة تضمين (YouTube / Vimeo / Bunny Stream / mp4). */
 /**

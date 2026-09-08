@@ -18,7 +18,7 @@ import { CourseArt } from "@/components/brand/course-art";
 import { ImageStudio } from "@/components/admin/image-studio";
 import { ZoomBar } from "@/components/admin/zoom-bar";
 import { useContent } from "@/components/content/content-provider";
-import type { CoverSticker, Subject } from "@/lib/types";
+import type { CoverSticker, Subject } from "@/lib/utils/types";
 
 const clamp = (v: number, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v));
 const ar = (n: number) => n.toLocaleString("ar-EG");

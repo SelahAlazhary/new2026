@@ -18,9 +18,9 @@
  */
 
 import { useMemo, type ReactNode } from "react";
-import type { AzHeadOptions } from "@/lib/types";
-import { findAzHead, azPad, azShadow } from "@/lib/az-head-styles";
-import { findAzCard } from "@/lib/az-card-styles";
+import type { AzHeadOptions } from "@/lib/utils/types";
+import { findAzHead, azPad, azShadow } from "@/lib/styles/az-head-styles";
+import { findAzCard } from "@/lib/styles/az-card-styles";
 
 /** رقمٌ بالعربية — للنصّ الجاري. */
 const ar = (n: number) => n.toLocaleString("ar-EG");

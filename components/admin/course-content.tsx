@@ -24,7 +24,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CourseArt } from "@/components/brand/course-art";
-import type { Lesson, Quiz } from "@/lib/types";
+import type { Lesson, Quiz } from "@/lib/utils/types";
 
 /* ============================================================
    الأيقونات — مسارات محضة تأخذ لونَ ما حولها

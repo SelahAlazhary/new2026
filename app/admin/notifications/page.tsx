@@ -6,7 +6,7 @@ import { Bell, Send, Trash2 } from "lucide-react";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { TRACKS } from "@/lib/data";
+import { TRACKS } from "@/lib/utils/data";
 import { Section } from "@/components/dashboard/section";
 
 export default function NotificationsPage() {

@@ -28,8 +28,8 @@ import {
   Search, X, LayoutDashboard, BookOpen, Users, Wallet, FileCheck2, Radio, KeyRound, CornerDownLeft,
 } from "lucide-react";
 import { useContent } from "@/components/content/content-provider";
-import { adminNav, studentNav } from "@/lib/dashboard-data";
-import { can, permForPath, type AdminPerm } from "@/lib/perms";
+import { adminNav, studentNav } from "@/lib/business/dashboard-data";
+import { can, permForPath, type AdminPerm } from "@/lib/auth/perms";
 
 type Hit = {
   id: string;

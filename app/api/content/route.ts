@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getScopedDB, getPublicDB, getDB, patchDB, publicIntegrations, loadDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { can, permForDbKey, permForContentKeys } from "@/lib/perms";
+import { getScopedDB, getPublicDB, getDB, patchDB, publicIntegrations, loadDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { can, permForDbKey, permForContentKeys } from "@/lib/auth/perms";
 import { currentTenant } from "@/lib/hub/context";
 import { sectionForDbKey, sectionHidden } from "@/lib/hub/sections";
-import type { DB } from "@/lib/types";
+import type { DB } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

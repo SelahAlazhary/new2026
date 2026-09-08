@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { clearSuperCookie, getSuperSession } from "@/lib/hub/session";
 import { audit } from "@/lib/hub/audit";
-import { sameOrigin } from "@/lib/guard";
+import { sameOrigin } from "@/lib/auth/guard";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";

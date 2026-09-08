@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
-import { createBackup, backupHistory, restoreSnapshot, restoreFromDrive } from "@/lib/backup";
-import { googleStatus, uploadBufferToDrive } from "@/lib/google";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
+import { getDB, saveDB, loadDB, flushDB } from "@/lib/db/db";
+import { createBackup, backupHistory, restoreSnapshot, restoreFromDrive } from "@/lib/db/backup";
+import { googleStatus, uploadBufferToDrive } from "@/lib/integrations/google";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

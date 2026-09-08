@@ -1,7 +1,7 @@
 import "server-only";
 import fs from "fs";
 import path from "path";
-import { fbGet, fbSet, firebaseConfigured } from "../firebase";
+import { fbGet, fbSet, firebaseConfigured } from "@/lib/db/firebase";
 
 /**
  * طبقةُ تخزين المنصّة الأمّ — كلُّ ما تحت `hub/`.

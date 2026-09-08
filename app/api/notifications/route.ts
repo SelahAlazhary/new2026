@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
-import { pushNotification, pushConfigured } from "@/lib/push";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import type { Notification } from "@/lib/types";
+import { getDB, saveDB, loadDB, flushDB } from "@/lib/db/db";
+import { pushNotification, pushConfigured } from "@/lib/integrations/push";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import type { Notification } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

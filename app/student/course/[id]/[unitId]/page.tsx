@@ -20,8 +20,8 @@ import { EmptyLock } from "@/components/brand/illustrations";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { UnitView } from "@/components/student/unit-view";
-import { subscriptionFor, daysLeft, unitActive, unitSubscription } from "@/lib/access";
-import { courseUnits } from "@/lib/course-units";
+import { subscriptionFor, daysLeft, unitActive, unitSubscription } from "@/lib/auth/access";
+import { courseUnits } from "@/lib/business/course-units";
 
 export default function UnitPage({ params }: { params: Promise<{ id: string; unitId: string }> }) {
   const { id, unitId } = use(params);

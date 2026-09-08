@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sameOrigin } from "@/lib/guard";
+import { sameOrigin } from "@/lib/auth/guard";
 import { requireSuper } from "@/lib/hub/session";
 import { isHubHost } from "@/lib/hub/guard-host";
 import { listInvoices, invoiceById } from "@/lib/hub/invoices";

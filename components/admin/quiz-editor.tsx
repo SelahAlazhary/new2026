@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Plus, Trash2, Check, X, ListChecks } from "lucide-react";
 import { Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
-import type { Lesson, Quiz, QuizQuestion } from "@/lib/types";
+import type { Lesson, Quiz, QuizQuestion } from "@/lib/utils/types";
 
 /* ---------- محرّر الاختبار التفاعلي لدرس واحد (اختياري) ---------- */
 export function QuizEditor({

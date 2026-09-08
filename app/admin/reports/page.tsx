@@ -30,7 +30,7 @@ import { useContent } from "@/components/content/content-provider";
 import {
   reportFor, reportsToCsv, STATE_LABEL, AWAY_DAYS,
   type StudentReport, type StudentState,
-} from "@/lib/student-report";
+} from "@/lib/business/student-report";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

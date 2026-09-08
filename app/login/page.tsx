@@ -45,8 +45,8 @@ import { LogIn, Loader2, Eye, EyeOff, ShieldAlert, WifiOff, ArrowLeftRight, Info
 import { AuthShell, inputCls } from "@/components/auth/auth-shell";
 import { useContent } from "@/components/content/content-provider";
 import { useMaintGate } from "@/components/brand/maint-gate";
-import { emailHint } from "@/lib/email-hint";
-import { setPref, getPref } from "@/lib/consent";
+import { emailHint } from "@/lib/utils/email-hint";
+import { setPref, getPref } from "@/lib/auth/consent";
 
 /** مفتاحُ تذكُّر البريد — تفضيلٌ يمرّ من بوّابة الموافقة كغيره. */
 const LAST_EMAIL = "mk.lastEmail";

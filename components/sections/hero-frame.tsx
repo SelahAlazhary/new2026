@@ -14,9 +14,9 @@
  */
 import { motion, useReducedMotion } from "framer-motion";
 import { useUid } from "@/components/brand/use-uid";
-import { findFrame } from "@/lib/frame-shapes";
-import { mediaSrc } from "@/lib/media";
-import type { ImageFit } from "@/lib/types";
+import { findFrame } from "@/lib/art/frame-shapes";
+import { mediaSrc } from "@/lib/utils/media";
+import type { ImageFit } from "@/lib/utils/types";
 
 const W = 400;
 const H = 500;

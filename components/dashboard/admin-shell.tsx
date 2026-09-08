@@ -33,8 +33,8 @@ import {
 } from "lucide-react";
 import { LibIcon, type IconSlot } from "@/components/brand/lib-icon";
 import { useContent } from "@/components/content/content-provider";
-import { groupNav, type NavItem } from "@/lib/dashboard-data";
-import { navBadges } from "@/lib/admin-insights";
+import { groupNav, type NavItem } from "@/lib/business/dashboard-data";
+import { navBadges } from "@/lib/business/admin-insights";
 import { CommandPalette } from "@/components/dashboard/command-palette";
 import { SaveStatus } from "@/components/dashboard/save-status";
 import { ErrorWatch } from "@/components/dashboard/error-watch";

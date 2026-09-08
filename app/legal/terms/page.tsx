@@ -1,4 +1,4 @@
-import { getPublicDB, loadDB } from "@/lib/db";
+import { getPublicDB, loadDB } from "@/lib/db/db";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "شروط الاستخدام" };

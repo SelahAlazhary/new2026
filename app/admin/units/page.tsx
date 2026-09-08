@@ -43,8 +43,8 @@ import { PageHeader } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { Section } from "@/components/dashboard/section";
 import { useContent } from "@/components/content/content-provider";
-import { courseUnits, withUnits, lessonCount, LEGACY_UNIT_ID } from "@/lib/course-units";
-import type { Subject, Unit } from "@/lib/types";
+import { courseUnits, withUnits, lessonCount, LEGACY_UNIT_ID } from "@/lib/business/course-units";
+import type { Subject, Unit } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 const inp = "w-full rounded-2xl border border-border bg-card/60 px-3 py-2.5 text-sm outline-none focus:border-primary/50";

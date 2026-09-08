@@ -6,9 +6,9 @@ import { Users, BookOpen, Plus, Trash2, X } from "lucide-react";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { TERMS } from "@/lib/signup-rules";
-import type { GradeRow, TermRow } from "@/lib/types";
-import { STAGES } from "@/lib/data";
+import { TERMS } from "@/lib/business/signup-rules";
+import type { GradeRow, TermRow } from "@/lib/utils/types";
+import { STAGES } from "@/lib/utils/data";
 import { Section } from "@/components/dashboard/section";
 
 const SWATCHES = ["#12b981", "#2b8bf6", "#7c3aed", "#e11d48", "#f59e0b", "#0ea5e9"];

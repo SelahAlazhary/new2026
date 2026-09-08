@@ -13,7 +13,7 @@
 
 import { useEffect, useState } from "react";
 import { Check, Loader2, AlertTriangle, X } from "lucide-react";
-import { getSaveState, onSaveState, saveSettled, type SaveState } from "@/lib/save-state";
+import { getSaveState, onSaveState, saveSettled, type SaveState } from "@/lib/utils/save-state";
 
 export function SaveStatus() {
   const [s, setS] = useState<SaveState>({ kind: "idle" });

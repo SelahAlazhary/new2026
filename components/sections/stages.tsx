@@ -13,9 +13,9 @@ import { motion } from "framer-motion";
 import { SectionHeading, Reveal } from "@/components/ui/primitives";
 import { ArchTile, ElegantRule } from "@/components/brand/pattern";
 import { useContent } from "@/components/content/content-provider";
-import { mediaSrc } from "@/lib/media";
-import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/section-styles";
-import type { StageCard } from "@/lib/types";
+import { mediaSrc } from "@/lib/utils/media";
+import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/styles/section-styles";
+import type { StageCard } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

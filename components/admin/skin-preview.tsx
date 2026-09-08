@@ -8,27 +8,27 @@
  * الأدمن هو ما سيراه الطالب، لا مربّعات ألوان مجرّدة.
  */
 import { useUid } from "@/components/brand/use-uid";
-import type { StudentSkin, StudentLayout, OrnamentId } from "@/lib/skins";
-import type { HomeLayout } from "@/lib/home-layouts";
-import type { MobileLayout } from "@/lib/skins";
-import { shapeStyle, type StudentDesign } from "@/lib/designs";
+import type { StudentSkin, StudentLayout, OrnamentId } from "@/lib/brand/skins";
+import type { HomeLayout } from "@/lib/layout/home-layouts";
+import type { MobileLayout } from "@/lib/brand/skins";
+import { shapeStyle, type StudentDesign } from "@/lib/brand/designs";
 import { EdgeArtLayer } from "@/components/brand/edge-art";
-import type { SideNavStyle, DockStyle } from "@/lib/nav-styles";
-import type { FrameShape } from "@/lib/frame-shapes";
-import type { TileStyle, TileColors, TileArt } from "@/lib/tile-styles";
-import type { ToolbarStyle } from "@/lib/toolbar-styles";
-import type { PlansStyle } from "@/lib/plans-styles";
-import type { HeroStyle } from "@/lib/hero-styles";
-import type { PayStyle } from "@/lib/pay-styles";
-import type { SectionStyle } from "@/lib/section-styles";
-import type { FaqStyle, CtaStyle, FooterStyle } from "@/lib/block-styles";
-import type { MobileHome } from "@/lib/mobile-home";
-import { motionVars, type MotionStyle } from "@/lib/motion-styles";
-import type { ButtonStyle } from "@/lib/button-styles";
-import type { HeroShell, HeroShellOpts } from "@/lib/hero-shell";
-import { iconFrameClass, iconFrameVars, type IconFrame } from "@/lib/icon-frames";
-import { iconMotionClass, type IconMotion } from "@/lib/icon-motion";
-import { iconCoverClass, type IconCover } from "@/lib/icon-covers";
+import type { SideNavStyle, DockStyle } from "@/lib/styles/nav-styles";
+import type { FrameShape } from "@/lib/art/frame-shapes";
+import type { TileStyle, TileColors, TileArt } from "@/lib/styles/tile-styles";
+import type { ToolbarStyle } from "@/lib/styles/toolbar-styles";
+import type { PlansStyle } from "@/lib/styles/plans-styles";
+import type { HeroStyle } from "@/lib/styles/hero-styles";
+import type { PayStyle } from "@/lib/styles/pay-styles";
+import type { SectionStyle } from "@/lib/styles/section-styles";
+import type { FaqStyle, CtaStyle, FooterStyle } from "@/lib/styles/block-styles";
+import type { MobileHome } from "@/lib/layout/mobile-home";
+import { motionVars, type MotionStyle } from "@/lib/styles/motion-styles";
+import type { ButtonStyle } from "@/lib/styles/button-styles";
+import type { HeroShell, HeroShellOpts } from "@/lib/layout/hero-shell";
+import { iconFrameClass, iconFrameVars, type IconFrame } from "@/lib/icons/icon-frames";
+import { iconMotionClass, type IconMotion } from "@/lib/icons/icon-motion";
+import { iconCoverClass, type IconCover } from "@/lib/icons/icon-covers";
 
 const W = 160;
 const H = 108;

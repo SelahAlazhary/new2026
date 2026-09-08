@@ -27,7 +27,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { setPref } from "@/lib/consent";
+import { setPref } from "@/lib/auth/consent";
 
 export function Collapse({
   title,

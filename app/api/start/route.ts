@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sameOrigin, limit, clientIp } from "@/lib/guard";
+import { sameOrigin, limit, clientIp } from "@/lib/auth/guard";
 import { isHubHost } from "@/lib/hub/guard-host";
 import { requireOwner } from "@/lib/hub/owner";
 import { listTenants, tenantById, upsertTenant, patchTenant } from "@/lib/hub/registry";

@@ -16,57 +16,57 @@ import {
   STUDENT_SKINS, STUDENT_LAYOUTS, MOBILE_LAYOUTS, findSkin, findLayout, findMobile,
   DEFAULT_SKIN, DEFAULT_LAYOUT, DEFAULT_MOBILE,
   type StudentSkin, type StudentLayout, type MobileLayout,
-} from "@/lib/skins";
+} from "@/lib/brand/skins";
 import {
   SkinPreview, LayoutPreview, HomeLayoutPreview, MobilePreview, DesignPreview,
   SideNavPreview, DockPreview, FramePreview, TilePreview, ToolbarPreview, PlansPreview,
   HeroStylePreview, HeroShellPreview, IconFramePreview, SectionPreview, FaqPreview, CtaPreview, FooterPreview, MobileHomePreview, MotionPreview, ButtonPreview,
 } from "@/components/admin/skin-preview";
-import { HERO_STYLES, findHeroStyle, DEFAULT_HERO_STYLE, type HeroStyle } from "@/lib/hero-styles";
-import { HERO_SHELLS, findHeroShell, DEFAULT_HERO_SHELL, type HeroShell, type HeroShellOpts } from "@/lib/hero-shell";
-import { ICON_FRAMES, findIconFrame, DEFAULT_ICON_FRAME, type IconFrame } from "@/lib/icon-frames";
-import { ICON_MOTIONS, findIconMotion, DEFAULT_ICON_MOTION, type IconMotion } from "@/lib/icon-motion";
-import { ICON_COVERS, findIconCover, DEFAULT_ICON_COVER, type IconCover } from "@/lib/icon-covers";
-import { ICON_LIBS, findIconLib, DEFAULT_ICON_LIB, ICON_SLOTS, type IconLib } from "@/lib/icon-libs";
-import { VECTOR_LIBS, findVectorLib, vectorLibClass, type VectorLib } from "@/lib/vector-libs";
+import { HERO_STYLES, findHeroStyle, DEFAULT_HERO_STYLE, type HeroStyle } from "@/lib/styles/hero-styles";
+import { HERO_SHELLS, findHeroShell, DEFAULT_HERO_SHELL, type HeroShell, type HeroShellOpts } from "@/lib/layout/hero-shell";
+import { ICON_FRAMES, findIconFrame, DEFAULT_ICON_FRAME, type IconFrame } from "@/lib/icons/icon-frames";
+import { ICON_MOTIONS, findIconMotion, DEFAULT_ICON_MOTION, type IconMotion } from "@/lib/icons/icon-motion";
+import { ICON_COVERS, findIconCover, DEFAULT_ICON_COVER, type IconCover } from "@/lib/icons/icon-covers";
+import { ICON_LIBS, findIconLib, DEFAULT_ICON_LIB, ICON_SLOTS, type IconLib } from "@/lib/icons/icon-libs";
+import { VECTOR_LIBS, findVectorLib, vectorLibClass, type VectorLib } from "@/lib/art/vector-libs";
 import { ShariVector, SHARI_VECTOR } from "@/components/brand/shari-vector";
-import { AMBIENTS, AMBIENT_SPEEDS, findAmbient, DEFAULT_AMBIENT } from "@/lib/ambient-motion";
-import { SHADOW_STYLES, findShadow, DEFAULT_SHADOW } from "@/lib/shadow-styles";
-import { TINT_MODES, artFilter } from "@/lib/art-tint";
-import { ART_DEPTHS, depthFilter, depthLit } from "@/lib/art-depth";
-import { PANEL_STYLES, DEFAULT_PANEL_STYLE } from "@/lib/panel-styles";
+import { AMBIENTS, AMBIENT_SPEEDS, findAmbient, DEFAULT_AMBIENT } from "@/lib/art/ambient-motion";
+import { SHADOW_STYLES, findShadow, DEFAULT_SHADOW } from "@/lib/styles/shadow-styles";
+import { TINT_MODES, artFilter } from "@/lib/art/art-tint";
+import { ART_DEPTHS, depthFilter, depthLit } from "@/lib/art/art-depth";
+import { PANEL_STYLES, DEFAULT_PANEL_STYLE } from "@/lib/styles/panel-styles";
 import { StatsPlacement } from "@/components/admin/stats-placement";
 import { SHARI_ANIM } from "@/components/brand/shari-art";
 import { LibGlyph } from "@/components/brand/lib-icon";
 import {
   SECTION_STYLES, findSectionStyle, DEFAULT_SECTION_STYLE, SX_SECTIONS,
   type SectionStyle, type SxSectionKey,
-} from "@/lib/section-styles";
+} from "@/lib/styles/section-styles";
 import {
   FAQ_STYLES, findFaqStyle, DEFAULT_FAQ_STYLE,
   CTA_STYLES, findCtaStyle, DEFAULT_CTA_STYLE,
   FOOTER_STYLES, findFooterStyle, DEFAULT_FOOTER_STYLE,
   type FaqStyle, type CtaStyle, type FooterStyle,
-} from "@/lib/block-styles";
-import { MOBILE_HOMES, findMobileHome, DEFAULT_MOBILE_HOME, type MobileHome } from "@/lib/mobile-home";
-import { MOTION_STYLES, findMotion, DEFAULT_MOTION, type MotionStyle } from "@/lib/motion-styles";
-import { BUTTON_STYLES, findButtonStyle, DEFAULT_BUTTON_STYLE, type ButtonStyle } from "@/lib/button-styles";
+} from "@/lib/styles/block-styles";
+import { MOBILE_HOMES, findMobileHome, DEFAULT_MOBILE_HOME, type MobileHome } from "@/lib/layout/mobile-home";
+import { MOTION_STYLES, findMotion, DEFAULT_MOTION, type MotionStyle } from "@/lib/styles/motion-styles";
+import { BUTTON_STYLES, findButtonStyle, DEFAULT_BUTTON_STYLE, type ButtonStyle } from "@/lib/styles/button-styles";
 import { GlowEditor } from "@/components/admin/glow-editor";
-import type { GlowRule } from "@/lib/glow";
-import { PLANS_STYLES, findPlansStyle, DEFAULT_PLANS_STYLE, type PlansStyle } from "@/lib/plans-styles";
-import { TOOLBAR_STYLES, findToolbar, DEFAULT_TOOLBAR, BAR_STICKS, type ToolbarStyle } from "@/lib/toolbar-styles";
+import type { GlowRule } from "@/lib/brand/glow";
+import { PLANS_STYLES, findPlansStyle, DEFAULT_PLANS_STYLE, type PlansStyle } from "@/lib/styles/plans-styles";
+import { TOOLBAR_STYLES, findToolbar, DEFAULT_TOOLBAR, BAR_STICKS, type ToolbarStyle } from "@/lib/styles/toolbar-styles";
 import {
   TILE_STYLES, findTile, DEFAULT_TILE, TILE_ART_MODES, DEFAULT_TILE_ART,
   type TileStyle, type TileArt, type TileArtMode,
-} from "@/lib/tile-styles";
-import { DEFAULT_FRAME } from "@/lib/frame-shapes";
+} from "@/lib/styles/tile-styles";
+import { DEFAULT_FRAME } from "@/lib/art/frame-shapes";
 import {
   SIDE_NAV_STYLES, DOCK_STYLES, findSideNav, findDock,
   DEFAULT_SIDE_NAV, DEFAULT_DOCK, ICON_SETS, DEFAULT_ICON_SET,
   type SideNavStyle, type DockStyle,
-} from "@/lib/nav-styles";
-import { STUDENT_DESIGNS, findDesign, DEFAULT_DESIGN, type StudentDesign } from "@/lib/designs";
-import { HOME_LAYOUTS, findHomeLayout, DEFAULT_HOME_LAYOUT, type HomeLayout } from "@/lib/home-layouts";
+} from "@/lib/styles/nav-styles";
+import { STUDENT_DESIGNS, findDesign, DEFAULT_DESIGN, type StudentDesign } from "@/lib/brand/designs";
+import { HOME_LAYOUTS, findHomeLayout, DEFAULT_HOME_LAYOUT, type HomeLayout } from "@/lib/layout/home-layouts";
 import { Section } from "@/components/dashboard/section";
 import { BRAND_PRESETS } from "@/lib/hub/presets";
 import { IdentityPresets } from "@/components/admin/identity-presets";

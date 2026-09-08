@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getDB, loadDB } from "@/lib/db";
+import { getDB, loadDB } from "@/lib/db/db";
 import { isHubRootRequest } from "@/lib/hub/guard-host";
 
 export const dynamic = "force-dynamic";

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { savePushSub, removePushSub, loadDB, flushDB } from "@/lib/db";
-import { publicVapidKey, pushConfigured } from "@/lib/push";
-import { getSession } from "@/lib/session";
+import { savePushSub, removePushSub, loadDB, flushDB } from "@/lib/db/db";
+import { publicVapidKey, pushConfigured } from "@/lib/integrations/push";
+import { getSession } from "@/lib/auth/session";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

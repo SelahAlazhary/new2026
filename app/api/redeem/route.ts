@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { redeemCode, loadDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { clientIp, limit } from "@/lib/guard";
-import { recordEvent, bannedUntil } from "@/lib/security";
+import { redeemCode, loadDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { clientIp, limit } from "@/lib/auth/guard";
+import { recordEvent, bannedUntil } from "@/lib/auth/security";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

@@ -10,8 +10,8 @@
  */
 import { motion, useReducedMotion } from "framer-motion";
 import { useUid } from "./use-uid";
-import { mediaSrc } from "@/lib/media";
-import type { CoverFont, CoverPattern, CoverSticker, CoverText, FrameShape, ImageFit } from "@/lib/types";
+import { mediaSrc } from "@/lib/utils/media";
+import type { CoverFont, CoverPattern, CoverSticker, CoverText, FrameShape, ImageFit } from "@/lib/utils/types";
 
 const W = 400;
 const H = 225;

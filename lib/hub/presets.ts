@@ -1,4 +1,4 @@
-import type { SiteContent } from "../types";
+import type { SiteContent } from "@/lib/utils/types";
 
 /**
  * حزمُ الهويّة — عشرون تصميماً متكاملاً يختار المدرّسُ منها هويّةَ منصّته.

@@ -19,16 +19,16 @@ import {
   IconChart, IconLifebuoy, IconHome, IconPalette, IconSearch, IconBell, IconMenu, IconClose,
   IconMoon, IconSun, IconLogout, IconWallet, IconYoutube, IconDatabase, IconShield, IconStar, IconWrench,
 }  from "@/components/brand/icons";
-import type { IconSlot } from "@/lib/icon-libs";
+import type { IconSlot } from "@/lib/icons/icon-libs";
 import { LibIcon } from "@/components/brand/lib-icon";
 import { BrandLockup } from "@/components/brand/logo";
 import { GoldRule } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import { navBadges } from "@/lib/admin-insights";
+import { navBadges } from "@/lib/business/admin-insights";
 import { CommandPalette } from "@/components/dashboard/command-palette";
 import { SaveStatus } from "@/components/dashboard/save-status";
-import { groupNav, type NavItem } from "@/lib/dashboard-data";
-import { setPref } from "@/lib/consent";
+import { groupNav, type NavItem } from "@/lib/business/dashboard-data";
+import { setPref } from "@/lib/auth/consent";
 
 /** مفتاحُ حفظ المجموعات المفتوحة — يبقى بين الزيارات فلا يُعاد الطيُّ كلّ مرّة. */
 const NAV_OPEN_KEY = "mk.adminNav.open";

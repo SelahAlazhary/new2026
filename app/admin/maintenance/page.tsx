@@ -20,7 +20,7 @@ import { Section } from "@/components/dashboard/section";
 import {
   SCOPE_GROUPS, SCOPE_LABEL, DEFAULT_TITLE, DEFAULT_MESSAGE,
   type MaintScope, type Maintenance,
-} from "@/lib/maintenance";
+} from "@/lib/business/maintenance";
 
 export default function MaintenancePage() {
   const { content, saveContent } = useContent();

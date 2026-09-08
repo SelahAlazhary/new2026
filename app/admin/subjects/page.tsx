@@ -32,10 +32,10 @@ import { PageBar } from "@/components/dashboard/page-bar";
 import { Section } from "@/components/dashboard/section";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { gradeHasTrack } from "@/lib/data";
-import { planPrice } from "@/lib/plans";
-import { parsePick } from "@/lib/picks";
-import type { Subject } from "@/lib/types";
+import { gradeHasTrack } from "@/lib/utils/data";
+import { planPrice } from "@/lib/business/plans";
+import { parsePick } from "@/lib/business/picks";
+import type { Subject } from "@/lib/utils/types";
 import { AdminCourseCard } from "@/components/admin/course-card";
 
 const TERMS = [

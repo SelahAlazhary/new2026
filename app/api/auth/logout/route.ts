@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { clearSessionCookie } from "@/lib/session";
-import { loadDB } from "@/lib/db";
+import { clearSessionCookie } from "@/lib/auth/session";
+import { loadDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

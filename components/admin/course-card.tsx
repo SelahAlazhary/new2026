@@ -20,7 +20,7 @@ import Link from "next/link";
 import { ListVideo, Trash2, ToggleLeft, ToggleRight, Users, Wallet } from "lucide-react";
 import { CourseArt } from "@/components/brand/course-art";
 import { StatusBadge } from "@/components/dashboard/ui";
-import type { Subject, SitePlan } from "@/lib/types";
+import type { Subject, SitePlan } from "@/lib/utils/types";
 
 export function AdminCourseCard({
   s,

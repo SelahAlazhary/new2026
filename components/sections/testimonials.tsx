@@ -13,9 +13,9 @@ import { SectionHeading } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
 import { IconStar, IconTrophy } from "@/components/brand/icons";
 import { CornerKnot } from "@/components/brand/pattern";
-import { mediaSrc } from "@/lib/media";
-import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/section-styles";
-import type { Testimonial } from "@/lib/types";
+import { mediaSrc } from "@/lib/utils/media";
+import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/styles/section-styles";
+import type { Testimonial } from "@/lib/utils/types";
 
 export function Testimonials() {
   const { content } = useContent();

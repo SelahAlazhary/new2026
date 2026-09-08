@@ -17,7 +17,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import type { ActivityKind } from "@/lib/types";
+import type { ActivityKind } from "@/lib/utils/types";
 
 /** المسار كنوعِ حدث ومرجعٍ مقروء. */
 function classify(path: string): { kind: ActivityKind; ref: string } {

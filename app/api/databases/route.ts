@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { can } from "@/lib/perms";
-import { fbProbe } from "@/lib/firebase";
-import { envNode, orderNodes, nodeHealth, fillPercent, isFull, markUp, markDown, markOpen } from "@/lib/db-nodes";
-import { parseFirebasePaste, candidateUrls, validDbUrl } from "@/lib/fb-config";
-import type { DbNode } from "@/lib/types";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { can } from "@/lib/auth/perms";
+import { fbProbe } from "@/lib/db/firebase";
+import { envNode, orderNodes, nodeHealth, fillPercent, isFull, markUp, markDown, markOpen } from "@/lib/db/db-nodes";
+import { parseFirebasePaste, candidateUrls, validDbUrl } from "@/lib/db/fb-config";
+import type { DbNode } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

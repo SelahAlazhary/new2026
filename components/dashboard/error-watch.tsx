@@ -18,7 +18,7 @@
  */
 
 import { useEffect } from "react";
-import { saveFailed } from "@/lib/save-state";
+import { saveFailed } from "@/lib/utils/save-state";
 
 /** نصُّ ما رُفض به الوعد — قد يكون خطأً أو أيَّ قيمةٍ أخرى. */
 function textOf(v: unknown): string {

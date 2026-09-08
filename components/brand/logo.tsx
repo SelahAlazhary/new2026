@@ -12,8 +12,8 @@
  */
 import Image from "next/image";
 import { useUid } from "./use-uid";
-import { mediaSrc } from "@/lib/media";
-import { findSignature, signatureClass } from "@/lib/brand-signature";
+import { mediaSrc } from "@/lib/utils/media";
+import { findSignature, signatureClass } from "@/lib/brand/brand-signature";
 
 /** خرزات الحلقة الذهبية — 16 حبّة موزّعة بالتساوي. */
 function beads(cx: number, cy: number, r: number, n = 16, rr = 0.95) {

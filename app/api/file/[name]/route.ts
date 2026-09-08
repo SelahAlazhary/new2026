@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { loadDB } from "@/lib/db";
+import { loadDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

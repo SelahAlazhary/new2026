@@ -1,11 +1,11 @@
 import "server-only";
 import crypto from "crypto";
 import { cookies } from "next/headers";
-import { AUTH_SECRET } from "../secrets";
+import { AUTH_SECRET } from "@/lib/auth/secrets";
 import { tenantById } from "./registry";
 import { hubGet } from "./store";
 import { runInTenant, ctxForTenantId } from "./context";
-import { loadDB, getDB } from "../db";
+import { loadDB, getDB } from "@/lib/db/db";
 import { audit } from "./audit";
 import type { SuperAdmin } from "./types";
 
@@ -99,7 +99,7 @@ export async function startImpersonation(
   });
 
   /* جلسةُ المنصّة — تنتهي مع الانتحال */
-  const { createToken } = await import("../session");
+  const { createToken } = await import("@/lib/auth/session");
   const sessionToken = await runInTenant(ctx, () => {
     return Promise.resolve(createToken({ uid: adminUser.id, role: adminUser.role, name: adminUser.name }));
   });

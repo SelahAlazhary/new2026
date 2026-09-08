@@ -34,14 +34,14 @@ import {
   IconArrowLeft, IconCopy,
 } from "@/components/brand/icons";
 import { useContent } from "@/components/content/content-provider";
-import { findPayStyle, payClass, payColorVars } from "@/lib/pay-styles";
+import { findPayStyle, payClass, payColorVars } from "@/lib/styles/pay-styles";
 import {
   activeMethods, numberLabel, requestProblem,
   senderIsPhone, senderLabel, senderPlaceholder, senderProblem,
-} from "@/lib/payments";
-import { planPrice, planColor } from "@/lib/plans";
+} from "@/lib/business/payments";
+import { planPrice, planColor } from "@/lib/business/plans";
 import { planDuration, planScopeLabel } from "@/components/sections/plans";
-import type { PayMethod, PayRequest, SitePlan, Subject } from "@/lib/types";
+import type { PayMethod, PayRequest, SitePlan, Subject } from "@/lib/utils/types";
 import { PayMark } from "@/components/brand/pay-marks";
 
 const STEPS = ["اختر الخطة", "طريقة التحويل", "بيانات التحويل"];

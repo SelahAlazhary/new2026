@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
-import { mediaSrc } from "@/lib/media";
-import { getDB } from "@/lib/db";
+import { mediaSrc } from "@/lib/utils/media";
+import { getDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const runtime = "nodejs";

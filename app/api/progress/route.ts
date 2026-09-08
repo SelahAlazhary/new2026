@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { setUserProgress, getDB, userOwnsSubject, loadDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { limit } from "@/lib/guard";
+import { setUserProgress, getDB, userOwnsSubject, loadDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { limit } from "@/lib/auth/guard";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

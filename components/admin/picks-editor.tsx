@@ -26,9 +26,9 @@
 
 import { useMemo, useRef, useState, useEffect } from "react";
 import { ChevronDown, Search, BookOpen, Layers, X } from "lucide-react";
-import { courseUnits } from "@/lib/course-units";
-import { pickKey, isUnitKey, parsePick } from "@/lib/picks";
-import type { Subject } from "@/lib/types";
+import { courseUnits } from "@/lib/business/course-units";
+import { pickKey, isUnitKey, parsePick } from "@/lib/business/picks";
+import type { Subject } from "@/lib/utils/types";
 
 function Box({
   checked, mixed, disabled, onChange,

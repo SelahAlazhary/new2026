@@ -7,8 +7,8 @@ import {
 import { PageHeader, Card, StatusBadge, StatCard } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { Button } from "@/components/ui/primitives";
-import { SUPPORT_KINDS, supportHref } from "@/lib/support";
-import type { Ticket, SupportLink } from "@/lib/types";
+import { SUPPORT_KINDS, supportHref } from "@/lib/utils/support";
+import type { Ticket, SupportLink } from "@/lib/utils/types";
 import { Section } from "@/components/dashboard/section";
 
 const priorityColor: Record<string, string> = { عالية: "text-rose-500", متوسطة: "text-amber-500", منخفضة: "text-sky-500" };

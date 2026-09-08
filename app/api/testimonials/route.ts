@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { sameOrigin } from "@/lib/guard";
-import { can } from "@/lib/perms";
-import type { Testimonial } from "@/lib/types";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { sameOrigin } from "@/lib/auth/guard";
+import { can } from "@/lib/auth/perms";
+import type { Testimonial } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

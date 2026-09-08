@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { can } from "@/lib/perms";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { can } from "@/lib/auth/perms";
 import {
   tgConfig, tgGetMe, tgSetWebhook, tgDeleteWebhook, tgWebhookInfo, tgSend, newWebhookSecret, siteUrl, esc, cleanTgId,
-} from "@/lib/telegram";
+} from "@/lib/integrations/telegram";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

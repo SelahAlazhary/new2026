@@ -2,8 +2,8 @@ import "server-only";
 import type { TenantStats, Tenant } from "./types";
 import { listTenants, patchTenant } from "./registry";
 import { runInTenant, ctxForTenantId } from "./context";
-import { loadDB, getDB, flushDB } from "../db";
-import type { User } from "../types";
+import { loadDB, getDB, flushDB } from "@/lib/db/db";
+import type { User } from "@/lib/utils/types";
 
 /**
  * حسابُ إحصاءات المنصّات — يُشغَّل من الكرون مرّةً في الساعة.

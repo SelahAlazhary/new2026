@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
-import { planPrice } from "@/lib/plans";
+import { planPrice } from "@/lib/business/plans";
 import {
   Sparkles,
   ShieldCheck,

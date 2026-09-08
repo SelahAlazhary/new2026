@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { connectWithCode } from "@/lib/google";
-import { getSession } from "@/lib/session";
-import { loadDB } from "@/lib/db";
+import { connectWithCode } from "@/lib/integrations/google";
+import { getSession } from "@/lib/auth/session";
+import { loadDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

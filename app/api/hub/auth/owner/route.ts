@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sameOrigin, limit, clientIp, passwordProblem, invalidUsername } from "@/lib/guard";
+import { sameOrigin, limit, clientIp, passwordProblem, invalidUsername } from "@/lib/auth/guard";
 import { isHubHost } from "@/lib/hub/guard-host";
 import { registerOwnerWithPassword, checkOwnerPassword, setOwnerCookie } from "@/lib/hub/owner";
 import { audit } from "@/lib/hub/audit";

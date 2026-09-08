@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent, bannedUntil } from "@/lib/security";
-import { clientIp, limit } from "@/lib/guard";
-import { can } from "@/lib/perms";
-import { sendToUsers } from "@/lib/push";
-import { planPrice, planForStudent, resolvePlan } from "@/lib/plans";
-import { decideOnce, notifyStudent } from "@/lib/pay-decide";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent, bannedUntil } from "@/lib/auth/security";
+import { clientIp, limit } from "@/lib/auth/guard";
+import { can } from "@/lib/auth/perms";
+import { sendToUsers } from "@/lib/integrations/push";
+import { planPrice, planForStudent, resolvePlan } from "@/lib/business/plans";
+import { decideOnce, notifyStudent } from "@/lib/business/pay-decide";
 import {
   activeMethods, planTarget, targetName, requestProblem, normalizeDigits, gatewayOn,
-} from "@/lib/payments";
+} from "@/lib/business/payments";
 import {
   tgReady, tgSend, tgSendPhoto, payRequestText, payVerdictText, siteUrl, absolute,
-} from "@/lib/telegram";
-import type { DB, PayRequest, PayRequestStatus, Code, Notification } from "@/lib/types";
+} from "@/lib/integrations/telegram";
+import type { DB, PayRequest, PayRequestStatus, Code, Notification } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

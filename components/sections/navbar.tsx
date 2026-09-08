@@ -10,10 +10,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { LibIcon } from "@/components/brand/lib-icon";
 import { BrandLockup } from "@/components/brand/logo";
-import { navLinks } from "@/lib/data";
+import { navLinks } from "@/lib/utils/data";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { el, isHidden, btnStyle } from "@/lib/ui-style";
+import { el, isHidden, btnStyle } from "@/lib/styles/ui-style";
 
 export function Navbar() {
   const { content, viewLayout, toggleView } = useContent();

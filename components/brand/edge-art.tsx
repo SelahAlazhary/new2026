@@ -10,7 +10,7 @@
  *
  * كلّها aria-hidden وترث اللون من الأب عبر currentColor.
  */
-import type { EdgeArt } from "@/lib/designs";
+import type { EdgeArt } from "@/lib/brand/designs";
 
 /** يبني مسار فصوص متتابعة على عرض ١٢٠ وحدة. */
 function scallopPath(lobes: number, h: number, up: boolean): string {

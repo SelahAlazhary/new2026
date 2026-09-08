@@ -1,9 +1,9 @@
 import "server-only";
 import crypto from "crypto";
 import { cookies, headers } from "next/headers";
-import { AUTH_SECRET } from "../secrets";
-import { hashPassword, verifyPassword } from "../db";
-import { ensureDeviceId, deviceLabel } from "../device";
+import { AUTH_SECRET } from "@/lib/auth/secrets";
+import { hashPassword, verifyPassword } from "@/lib/db/db";
+import { ensureDeviceId, deviceLabel } from "@/lib/auth/device";
 import type { SuperAdmin } from "./types";
 import { hubGet, hubList, hubSet, hubId } from "./store";
 
@@ -145,7 +145,7 @@ export async function requireSuper(): Promise<SuperAdmin | null> {
   const rec = await superById(session.sid);
   if (!rec || !rec.active) return null;
   if (superDeviceLocked() && rec.deviceId) {
-    const { readDeviceId } = await import("../device");
+    const { readDeviceId } = await import("@/lib/auth/device");
     const device = await readDeviceId();
     if (device !== rec.deviceId) return null;
   }

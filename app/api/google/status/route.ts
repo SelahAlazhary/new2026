@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { googleStatus, redirectUri } from "@/lib/google";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { loadDB } from "@/lib/db";
+import { googleStatus, redirectUri } from "@/lib/integrations/google";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { loadDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

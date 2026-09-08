@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PERMS, DEFAULT_PERMS, type AdminPerm } from "@/lib/perms";
+import { PERMS, DEFAULT_PERMS, type AdminPerm } from "@/lib/auth/perms";
 import {
   IconShield, IconPlus, IconClose, IconCheckCircle, IconSpinner, IconXCircle, IconPhone, IconTrophy,
 } from "@/components/brand/icons";

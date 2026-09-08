@@ -1,5 +1,5 @@
-import type { AdminPerm } from "../perms";
-import type { PlanDiscount } from "../types";
+import type { AdminPerm } from "@/lib/auth/perms";
+import type { PlanDiscount } from "@/lib/utils/types";
 
 /**
  * أنواعُ المنصّة الأمّ (Hub) — ما يعيش خارج قاعدة أيّ منصّة بعينها.

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Users, BadgeCheck, KeyRound, Wallet, Radio, FileCheck2, ChevronLeft, TrendingUp } from "lucide-react";
-import { enrollTrend } from "@/lib/dashboard-data";
+import { enrollTrend } from "@/lib/business/dashboard-data";
 import { StatCard, PageHeader, Card, StatusBadge } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import { adminInsights } from "@/lib/admin-insights";
+import { adminInsights } from "@/lib/business/admin-insights";
 
 export default function AdminOverview() {
   const { db, session } = useContent();

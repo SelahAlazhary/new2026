@@ -17,7 +17,7 @@ import { useContent } from "@/components/content/content-provider";
 import {
   findIconLib, slotPath, slotOverlay, libAttrs,
   type IconSlot, type IconLib,
-} from "@/lib/icon-libs";
+} from "@/lib/icons/icon-libs";
 import {
   IconHome, IconGrid, IconUsers, IconLayers, IconBook, IconKey, IconClipboardCheck,
   IconRadio, IconChart, IconLifebuoy, IconPalette, IconBell, IconWallet, IconYoutube,

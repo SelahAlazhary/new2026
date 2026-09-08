@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { loadDB } from "@/lib/db";
-import { recordEvent } from "@/lib/security";
+import { loadDB } from "@/lib/db/db";
+import { recordEvent } from "@/lib/auth/security";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

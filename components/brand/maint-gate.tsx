@@ -17,7 +17,7 @@
 import type { ReactElement } from "react";
 import { useContent } from "@/components/content/content-provider";
 import { MaintenancePanel, MaintenanceBar } from "@/components/brand/maintenance";
-import { scopeDown, maintText, SCOPE_LABEL, type MaintScope } from "@/lib/maintenance";
+import { scopeDown, maintText, SCOPE_LABEL, type MaintScope } from "@/lib/business/maintenance";
 
 export function useMaintGate(scope: MaintScope): ReactElement | null {
   const { content, session } = useContent();

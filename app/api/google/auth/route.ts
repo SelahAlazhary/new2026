@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { cookies } from "next/headers";
-import { authUrl, googleConfigured } from "@/lib/google";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { loadDB } from "@/lib/db";
+import { authUrl, googleConfigured } from "@/lib/integrations/google";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { loadDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

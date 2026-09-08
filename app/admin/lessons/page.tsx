@@ -38,9 +38,9 @@ import { PageBar } from "@/components/dashboard/page-bar";
 import { Field, Select, Row } from "@/components/dashboard/form";
 import { Section } from "@/components/dashboard/section";
 import { useContent } from "@/components/content/content-provider";
-import { courseUnits, withUnits } from "@/lib/course-units";
+import { courseUnits, withUnits } from "@/lib/business/course-units";
 import { LessonModal } from "@/components/admin/lesson-modal";
-import type { Lesson, Subject, Unit } from "@/lib/types";
+import type { Lesson, Subject, Unit } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

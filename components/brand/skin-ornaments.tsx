@@ -11,7 +11,7 @@
  * اللوحة اللونية في الزخرفة، لا مجرّد تكرار.
  */
 import { useUid } from "./use-uid";
-import type { OrnamentId } from "@/lib/skins";
+import type { OrnamentId } from "@/lib/brand/skins";
 
 /** بلاطة كل زخرفة: مقاسها ومحتواها. */
 function tile(id: OrnamentId, t: number) {

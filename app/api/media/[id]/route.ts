@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { driveAccessToken } from "@/lib/google";
-import { getDB, loadDB } from "@/lib/db";
-import { recordEvent } from "@/lib/security";
-import { getSession } from "@/lib/session";
+import { driveAccessToken } from "@/lib/integrations/google";
+import { getDB, loadDB } from "@/lib/db/db";
+import { recordEvent } from "@/lib/auth/security";
+import { getSession } from "@/lib/auth/session";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

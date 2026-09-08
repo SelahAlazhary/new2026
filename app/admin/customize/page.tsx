@@ -9,12 +9,12 @@ import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
 import { ImageStudio } from "@/components/admin/image-studio";
-import type { StageCard } from "@/lib/types";
+import type { StageCard } from "@/lib/utils/types";
 import { HeroFrame } from "@/components/sections/hero-frame";
-import { FRAME_SHAPES, findFrame, DEFAULT_FRAME } from "@/lib/frame-shapes";
-import type { SiteContent, Preset, ColorSpec, ElementStyle } from "@/lib/types";
-import { mediaSrc } from "@/lib/media";
-import { SIGNATURES } from "@/lib/brand-signature";
+import { FRAME_SHAPES, findFrame, DEFAULT_FRAME } from "@/lib/art/frame-shapes";
+import type { SiteContent, Preset, ColorSpec, ElementStyle } from "@/lib/utils/types";
+import { mediaSrc } from "@/lib/utils/media";
+import { SIGNATURES } from "@/lib/brand/brand-signature";
 import { BrandLockup } from "@/components/brand/logo";
 import { Section } from "@/components/dashboard/section";
 

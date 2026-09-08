@@ -6,9 +6,9 @@ import { Plus, Copy, Check, KeyRound, Trash2 } from "lucide-react";
 import { PageHeader, DataTable, StatusBadge, StatCard, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { planSubjectId } from "@/lib/access";
-import { cleanPrefix, DEFAULT_CODE_PREFIX } from "@/lib/payments";
-import type { Code } from "@/lib/types";
+import { planSubjectId } from "@/lib/auth/access";
+import { cleanPrefix, DEFAULT_CODE_PREFIX } from "@/lib/business/payments";
+import type { Code } from "@/lib/utils/types";
 
 /*
   حروفٌ لا تُخلط: لا `O/0` ولا `I/1` ولا `S/5`. الكودُ يُملى في الهاتف

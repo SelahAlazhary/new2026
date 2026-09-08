@@ -12,8 +12,8 @@
  */
 
 import { Plus, Trash2, Star, Percent } from "lucide-react";
-import { COURSE_PRICE_KINDS, planPrice } from "@/lib/plans";
-import type { CoursePrice, CoursePriceKind, Subject } from "@/lib/types";
+import { COURSE_PRICE_KINDS, planPrice } from "@/lib/business/plans";
+import type { CoursePrice, CoursePriceKind, Subject } from "@/lib/utils/types";
 
 /**
  * محرّرُ الكورس — غلافٌ رقيق.

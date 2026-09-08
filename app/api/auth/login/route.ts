@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { findUserByUsername, verifyPassword, bindDevice, loadDB, getDB, saveDB } from "@/lib/db";
-import { setSessionCookie } from "@/lib/session";
-import { newActivity, pushActivity } from "@/lib/activity";
-import { ensureDeviceId, deviceLabel } from "@/lib/device";
-import { clientIp, limit, resetLimit, sameOrigin } from "@/lib/guard";
-import { recordEvent, bannedUntil } from "@/lib/security";
+import { findUserByUsername, verifyPassword, bindDevice, loadDB, getDB, saveDB } from "@/lib/db/db";
+import { setSessionCookie } from "@/lib/auth/session";
+import { newActivity, pushActivity } from "@/lib/business/activity";
+import { ensureDeviceId, deviceLabel } from "@/lib/auth/device";
+import { clientIp, limit, resetLimit, sameOrigin } from "@/lib/auth/guard";
+import { recordEvent, bannedUntil } from "@/lib/auth/security";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

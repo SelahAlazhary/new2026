@@ -12,8 +12,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useUid } from "@/components/brand/use-uid";
 import { archPath } from "@/components/brand/pattern";
-import { mediaSrc } from "@/lib/media";
-import type { ImageFit } from "@/lib/types";
+import { mediaSrc } from "@/lib/utils/media";
+import type { ImageFit } from "@/lib/utils/types";
 
 export const FRAME_COUNT = 8;
 export const FRAME_NAMES: Record<number, string> = {

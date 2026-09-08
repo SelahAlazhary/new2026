@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { getDB, loadDB } from "@/lib/db";
-import { googleStatus, uploadToDrive } from "@/lib/google";
-import { limit } from "@/lib/guard";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { getDB, loadDB } from "@/lib/db/db";
+import { googleStatus, uploadToDrive } from "@/lib/integrations/google";
+import { limit } from "@/lib/auth/guard";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

@@ -12,11 +12,11 @@
 import {
   createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode,
 } from "react";
-import type { PublicDB, SiteContent, Theme, Layout, Preset } from "@/lib/types";
-import { defaultContent } from "@/lib/defaults";
-import { brandVars } from "@/lib/brand-theme";
-import { setPref } from "@/lib/consent";
-import { saveStarted, saveSucceeded, saveFailed } from "@/lib/save-state";
+import type { PublicDB, SiteContent, Theme, Layout, Preset } from "@/lib/utils/types";
+import { defaultContent } from "@/lib/utils/defaults";
+import { brandVars } from "@/lib/brand/brand-theme";
+import { setPref } from "@/lib/auth/consent";
+import { saveStarted, saveSucceeded, saveFailed } from "@/lib/utils/save-state";
 
 /** كلُّ ما قد تكتبه الهوية — يُمسح ما لم يُكتب فلا يبقى أثرُ ثيمٍ سابق. */
 const BRAND_KEYS = [

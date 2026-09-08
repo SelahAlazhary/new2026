@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconInstall, IconShare, IconPlus, IconClose, IconCheckCircle } from "@/components/brand/icons";
 import { CornerKnot } from "@/components/brand/pattern";
-import { setPref } from "@/lib/consent";
+import { setPref } from "@/lib/auth/consent";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;

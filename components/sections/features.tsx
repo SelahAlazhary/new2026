@@ -8,7 +8,7 @@
 import { motion } from "framer-motion";
 import { SectionHeading, Reveal } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/section-styles";
+import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/styles/section-styles";
 import { featureIcon } from "@/components/brand/icons";
 import { ArchTile } from "@/components/brand/pattern";
 

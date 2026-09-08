@@ -16,7 +16,7 @@
 import { useRef, useState, type PointerEvent as RPointerEvent } from "react";
 import { CourseArt, COVER_FONTS } from "@/components/brand/course-art";
 import { ZoomBar } from "@/components/admin/zoom-bar";
-import type { CoverFont, CoverText, Subject } from "@/lib/types";
+import type { CoverFont, CoverText, Subject } from "@/lib/utils/types";
 
 const DEFAULTS: CoverText = {
   text: "",

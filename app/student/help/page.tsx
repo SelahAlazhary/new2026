@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IconWhatsapp, IconPlus, IconPhone, IconMail, IconLifebuoy } from "@/components/brand/icons";
 import { InstallApp } from "@/components/pwa/install-app";
 import { SupportChat } from "@/components/support/chat";
-import { supportHref } from "@/lib/support";
+import { supportHref } from "@/lib/utils/support";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { useMaintGate } from "@/components/brand/maint-gate";

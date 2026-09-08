@@ -1,7 +1,7 @@
 import "server-only";
 import type { SaasInvoice, SaasPlan } from "./types";
 import { hubGet, hubList, hubSet, hubId } from "./store";
-import { planPrice } from "../plans";
+import { planPrice } from "@/lib/business/plans";
 
 /**
  * فواتيرُ اشتراك المنصّات — سجلٌّ لكلّ دفعةٍ (يدويّةٍ أو ببطاقة).

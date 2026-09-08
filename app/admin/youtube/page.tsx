@@ -15,8 +15,8 @@ import {
 import { PageHeader, Card, StatCard } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import type { Lesson, YoutubeVideo } from "@/lib/types";
-import { isSplit } from "@/lib/course-units";
+import type { Lesson, YoutubeVideo } from "@/lib/utils/types";
+import { isSplit } from "@/lib/business/course-units";
 
 export default function YoutubePage() {
   const { db, save, refresh } = useContent();

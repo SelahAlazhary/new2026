@@ -15,14 +15,14 @@ import {
 import { PageHeader, Card, StatCard, StatusBadge } from "@/components/dashboard/ui";
 import { Section } from "@/components/dashboard/section";
 import { useContent } from "@/components/content/content-provider";
-import { PAY_STYLES, findPayStyle, DEFAULT_PAY_STYLE, PAY_KINDS, type PayStyle } from "@/lib/pay-styles";
+import { PAY_STYLES, findPayStyle, DEFAULT_PAY_STYLE, PAY_KINDS, type PayStyle } from "@/lib/styles/pay-styles";
 import { PayPreview } from "@/components/admin/skin-preview";
-import { findSkin } from "@/lib/skins";
+import { findSkin } from "@/lib/brand/skins";
 import {
   numberLabel, STATUS_LABEL, gatewayOn, activeMethods, cleanPrefix, sameNumber,
   METHOD_TEMPLATES, methodsFromTemplates,
-} from "@/lib/payments";
-import type { PayMethod, PayRequest, PayMethodKind } from "@/lib/types";
+} from "@/lib/business/payments";
+import type { PayMethod, PayRequest, PayMethodKind } from "@/lib/utils/types";
 import { PayMark } from "@/components/brand/pay-marks";
 
 type Tab = "inbox" | "methods" | "bot" | "design";

@@ -10,15 +10,15 @@ import {
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Section } from "@/components/dashboard/section";
 import { Button } from "@/components/ui/primitives";
-import { TRACKS, STAGES, EDU_SYSTEMS, SCIENCE_BRANCHES, TRACK_STAGE, BRANCH_TRACK, AZHAR } from "@/lib/data";
+import { TRACKS, STAGES, EDU_SYSTEMS, SCIENCE_BRANCHES, TRACK_STAGE, BRANCH_TRACK, AZHAR } from "@/lib/utils/data";
 import { useContent } from "@/components/content/content-provider";
-import { planPrice, audienceLabel, planForStudent, audienceBlindSpots } from "@/lib/plans";
-import { picksLabel, isUnitKey, parsePick } from "@/lib/picks";
-import { courseUnits } from "@/lib/course-units";
+import { planPrice, audienceLabel, planForStudent, audienceBlindSpots } from "@/lib/business/plans";
+import { picksLabel, isUnitKey, parsePick } from "@/lib/business/picks";
+import { courseUnits } from "@/lib/business/course-units";
 import { PicksEditor } from "@/components/admin/picks-editor";
-import { TERMS } from "@/lib/signup-rules";
-import type { SitePlan, PlanKind, PlanScope, PlanDiscount } from "@/lib/types";
-import { mediaSrc } from "@/lib/media";
+import { TERMS } from "@/lib/business/signup-rules";
+import type { SitePlan, PlanKind, PlanScope, PlanDiscount } from "@/lib/utils/types";
+import { mediaSrc } from "@/lib/utils/media";
 import { ImageStudio } from "@/components/admin/image-studio";
 import { MotionArtPicker } from "@/components/admin/motion-art";
 

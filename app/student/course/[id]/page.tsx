@@ -25,10 +25,10 @@ import { EmptyLock } from "@/components/brand/illustrations";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { UnitView, useDone } from "@/components/student/unit-view";
-import { subjectActive, subscriptionFor, daysLeft, unitActive, ownsAnyUnit } from "@/lib/access";
+import { subjectActive, subscriptionFor, daysLeft, unitActive, ownsAnyUnit } from "@/lib/auth/access";
 import { IconLock, IconCart } from "@/components/brand/icons";
-import { planPrice } from "@/lib/plans";
-import { allLessons, courseUnits } from "@/lib/course-units";
+import { planPrice } from "@/lib/business/plans";
+import { allLessons, courseUnits } from "@/lib/business/course-units";
 
 export default function CoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);

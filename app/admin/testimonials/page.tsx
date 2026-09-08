@@ -7,8 +7,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { mediaSrc } from "@/lib/media";
-import type { Testimonial } from "@/lib/types";
+import { mediaSrc } from "@/lib/utils/media";
+import type { Testimonial } from "@/lib/utils/types";
 import {
   IconStar, IconTrophy, IconPlus, IconXCircle, IconSpinner, IconCheckCircle, IconArrowLeft, IconInstall,
 } from "@/components/brand/icons";

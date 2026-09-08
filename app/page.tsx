@@ -14,25 +14,25 @@ import { isHubRootRequest } from "@/lib/hub/guard-host";
 import { visiblePlans } from "@/lib/hub/plans";
 import { getHubSettings } from "@/lib/hub/settings";
 import { Marketing } from "@/components/hub/marketing";
-import { getPublicDB, loadDB } from "@/lib/db";
+import { getPublicDB, loadDB } from "@/lib/db/db";
 import {
   findHomeLayout, WIDTH_CLASS, DENSITY_CLASS, type HomeSection,
-} from "@/lib/home-layouts";
-import { findToolbar, toolbarClass, stickClass } from "@/lib/toolbar-styles";
-import { findMobileHome, mobileHomeClass } from "@/lib/mobile-home";
-import { findButtonStyle, buttonClass } from "@/lib/button-styles";
-import { findHeroShell, heroShellClass, heroShellVars } from "@/lib/hero-shell";
-import { findIconFrame, iconFrameClass, iconFrameVars } from "@/lib/icon-frames";
-import { findIconMotion, iconMotionClass } from "@/lib/icon-motion";
-import { findIconCover, iconCoverClass } from "@/lib/icon-covers";
-import { siteDown, scopeDown, maintText, type MaintScope } from "@/lib/maintenance";
+} from "@/lib/layout/home-layouts";
+import { findToolbar, toolbarClass, stickClass } from "@/lib/styles/toolbar-styles";
+import { findMobileHome, mobileHomeClass } from "@/lib/layout/mobile-home";
+import { findButtonStyle, buttonClass } from "@/lib/styles/button-styles";
+import { findHeroShell, heroShellClass, heroShellVars } from "@/lib/layout/hero-shell";
+import { findIconFrame, iconFrameClass, iconFrameVars } from "@/lib/icons/icon-frames";
+import { findIconMotion, iconMotionClass } from "@/lib/icons/icon-motion";
+import { findIconCover, iconCoverClass } from "@/lib/icons/icon-covers";
+import { siteDown, scopeDown, maintText, type MaintScope } from "@/lib/business/maintenance";
 import { Page3D, type Depth3D } from "@/components/brand/page-3d";
-import { findAmbient, ambientClass } from "@/lib/ambient-motion";
-import { findShadow, shadowClass } from "@/lib/shadow-styles";
+import { findAmbient, ambientClass } from "@/lib/art/ambient-motion";
+import { findShadow, shadowClass } from "@/lib/styles/shadow-styles";
 import { MaintenancePanel, MaintenanceBar } from "@/components/brand/maintenance";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { MobileDock } from "@/components/sections/mobile-dock";
-import { findMotion, motionClass, motionVars } from "@/lib/motion-styles";
+import { findMotion, motionClass, motionVars } from "@/lib/styles/motion-styles";
 
 export const dynamic = "force-dynamic";
 

@@ -1,8 +1,8 @@
 import "server-only";
-import type { DB, SiteContent, User } from "../types";
-import { defaultContent } from "../defaults";
-import { hashPassword } from "../db";
-import { ensureStore, commit } from "../store";
+import type { DB, SiteContent, User } from "@/lib/utils/types";
+import { defaultContent } from "@/lib/utils/defaults";
+import { hashPassword } from "@/lib/db/db";
+import { ensureStore, commit } from "@/lib/db/store";
 import { runInTenant, ctxForTenantId } from "./context";
 import { patchTenant, tenantById } from "./registry";
 import { subscriptionForTenant, planById } from "./plans";

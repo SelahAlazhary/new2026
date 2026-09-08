@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
-import { syncChannel, youtubeApiConfigured } from "@/lib/youtube";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import type { YoutubeVideo } from "@/lib/types";
+import { getDB, saveDB, loadDB, flushDB } from "@/lib/db/db";
+import { syncChannel, youtubeApiConfigured } from "@/lib/integrations/youtube";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import type { YoutubeVideo } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

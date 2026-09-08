@@ -22,7 +22,7 @@
 
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { Lesson, Quiz } from "@/lib/types";
+import type { Lesson, Quiz } from "@/lib/utils/types";
 import { LessonManager } from "./lesson-manager";
 
 export type CurriculumUnit = { id: string; title: string; lessons?: Lesson[] };

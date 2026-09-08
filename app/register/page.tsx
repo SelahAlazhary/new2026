@@ -7,8 +7,8 @@ import { AuthShell, inputCls } from "@/components/auth/auth-shell";
 import { useContent } from "@/components/content/content-provider";
 import {
   EGYPT_GOVERNORATES, TRACKS, STAGES, TRACK_STAGE,
-  EDU_SYSTEMS, AZHAR, BRANCH_TRACK, SCIENCE_BRANCHES, gradeInStage } from "@/lib/data";
-import { showsTrack, showsBranch, signupProblem, normalizePhone } from "@/lib/signup-rules";
+  EDU_SYSTEMS, AZHAR, BRANCH_TRACK, SCIENCE_BRANCHES, gradeInStage } from "@/lib/utils/data";
+import { showsTrack, showsBranch, signupProblem, normalizePhone } from "@/lib/business/signup-rules";
 import { useMaintGate } from "@/components/brand/maint-gate";
 
 export default function RegisterPage() {

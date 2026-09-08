@@ -12,7 +12,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IconSpinner, IconLifebuoy, IconArrowLeft } from "@/components/brand/icons";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage } from "@/lib/utils/types";
 
 const POLL_MS = 6000;
 

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { sameOrigin, limit } from "@/lib/guard";
-import { clientIp } from "@/lib/guard";
-import { can } from "@/lib/perms";
-import { sendToUsers } from "@/lib/push";
-import type { Ticket, ChatMessage } from "@/lib/types";
-import { forwardStudentMessage } from "@/lib/support-bridge";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { sameOrigin, limit } from "@/lib/auth/guard";
+import { clientIp } from "@/lib/auth/guard";
+import { can } from "@/lib/auth/perms";
+import { sendToUsers } from "@/lib/integrations/push";
+import type { Ticket, ChatMessage } from "@/lib/utils/types";
+import { forwardStudentMessage } from "@/lib/integrations/support-bridge";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

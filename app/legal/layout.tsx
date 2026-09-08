@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { RuleOrnament } from "@/components/brand/pattern";
-import { getPublicDB, loadDB } from "@/lib/db";
+import { getPublicDB, loadDB } from "@/lib/db/db";
 
 export const dynamic = "force-dynamic";
 

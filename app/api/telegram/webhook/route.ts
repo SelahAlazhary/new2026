@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
 import {
   tgConfig, tgAllowed, tgAnswer, tgEdit, tgEditCaption, tgSend, payVerdictText, esc,
-} from "@/lib/telegram";
-import { decideOnce, notifyStudent } from "@/lib/pay-decide";
-import { ticketIdFrom, replyFromTelegram, notifySupportReply } from "@/lib/support-bridge";
+} from "@/lib/integrations/telegram";
+import { decideOnce, notifyStudent } from "@/lib/business/pay-decide";
+import { ticketIdFrom, replyFromTelegram, notifySupportReply } from "@/lib/integrations/support-bridge";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

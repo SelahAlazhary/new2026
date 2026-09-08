@@ -14,7 +14,7 @@ import { Plus, Trash2, Sparkles } from "lucide-react";
 import {
   TARGET_LABEL, MODE_LABEL, newGlowRule,
   type GlowRule, type GlowMode, type GlowTarget,
-} from "@/lib/glow";
+} from "@/lib/brand/glow";
 
 const RGB = ["#ff0040", "#ff8a00", "#ffe600", "#22dd55", "#00d4ff", "#7c3aed", "#ff0040"];
 

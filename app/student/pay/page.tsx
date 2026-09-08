@@ -21,11 +21,11 @@ import { PageHeader, Card } from "@/components/dashboard/ui";
 import { StudentHomeSkeleton } from "@/components/ui/skeleton";
 import { useContent } from "@/components/content/content-provider";
 import { PayGate } from "@/components/student/pay-gate";
-import { cleanPrefix, gatewayOn } from "@/lib/payments";
-import { plansFor } from "@/lib/plans";
-import { courseUnits } from "@/lib/course-units";
-import { pickKey } from "@/lib/picks";
-import { subjectActive , unitActive} from "@/lib/access";
+import { cleanPrefix, gatewayOn } from "@/lib/business/payments";
+import { plansFor } from "@/lib/business/plans";
+import { courseUnits } from "@/lib/business/course-units";
+import { pickKey } from "@/lib/business/picks";
+import { subjectActive , unitActive} from "@/lib/auth/access";
 import { useMaintGate } from "@/components/brand/maint-gate";
 
 export default function PayPage() {

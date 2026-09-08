@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { createMeet, deleteMeetEvent, googleStatus } from "@/lib/google";
-import { getDB, saveDB, loadDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import type { Live, LiveAudience } from "@/lib/types";
+import { createMeet, deleteMeetEvent, googleStatus } from "@/lib/integrations/google";
+import { getDB, saveDB, loadDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import type { Live, LiveAudience } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

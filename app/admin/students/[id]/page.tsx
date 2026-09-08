@@ -15,18 +15,18 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { PageHeader, Card, Progress, StatusBadge } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import type { QuizQuestion, Subject } from "@/lib/types";
+import type { QuizQuestion, Subject } from "@/lib/utils/types";
 import {
   reportFor, homeworkFor, homeworkTally, levelOf,
   LEVEL_LABEL, STATE_LABEL, AWAY_DAYS,
-} from "@/lib/student-report";
+} from "@/lib/business/student-report";
 import {
   KIND_LABEL, KIND_ICON, isOnline, sinceText, kindCounts, byWeekday, WEEKDAYS,
-} from "@/lib/activity";
-import { activeSubs, daysLeft, subjectActive } from "@/lib/access";
-import { STATUS_LABEL } from "@/lib/payments";
+} from "@/lib/business/activity";
+import { activeSubs, daysLeft, subjectActive } from "@/lib/auth/access";
+import { STATUS_LABEL } from "@/lib/business/payments";
 import { IconArrowLeft } from "@/components/brand/icons";
-import type { Activity } from "@/lib/types";
+import type { Activity } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

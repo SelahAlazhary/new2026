@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { sameOrigin, limit, clientIp } from "@/lib/guard";
-import { can } from "@/lib/perms";
-import type { GradeRequest } from "@/lib/types";
+import { loadDB, getDB, saveDB, flushDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { sameOrigin, limit, clientIp } from "@/lib/auth/guard";
+import { can } from "@/lib/auth/perms";
+import type { GradeRequest } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

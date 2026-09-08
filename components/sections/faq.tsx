@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IconPlus } from "@/components/brand/icons";
 import { SectionHeading, Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { findFaqStyle, faqClass } from "@/lib/block-styles";
+import { findFaqStyle, faqClass } from "@/lib/styles/block-styles";
 
 export function Faq() {
   const { content, wa } = useContent();

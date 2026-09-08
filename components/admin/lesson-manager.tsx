@@ -22,7 +22,7 @@
 
 import { useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { Lesson, Material, Quiz, QuizQuestion } from "@/lib/types";
+import type { Lesson, Material, Quiz, QuizQuestion } from "@/lib/utils/types";
 
 /* ------------------------------------------------------------------ */
 /*  الأيقونات                                                          */

@@ -18,7 +18,7 @@
  * النصوص فوق صورة مزدحمة غير مقروءة.
  */
 import { useContent } from "@/components/content/content-provider";
-import { mediaSrc } from "@/lib/media";
+import { mediaSrc } from "@/lib/utils/media";
 
 export function SiteBackground() {
   const { content } = useContent();

@@ -12,12 +12,12 @@ import { RuleOrnament } from "@/components/brand/pattern";
 import { CourseArt } from "@/components/brand/course-art";
 import { PageHeader, Card, Progress } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import { subjectActive, subscriptionFor, daysLeft, eligibleFor, termLabel } from "@/lib/access";
+import { subjectActive, subscriptionFor, daysLeft, eligibleFor, termLabel } from "@/lib/auth/access";
 import { planDuration, planScopeLabel } from "@/components/sections/plans";
-import { planPrice, planColor, planWaLink, plansFor } from "@/lib/plans";
-import type { Subject, SitePlan } from "@/lib/types";
-import { mediaSrc } from "@/lib/media";
-import { cleanPrefix, gatewayOn } from "@/lib/payments";
+import { planPrice, planColor, planWaLink, plansFor } from "@/lib/business/plans";
+import type { Subject, SitePlan } from "@/lib/utils/types";
+import { mediaSrc } from "@/lib/utils/media";
+import { cleanPrefix, gatewayOn } from "@/lib/business/payments";
 import { useMaintGate } from "@/components/brand/maint-gate";
 import { ShariVector } from "@/components/brand/shari-vector";
 

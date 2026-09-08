@@ -24,9 +24,9 @@ import { IconArrowLeft, IconFile, IconDownload, IconPlay } from "@/components/br
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 import { LessonQuiz } from "@/components/student/lesson-quiz";
-import { unitActive } from "@/lib/access";
-import { courseUnits, usableMaterials } from "@/lib/course-units";
-import type { Material } from "@/lib/types";
+import { unitActive } from "@/lib/auth/access";
+import { courseUnits, usableMaterials } from "@/lib/business/course-units";
+import type { Material } from "@/lib/utils/types";
 
 export default function LessonPage({
   params,

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { getPublicDB, loadDB } from "@/lib/db";
-import { siteUrl } from "@/lib/seo";
+import { getPublicDB, loadDB } from "@/lib/db/db";
+import { siteUrl } from "@/lib/utils/seo";
 
 export const dynamic = "force-dynamic";
 

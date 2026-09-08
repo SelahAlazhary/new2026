@@ -44,7 +44,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { Check, Eye, EyeOff } from "lucide-react";
-import { getPref, setPref } from "@/lib/consent";
+import { getPref, setPref } from "@/lib/auth/consent";
 
 type Entry = {
   id: string;

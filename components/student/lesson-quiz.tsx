@@ -29,7 +29,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/dashboard/ui";
-import type { Lesson } from "@/lib/types";
+import type { Lesson } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

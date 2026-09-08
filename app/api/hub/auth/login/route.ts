@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { clientIp, limit, resetLimit, sameOrigin } from "@/lib/guard";
+import { clientIp, limit, resetLimit, sameOrigin } from "@/lib/auth/guard";
 import {
   bindSuperDevice, checkSuperPassword, ensureFirstSuper, setSuperCookie, superDeviceLocked,
 } from "@/lib/hub/session";
-import { readDeviceId } from "@/lib/device";
+import { readDeviceId } from "@/lib/auth/device";
 import { audit } from "@/lib/hub/audit";
 import { isHubHost } from "@/lib/hub/guard-host";
 

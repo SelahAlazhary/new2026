@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { markNotificationsRead, loadDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
+import { markNotificationsRead, loadDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

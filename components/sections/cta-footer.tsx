@@ -3,17 +3,17 @@
 /** CTA نهائي + الفوتر — من المحتوى الحيّ. */
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { navLinks } from "@/lib/data";
+import { navLinks } from "@/lib/utils/data";
 import { Button } from "@/components/ui/primitives";
 import { SpringArrow } from "@/components/ui/animated-icons";
 import { IconWhatsapp, IconFacebook, IconYoutube, IconTelegram } from "@/components/brand/icons";
 import { BrandLockup } from "@/components/brand/logo";
 import { RuleOrnament, Shamsa, ElegantRule } from "@/components/brand/pattern";
 import { useContent } from "@/components/content/content-provider";
-import { findCtaStyle, ctaClass, findFooterStyle, footerClass } from "@/lib/block-styles";
-import { el, isHidden, btnStyle } from "@/lib/ui-style";
-import { mediaSrc } from "@/lib/media";
-import type { SiteContent } from "@/lib/types";
+import { findCtaStyle, ctaClass, findFooterStyle, footerClass } from "@/lib/styles/block-styles";
+import { el, isHidden, btnStyle } from "@/lib/styles/ui-style";
+import { mediaSrc } from "@/lib/utils/media";
+import type { SiteContent } from "@/lib/utils/types";
 
 export function CtaFooter() {
   const { content, wa } = useContent();

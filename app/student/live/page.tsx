@@ -16,8 +16,8 @@ import {
 } from "@/components/brand/icons";
 import { PageHeader, Card, StatusBadge } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import { liveVisible } from "@/lib/access";
-import type { Live } from "@/lib/types";
+import { liveVisible } from "@/lib/auth/access";
+import type { Live } from "@/lib/utils/types";
 import { useMaintGate } from "@/components/brand/maint-gate";
 import { EmptyLive } from "@/components/brand/illustrations";
 

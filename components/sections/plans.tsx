@@ -10,16 +10,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeading, Reveal, Button } from "@/components/ui/primitives";
-import { mediaSrc } from "@/lib/media";
+import { mediaSrc } from "@/lib/utils/media";
 import { useContent } from "@/components/content/content-provider";
 import {
   IconCheck, IconSparkle, IconCalendar, IconLayers, IconBook, IconWhatsapp, IconArrowLeft,
 } from "@/components/brand/icons";
 import { EmptyPlans } from "@/components/brand/illustrations";
 import { useUid } from "@/components/brand/use-uid";
-import { planPrice, planColor, planForStudent, planWaLink } from "@/lib/plans";
-import { findPlansStyle, plansClass, plansGridClass } from "@/lib/plans-styles";
-import type { SitePlan } from "@/lib/types";
+import { planPrice, planColor, planForStudent, planWaLink } from "@/lib/business/plans";
+import { findPlansStyle, plansClass, plansGridClass } from "@/lib/styles/plans-styles";
+import type { SitePlan } from "@/lib/utils/types";
 
 /** وصف مدّة الخطة بلغة الطالب. */
 export function planDuration(p: SitePlan, termEnd?: string): string {

@@ -1,8 +1,8 @@
 import "server-only";
 import crypto from "crypto";
 import { cookies } from "next/headers";
-import { AUTH_SECRET } from "../secrets";
-import { hashPassword, verifyPassword } from "../db";
+import { AUTH_SECRET } from "@/lib/auth/secrets";
+import { hashPassword, verifyPassword } from "@/lib/db/db";
 import type { TenantOwner } from "./types";
 import { hubGet, hubList, hubSet, hubId } from "./store";
 

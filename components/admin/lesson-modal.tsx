@@ -39,7 +39,7 @@ import {
   FileType2, Presentation, ImageIcon, Pencil,
 } from "lucide-react";
 import { useContent } from "@/components/content/content-provider";
-import type { Lesson, Material, Quiz, QuizQuestion } from "@/lib/types";
+import type { Lesson, Material, Quiz, QuizQuestion } from "@/lib/utils/types";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
 

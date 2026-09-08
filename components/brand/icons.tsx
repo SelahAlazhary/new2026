@@ -8,7 +8,7 @@
  */
 import type { ReactElement, SVGProps } from "react";
 import { useContent } from "@/components/content/content-provider";
-import { findIconLib, slotPath, slotOverlay, libAttrs, type IconSlot } from "@/lib/icon-libs";
+import { findIconLib, slotPath, slotOverlay, libAttrs, type IconSlot } from "@/lib/icons/icon-libs";
 
 /** حركة الأيقونة: رسم عند الظهور · تأرجح · نبض · اهتزاز لهب · طفو · ظهور نطّي. */
 type IconAnim = "draw" | "swing" | "pulse" | "flick" | "bob" | "pop" | "tick";

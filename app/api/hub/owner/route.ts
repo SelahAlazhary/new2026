@@ -6,7 +6,7 @@ import { subscriptionById, subscriptionForTenant, planById } from "@/lib/hub/pla
 import { tenantById, patchTenant } from "@/lib/hub/registry";
 import { getHubSettings } from "@/lib/hub/settings";
 import { audit } from "@/lib/hub/audit";
-import { sameOrigin } from "@/lib/guard";
+import { sameOrigin } from "@/lib/auth/guard";
 import type { SaasInvoice } from "@/lib/hub/types";
 
 export const dynamic = "force-dynamic";

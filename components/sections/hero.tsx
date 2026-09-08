@@ -23,9 +23,9 @@ import { DaadGlyph } from "@/components/brand/calligraphy";
 import { VideoModal } from "@/components/ui/video-modal";
 import { HeroFrame } from "@/components/sections/hero-frame";
 import { useContent } from "@/components/content/content-provider";
-import { el, isHidden, btnStyle, textStyle } from "@/lib/ui-style";
-import type { HeroShape } from "@/lib/home-layouts";
-import { findHeroStyle, heroClass } from "@/lib/hero-styles";
+import { el, isHidden, btnStyle, textStyle } from "@/lib/styles/ui-style";
+import type { HeroShape } from "@/lib/layout/home-layouts";
+import { findHeroStyle, heroClass } from "@/lib/styles/hero-styles";
 import { ShariBackdrop } from "@/components/brand/shari-art";
 
 /**

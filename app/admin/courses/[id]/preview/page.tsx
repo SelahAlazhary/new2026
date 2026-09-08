@@ -25,7 +25,7 @@ import { use, useMemo, useState } from "react";
 import Link from "next/link";
 import { useContent } from "@/components/content/content-provider";
 import { UnitView } from "@/components/student/unit-view";
-import { courseUnits } from "@/lib/course-units";
+import { courseUnits } from "@/lib/business/course-units";
 
 export default function CoursePreview({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { sameOrigin, limit, clientIp } from "@/lib/guard";
+import { sameOrigin, limit, clientIp } from "@/lib/auth/guard";
 import { requireSuper } from "@/lib/hub/session";
 import { isHubHost } from "@/lib/hub/guard-host";
 import { listTenants, patchTenant, tenantById, forgetTenant } from "@/lib/hub/registry";
-import { invalidateTenant } from "@/lib/store";
+import { invalidateTenant } from "@/lib/db/store";
 import { audit } from "@/lib/hub/audit";
 import { SECTIONS, FEATURES } from "@/lib/hub/sections";
 import { provisionTenant } from "@/lib/hub/provision";

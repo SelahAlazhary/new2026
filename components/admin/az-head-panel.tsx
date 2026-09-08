@@ -18,9 +18,9 @@
 
 import { useState } from "react";
 import { Card } from "@/components/dashboard/ui";
-import { AZ_HEAD_STYLES } from "@/lib/az-head-styles";
-import { AZ_CARD_STYLES } from "@/lib/az-card-styles";
-import type { AzHeadOptions } from "@/lib/types";
+import { AZ_HEAD_STYLES } from "@/lib/styles/az-head-styles";
+import { AZ_CARD_STYLES } from "@/lib/styles/az-card-styles";
+import type { AzHeadOptions } from "@/lib/utils/types";
 
 /** مقاسٌ يُحرَّك — الرقمُ مكتوبٌ بجانبه فلا يُخمَّن. */
 function Slide({

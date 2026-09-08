@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp, Users, Wallet, PlayCircle, Clock } from "lucide-react";
-import { enrollTrend } from "@/lib/dashboard-data";
+import { enrollTrend } from "@/lib/business/dashboard-data";
 import { PageHeader, Card, StatCard, Progress } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
 

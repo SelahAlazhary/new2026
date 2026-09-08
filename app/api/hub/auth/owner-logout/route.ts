@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sameOrigin } from "@/lib/guard";
+import { sameOrigin } from "@/lib/auth/guard";
 import { clearOwnerCookie } from "@/lib/hub/owner";
 
 export const dynamic = "force-dynamic";

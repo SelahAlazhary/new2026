@@ -6,10 +6,10 @@ import { UserPlus, Search, X, Trash2, BookOpen, Smartphone, ShieldOff, Check, Lo
 import Link from "next/link";
 import { PageHeader, DataTable, StatusBadge } from "@/components/dashboard/ui";
 import { GradeRequests } from "@/components/dashboard/grade-requests";
-import { isOnline, sinceText } from "@/lib/activity";
+import { isOnline, sinceText } from "@/lib/business/activity";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import type { PublicUser } from "@/lib/types";
+import type { PublicUser } from "@/lib/utils/types";
 
 export default function StudentsPage() {
   const { db, refresh } = useContent();

@@ -12,7 +12,7 @@
 
 import { useMemo, useState } from "react";
 import { X, Search } from "lucide-react";
-import { MOTION_ART, MOTION_LIBS, motionArtUrl, type MotionLibId } from "@/lib/motion-art";
+import { MOTION_ART, MOTION_LIBS, motionArtUrl, type MotionLibId } from "@/lib/art/motion-art";
 
 export function MotionArtPicker({
   onPick,

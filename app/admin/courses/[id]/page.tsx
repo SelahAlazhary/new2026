@@ -7,7 +7,7 @@ import {
   ArrowRight, Plus, Trash2, PlayCircle, Gift, FileText, Upload, ImageIcon,
   ListChecks, ChevronDown, Check, Link2, X, Loader2, Video, Palette, Wallet, Layers,
   ListVideo, Eye } from "lucide-react";
-import { courseUnits, isSplit, withUnits, LEGACY_UNIT_ID } from "@/lib/course-units";
+import { courseUnits, isSplit, withUnits, LEGACY_UNIT_ID } from "@/lib/business/course-units";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Collapse } from "@/components/dashboard/collapse";
 import { Curriculum } from "@/components/admin/curriculum";
@@ -16,8 +16,8 @@ import { useContent } from "@/components/content/content-provider";
 import { CourseArt, COVER_PATTERNS } from "@/components/brand/course-art";
 import { CoverTextEditor } from "@/components/admin/cover-text-editor";
 import { CoverStickersEditor } from "@/components/admin/cover-stickers-editor";
-import type { Lesson, Material, Subject, Quiz, QuizQuestion, ImageFit, CoverPattern, CoverText, CoverSticker, Unit } from "@/lib/types";
-import { mediaSrc } from "@/lib/media";
+import type { Lesson, Material, Subject, Quiz, QuizQuestion, ImageFit, CoverPattern, CoverText, CoverSticker, Unit } from "@/lib/utils/types";
+import { mediaSrc } from "@/lib/utils/media";
 import { Section } from "@/components/dashboard/section";
 
 /** ألوان خلفية جاهزة للوحة الغلاف — من عائلة هوية المخطوط. */

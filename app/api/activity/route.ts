@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { can } from "@/lib/perms";
-import { limit, clientIp } from "@/lib/guard";
-import { newActivity, pushActivity } from "@/lib/activity";
-import { appendActivity, readActivity } from "@/lib/activity-store";
-import type { ActivityKind } from "@/lib/types";
+import { loadDB, getDB, saveDB } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { can } from "@/lib/auth/perms";
+import { limit, clientIp } from "@/lib/auth/guard";
+import { newActivity, pushActivity } from "@/lib/business/activity";
+import { appendActivity, readActivity } from "@/lib/db/activity-store";
+import type { ActivityKind } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

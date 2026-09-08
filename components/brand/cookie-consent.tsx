@@ -27,7 +27,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Cookie, ChevronDown, ShieldCheck } from "lucide-react";
-import { readConsent, writeConsent, clearPrefs, type Consent } from "@/lib/consent";
+import { readConsent, writeConsent, clearPrefs, type Consent } from "@/lib/auth/consent";
 
 const ITEMS = [
   {

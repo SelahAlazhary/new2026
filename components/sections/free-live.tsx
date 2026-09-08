@@ -11,7 +11,7 @@ import { SectionHeading, Reveal, Button } from "@/components/ui/primitives";
 import { archPath } from "@/components/brand/pattern";
 import { IconRadio, IconCalendar, IconPlay, IconArrowLeft } from "@/components/brand/icons";
 import { useContent } from "@/components/content/content-provider";
-import { publicLives } from "@/lib/access";
+import { publicLives } from "@/lib/auth/access";
 import { useUid } from "@/components/brand/use-uid";
 
 /** لوحة SVG للبث: قوس + موجات إرسال متحرّكة. */

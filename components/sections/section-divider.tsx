@@ -6,7 +6,7 @@
  * يغلظ الخطّ عند التمدّد على الشاشات العريضة.
  */
 import { useUid } from "@/components/brand/use-uid";
-import type { HomeDivider } from "@/lib/home-layouts";
+import type { HomeDivider } from "@/lib/layout/home-layouts";
 
 export function SectionDivider({ kind }: { kind: HomeDivider }) {
   const uid = useUid("div");

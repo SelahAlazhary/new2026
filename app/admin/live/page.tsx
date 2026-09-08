@@ -16,8 +16,8 @@ import { PageHeader, Card, StatusBadge } from "@/components/dashboard/ui";
 import { Section } from "@/components/dashboard/section";
 import { Button } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
-import { TRACKS } from "@/lib/data";
-import type { Live, LiveAudience } from "@/lib/types";
+import { TRACKS } from "@/lib/utils/data";
+import type { Live, LiveAudience } from "@/lib/utils/types";
 
 /** الموعد الافتراضي: بعد ساعة، بصيغة datetime-local. */
 function defaultStart(): string {

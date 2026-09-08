@@ -13,7 +13,7 @@
  * يُطلب، فالصورةُ في الصفحة نفسِها.
  */
 
-import { findMotionArt, motionArtUrl } from "@/lib/motion-art";
+import { findMotionArt, motionArtUrl } from "@/lib/art/motion-art";
 
 export function MotionMark({
   id,

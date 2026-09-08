@@ -1,5 +1,5 @@
-import type { User } from "../types";
-import { PERMS, can, type AdminPerm } from "../perms";
+import type { User } from "@/lib/utils/types";
+import { PERMS, can, type AdminPerm } from "@/lib/auth/perms";
 import type { HideableSection, Tenant, TenantFeature } from "./types";
 
 /**

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { loadDB, getDB, saveDB, flushDB, hashPassword } from "@/lib/db";
-import { getSession } from "@/lib/session";
-import { recordEvent } from "@/lib/security";
-import { sameOrigin, passwordProblem, invalidUsername } from "@/lib/guard";
-import { ALL_PERMS, isOwner, type AdminPerm } from "@/lib/perms";
-import type { User } from "@/lib/types";
+import { loadDB, getDB, saveDB, flushDB, hashPassword } from "@/lib/db/db";
+import { getSession } from "@/lib/auth/session";
+import { recordEvent } from "@/lib/auth/security";
+import { sameOrigin, passwordProblem, invalidUsername } from "@/lib/auth/guard";
+import { ALL_PERMS, isOwner, type AdminPerm } from "@/lib/auth/perms";
+import type { User } from "@/lib/utils/types";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";

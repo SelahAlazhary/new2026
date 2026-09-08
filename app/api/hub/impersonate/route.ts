@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sameOrigin, limit, clientIp } from "@/lib/guard";
+import { sameOrigin, limit, clientIp } from "@/lib/auth/guard";
 import { requireSuper } from "@/lib/hub/session";
 import { isHubHost } from "@/lib/hub/guard-host";
 import { startImpersonation, endImpersonation } from "@/lib/hub/impersonate";

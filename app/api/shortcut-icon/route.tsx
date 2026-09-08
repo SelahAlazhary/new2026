@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getDB } from "@/lib/db";
+import { getDB } from "@/lib/db/db";
 import { tenantRoute } from "@/lib/hub/context";
 
 export const runtime = "nodejs";

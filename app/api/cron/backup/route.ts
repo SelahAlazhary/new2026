@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { loadDB, flushDB } from "@/lib/db";
-import { createBackup } from "@/lib/backup";
+import { loadDB, flushDB } from "@/lib/db/db";
+import { createBackup } from "@/lib/db/backup";
 import { listTenants } from "@/lib/hub/registry";
 import { runInTenant } from "@/lib/hub/context";
 

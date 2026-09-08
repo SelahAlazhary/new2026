@@ -16,7 +16,7 @@ import {
 } from "@/components/brand/icons";
 import { Card, PageHeader, Medallion, GoldRule } from "@/components/dashboard/ui";
 import { useContent } from "@/components/content/content-provider";
-import { activeSubs, daysLeft } from "@/lib/access";
+import { activeSubs, daysLeft } from "@/lib/auth/access";
 import { GradeRequestCard } from "@/components/student/grade-request";
 
 const ar = (n: number) => n.toLocaleString("ar-EG");
