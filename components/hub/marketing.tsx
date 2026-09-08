@@ -285,7 +285,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
               <div className="space-y-3">
                 <div className="relative aspect-video w-full rounded-2xl bg-slate-950 flex flex-col items-center justify-center text-white overflow-hidden shadow-inner">
                   <div className="absolute top-4 right-4 rounded-lg bg-black/60 px-3 py-1 text-[11px] font-mono text-amber-300 backdrop-blur-md">
-                    WATERMARK: 010****3912 (محمد أحمد)
+                    WATERMARK: 010****XXXX (اسم الطالب)
                   </div>
                   <div className="size-16 rounded-full bg-blue-600/90 text-white flex items-center justify-center shadow-lg shadow-blue-500/40 cursor-pointer hover:scale-105 transition">
                     <Play className="size-7 fill-white ml-0.5" />

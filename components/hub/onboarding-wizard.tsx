@@ -196,12 +196,12 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         <Panel>
           <span className="ob-done-badge">تمّ إنشاء منصّتك 🎉</span>
           <h1 className="ob-title">منصّتك جاهزة</h1>
-          <p className="ob-sub">احفظ بيانات الدخول الآن — كلمة المرور تُعرض هذه المرّة فقط.</p>
+          <p className="ob-sub">احفظ بيانات الدخول — يمكنك إعادة عرضها لاحقاً (ستُولَّد كلمة مرور جديدة).</p>
           <div className="ob-creds">
             <Cred label="رابط الطلاب" value={delivery.studentUrl} link />
             <Cred label="لوحة التحكّم" value={delivery.adminUrl} link />
             <Cred label="بريد الدخول" value={delivery.adminEmail} />
-            <Cred label="كلمة المرور" value={delivery.password ?? "(احفظها من رسالة سابقة)"} mono />
+            <Cred label="كلمة المرور" value={delivery.password ?? "جارٍ التوليد…"} mono />
           </div>
           <a href={delivery.adminUrl} className="ob-primary" target="_blank" rel="noreferrer">افتح لوحة منصّتك</a>
           <button type="button" className="ob-link" onClick={() => { setDelivery(null); load(); }}>العودة إلى منصّاتي</button>

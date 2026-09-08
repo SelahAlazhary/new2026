@@ -149,6 +149,38 @@ export async function provisionTenant(tenantId: string): Promise<ProvisionResult
   };
 }
 
+/** إعادةُ تعيين كلمة مرور أدمن المنصّة — يولّد كلمةً جديدة ويعيدها. */
+export async function resetTenantPassword(tenantId: string): Promise<string | null> {
+  const tenant = await tenantById(tenantId);
+  if (!tenant || tenant.status !== "active") return null;
+
+  const ctx = await ctxForTenantId(tenantId);
+  let newPassword: string | null = null;
+
+  await runInTenant(ctx, async () => {
+    const existing = await ensureStore(() => emptySeed());
+    const admin = existing.users?.find((u) => u.role === "admin" && u.owner);
+    if (!admin) return;
+
+    newPassword = generatePassword();
+    const { salt, passwordHash } = hashPassword(newPassword);
+    const updated = existing.users!.map((u) =>
+      u.id === admin.id ? { ...u, passwordHash, salt } : u
+    );
+    commit({ ...existing, users: updated });
+  });
+
+  if (newPassword) {
+    await storeDelivery(tenantId, {
+      password: newPassword,
+      adminEmail: tenant.adminEmail,
+      createdAt: new Date().toISOString(),
+    });
+    await audit("tenant.password_reset", { kind: "system", id: "reset", name: "إعادة تعيين" }, { tenantId });
+  }
+  return newPassword;
+}
+
 /** بذرةٌ فارغة تماماً — لا بيانات وهميّة (كما تبدأ أيُّ منصّة). */
 function emptySeed(): DB {
   return {

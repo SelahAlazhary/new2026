@@ -10,7 +10,7 @@ import { getHubSettings } from "@/lib/hub/settings";
 import { createInvoice, updateInvoice, listInvoices } from "@/lib/hub/invoices";
 import { createCheckout, paymobConfigured } from "@/lib/hub/billing/paymob";
 import { presetById } from "@/lib/hub/presets";
-import { provisionTenant } from "@/lib/hub/provision";
+import { provisionTenant, resetTenantPassword } from "@/lib/hub/provision";
 import { revealDelivery } from "@/lib/hub/delivery";
 import { audit } from "@/lib/hub/audit";
 import type { Tenant } from "@/lib/hub/types";
@@ -209,7 +209,11 @@ export async function POST(req: Request) {
       const t = mine.find((x) => x.id === String(body.tenantId ?? ""));
       if (!t) return NextResponse.json({ error: "لا توجد منصّة" }, { status: 404 });
       if (t.status !== "active") return NextResponse.json({ error: "لم تُجهَّز المنصّة بعد", code: "not_ready" }, { status: 409 });
-      const d = await revealDelivery(t.id);
+      let d = await revealDelivery(t.id);
+      let password = d?.password ?? null;
+      if (!password) {
+        password = await resetTenantPassword(t.id);
+      }
       const root = process.env.ROOT_DOMAIN?.trim();
       const base = t.customDomain
         ? `https://${t.customDomain}`
@@ -221,7 +225,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         ok: true,
         adminEmail: t.adminEmail,
-        password: d?.password ?? null,
+        password,
         studentUrl: base,
         adminUrl: `${base}/admin`,
       });
