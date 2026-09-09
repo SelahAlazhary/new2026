@@ -6185,6 +6185,90 @@ select.inp {
 .pv-chip { display: inline-block; margin-top: .2rem; font-size: .48rem; font-weight: 800; color: var(--pv-gold); border: 1px solid var(--pv-gold); padding: .2rem .5rem; border-radius: 999px; }
 @media (max-width: 420px) { .pv { grid-template-columns: 1fr 1fr; } .pv-panel { display: none; } }
 
+/* ============================================================
+   معاينة الهوية الاحترافية (Professional Preview)
+   ============================================================ */
+.pv-pro {
+  margin-bottom: 1.4rem; border-radius: 1.2rem; overflow: hidden;
+  background: var(--pv-paper); border: 1px solid var(--pv-line);
+}
+.pv-pro-header {
+  padding: .8rem 1rem; border-bottom: 1px solid var(--pv-line);
+  display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap;
+}
+.pv-pro-name { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: .9rem; color: var(--pv-ink); }
+.pv-pro-hint { font-size: .72rem; color: var(--pv-dim); }
+
+.pv-pro-screens {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: .5rem;
+  padding: .7rem;
+}
+@media (max-width: 520px) { .pv-pro-screens { grid-template-columns: 1fr 1fr; } .pv-pro-dash { display: none; } }
+@media (max-width: 380px) { .pv-pro-screens { grid-template-columns: 1fr; } }
+
+.pv-pro-screen {
+  background: var(--pv-card); border: 1px solid var(--pv-line);
+  border-radius: .65rem; padding: .5rem; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.pv-pro[data-dark] .pv-pro-screen { backdrop-filter: blur(2px); }
+
+/* — Landing — */
+.pv-pro-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.pv-pro-logo-pill { width: 1.6rem; height: .45rem; border-radius: 999px; background: var(--pv-primary); }
+.pv-pro-nav-dots { display: flex; gap: .18rem; }
+.pv-pro-nav-dots i { width: .3rem; height: .3rem; border-radius: 999px; background: var(--pv-dim); opacity: .4; }
+.pv-pro-hero-block { display: flex; flex-direction: column; gap: .25rem; margin-bottom: .5rem; }
+.pv-pro-badge-line { width: 2.2rem; height: .35rem; border-radius: 999px; background: var(--pv-gold); }
+.pv-pro-h1 { height: .5rem; border-radius: 999px; background: var(--pv-ink); opacity: .8; width: 90%; }
+.pv-pro-h2 { height: .4rem; border-radius: 999px; background: var(--pv-primary); opacity: .9; width: 55%; }
+.pv-pro-hero-btns { display: flex; gap: .25rem; margin-top: .2rem; }
+.pv-pro-cta { font-size: .44rem; font-weight: 800; color: #fff; background: var(--pv-primary); padding: .22rem .55rem; border-radius: 999px; }
+.pv-pro-cta-ghost { font-size: .44rem; font-weight: 700; color: var(--pv-primary); border: 1px solid var(--pv-primary); padding: .2rem .5rem; border-radius: 999px; background: transparent; }
+.pv-pro-features { display: flex; flex-direction: column; gap: .22rem; margin-top: auto; }
+.pv-pro-feat { display: flex; align-items: center; gap: .25rem; }
+.pv-pro-feat-icon { width: .55rem; height: .55rem; border-radius: 999px; background: var(--pv-gold); flex-shrink: 0; opacity: .7; }
+.pv-pro-feat-text { height: .3rem; flex: 1; border-radius: 999px; background: var(--pv-dim); opacity: .3; }
+
+/* — Course Card — */
+.pv-pro-cover {
+  height: 2.8rem; border-radius: .45rem; margin-bottom: .35rem; position: relative;
+  background: linear-gradient(135deg, var(--pv-primary), var(--pv-gold));
+  display: grid; place-items: center;
+}
+.pv-pro-cover-play { font-size: .6rem; color: #fff; opacity: .7; text-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.pv-pro-course-body { display: flex; flex-direction: column; gap: .2rem; flex: 1; }
+.pv-pro-course-tag { width: 1.8rem; height: .3rem; border-radius: 999px; background: var(--pv-gold); opacity: .6; }
+.pv-pro-course-title { height: .4rem; width: 80%; border-radius: 999px; background: var(--pv-ink); opacity: .75; }
+.pv-pro-course-sub { height: .3rem; width: 55%; border-radius: 999px; background: var(--pv-dim); opacity: .35; }
+.pv-pro-course-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: .3rem; }
+.pv-pro-price { font-size: .5rem; font-weight: 800; color: var(--pv-gold); }
+.pv-pro-enroll { font-size: .4rem; font-weight: 800; color: #fff; background: var(--pv-primary); padding: .18rem .45rem; border-radius: 999px; }
+
+/* — Dashboard — */
+.pv-pro-dash-head { display: flex; align-items: center; gap: .3rem; margin-bottom: .4rem; }
+.pv-pro-dash-avatar { width: 1rem; height: 1rem; border-radius: 999px; background: linear-gradient(135deg, var(--pv-primary), var(--pv-gold)); flex-shrink: 0; }
+.pv-pro-dash-info { display: flex; flex-direction: column; gap: .12rem; flex: 1; }
+.pv-pro-dash-info span:first-child { width: 60%; height: .32rem; border-radius: 999px; background: var(--pv-ink); opacity: .7; }
+.pv-pro-dash-info span:last-child { width: 40%; height: .25rem; border-radius: 999px; background: var(--pv-dim); opacity: .35; }
+.pv-pro-dash-stats { display: flex; gap: .3rem; margin-bottom: .35rem; }
+.pv-pro-stat {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: .08rem;
+  background: var(--pv-glow, rgba(0,0,0,.03)); border-radius: .35rem; padding: .25rem .2rem;
+}
+.pv-pro-stat b { font-size: .55rem; font-weight: 800; color: var(--pv-primary); }
+.pv-pro-stat span { font-size: .35rem; color: var(--pv-dim); }
+.pv-pro-dash-rows { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .3rem; }
+.pv-pro-dash-row { display: flex; align-items: center; gap: .2rem; }
+.pv-pro-dash-dot { width: .45rem; height: .45rem; border-radius: 999px; background: var(--pv-gold); flex-shrink: 0; }
+.pv-pro-dash-bar { flex: 1; height: .3rem; border-radius: 999px; background: var(--pv-dim); opacity: .25; }
+.pv-pro-dash-bar.short { width: 65%; flex: none; }
+.pv-pro-dash-cta {
+  display: block; text-align: center; font-size: .42rem; font-weight: 800;
+  color: var(--pv-gold); border: 1px solid var(--pv-gold); border-radius: 999px;
+  padding: .18rem .4rem; margin-top: auto;
+}
+
 /* دفع اشتراك المنصّة داخل الرحلة */
 .ob-pay { margin-top: 1rem; }
 .ob-pay-card, .ob-pay-manual { margin-top: .8rem; display: flex; flex-direction: column; gap: .5rem; }

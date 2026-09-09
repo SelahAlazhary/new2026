@@ -2,16 +2,6 @@
 
 import type { BrandColors, BrandPreset } from "@/lib/hub/presets";
 
-/**
- * معاينةٌ حيّةٌ لهويّة المنصّة داخل رحلة الإنشاء.
- * ------------------------------------------------------------------
- * لا تُشغّل المنصّةَ كاملةً في إطار — ذلك ثقيلٌ ويحتاج قاعدةً مجهّزة قبل
- * أوانها. بل ترسم **نموذجاً مصغّراً** لثلاث شاشات (هبوط · بطاقة كورس ·
- * لوحة) بالألوان المختارة، فيرى المدرّسُ أثرَ اختياره فوراً بلا انتظار.
- *
- * الألوانُ تُحقن متغيّراتٍ على الحاوية، فكلُّ تغييرٍ في المنتقي ينعكس في
- * اللحظة بلا إعادة رسمٍ للشجرة.
- */
 export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors: BrandColors }) {
   const dark = preset.dark;
   const vars = {
@@ -20,40 +10,72 @@ export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors:
     "--pv-paper": colors.paper,
     "--pv-ink": dark ? "#f4f4f6" : "#1a2036",
     "--pv-dim": dark ? "#a7abbb" : "#6b6f7c",
-    "--pv-card": dark ? "#ffffff14" : "#ffffff",
-    "--pv-line": dark ? "#ffffff22" : "#00000012",
+    "--pv-card": dark ? "rgba(255,255,255,.06)" : "#ffffff",
+    "--pv-line": dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)",
+    "--pv-glow": dark ? `${colors.primary}18` : `${colors.primary}0a`,
   } as React.CSSProperties;
 
   return (
-    <div className="pv" style={vars} data-dark={dark ? "1" : undefined}>
-      {/* شاشةُ الهبوط */}
-      <div className="pv-screen pv-landing">
-        <div className="pv-bar">
-          <span className="pv-logo" />
-          <span className="pv-navdots"><i /><i /><i /></span>
-        </div>
-        <div className="pv-hero">
-          <span className="pv-eyebrow" />
-          <span className="pv-h1" />
-          <span className="pv-h1 short" />
-          <span className="pv-btn">ابدأ الآن</span>
-        </div>
+    <div className="pv-pro" style={vars} data-dark={dark ? "1" : undefined}>
+      <div className="pv-pro-header">
+        <span className="pv-pro-name">{preset.name}</span>
+        <span className="pv-pro-hint">{preset.hint}</span>
       </div>
+      <div className="pv-pro-screens">
+        {/* شاشة الهبوط */}
+        <div className="pv-pro-screen pv-pro-landing">
+          <div className="pv-pro-topbar">
+            <span className="pv-pro-logo-pill" />
+            <span className="pv-pro-nav-dots"><i /><i /><i /></span>
+          </div>
+          <div className="pv-pro-hero-block">
+            <span className="pv-pro-badge-line" />
+            <span className="pv-pro-h1" />
+            <span className="pv-pro-h2" />
+            <div className="pv-pro-hero-btns">
+              <span className="pv-pro-cta">ابدأ الآن</span>
+              <span className="pv-pro-cta-ghost">تعرّف أكثر</span>
+            </div>
+          </div>
+          <div className="pv-pro-features">
+            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+          </div>
+        </div>
 
-      {/* بطاقةُ كورس */}
-      <div className="pv-screen pv-course">
-        <div className="pv-cover" />
-        <span className="pv-line-1" />
-        <span className="pv-line-2" />
-        <span className="pv-price">١٥٠ ج.م</span>
-      </div>
+        {/* بطاقة كورس */}
+        <div className="pv-pro-screen pv-pro-course">
+          <div className="pv-pro-cover">
+            <span className="pv-pro-cover-play">▶</span>
+          </div>
+          <div className="pv-pro-course-body">
+            <span className="pv-pro-course-tag" />
+            <span className="pv-pro-course-title" />
+            <span className="pv-pro-course-sub" />
+            <div className="pv-pro-course-footer">
+              <span className="pv-pro-price">١٥٠ ج.م</span>
+              <span className="pv-pro-enroll">اشترك</span>
+            </div>
+          </div>
+        </div>
 
-      {/* لوحةُ الطالب */}
-      <div className="pv-screen pv-panel">
-        <div className="pv-panel-head" />
-        <div className="pv-panel-row"><span /><b /></div>
-        <div className="pv-panel-row"><span /><b /></div>
-        <span className="pv-chip">تابع الدرس</span>
+        {/* لوحة الطالب */}
+        <div className="pv-pro-screen pv-pro-dash">
+          <div className="pv-pro-dash-head">
+            <span className="pv-pro-dash-avatar" />
+            <div className="pv-pro-dash-info"><span /><span /></div>
+          </div>
+          <div className="pv-pro-dash-stats">
+            <div className="pv-pro-stat"><b>١٢</b><span>درس</span></div>
+            <div className="pv-pro-stat"><b>٨٧٪</b><span>إتمام</span></div>
+          </div>
+          <div className="pv-pro-dash-rows">
+            <div className="pv-pro-dash-row"><span className="pv-pro-dash-dot" /><span className="pv-pro-dash-bar" /></div>
+            <div className="pv-pro-dash-row"><span className="pv-pro-dash-dot" /><span className="pv-pro-dash-bar short" /></div>
+          </div>
+          <span className="pv-pro-dash-cta">تابع الدرس</span>
+        </div>
       </div>
     </div>
   );
