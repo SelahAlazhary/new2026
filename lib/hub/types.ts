@@ -26,7 +26,7 @@ export type TenantStatus =
   | "archived";
 
 export type OnboardingStep =
-  | "plan" | "payment" | "approval" | "name" | "logo" | "design" | "domain" | "review" | "pay" | "done";
+  | "plan" | "payment" | "approval" | "name" | "logo" | "identity" | "design" | "domain" | "review" | "pay" | "done";
 
 /**
  * قسمٌ من لوحة أدمن المنصّة يُخفى من الـHub.

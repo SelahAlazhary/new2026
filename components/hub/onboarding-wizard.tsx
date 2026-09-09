@@ -1,15 +1,8 @@
 "use client";
 
-/**
- * رحلةُ إنشاء المنصّة — واجهةٌ واحدةٌ تقود المدرّسَ خطوةً خطوة.
- * ------------------------------------------------------------------
- * تقرأ حالتَها من `/api/start` وتستأنف من حيث وقف: من أغلق الصفحة في
- * منتصف الرحلة يعود فيجد اختياراتِه محفوظة. وكلُّ خطوةٍ تُحفظ في الخادم
- * فور إتمامها لا في آخر الرحلة — فلا يضيع شيء.
- */
-
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { BrandPreset } from "@/lib/hub/presets";
+import type { BrandPreset, SubjectCategory, StageCategory, PersonalityCategory, IdentityAnswers } from "@/lib/hub/presets";
+import { matchPresets } from "@/lib/hub/presets";
 import type { SaasPlan, Tenant } from "@/lib/hub/types";
 import { PresetPreview } from "@/components/hub/preset-preview";
 
@@ -31,8 +24,34 @@ type StartState = {
   payment: Payment | null;
 };
 
-const STEPS = ["name", "logo", "design", "review"] as const;
+const STEPS = ["name", "logo", "identity", "design", "review"] as const;
 type Step = (typeof STEPS)[number];
+
+const SUBJECT_OPTIONS: { id: SubjectCategory; label: string; icon: string }[] = [
+  { id: "stem", label: "رياضيات وعلوم", icon: "M4 2h2v4h4V2h2v4h4V2h2v6H4V2zm0 8h14v2H4v-2zm2 4h10v2H6v-2z" },
+  { id: "arabic", label: "لغة عربية وأدب", icon: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 15H9v-2h2v2zm4-4H7v-2h8v2zm2-4H5V7h12v2z" },
+  { id: "english", label: "لغة إنجليزية", icon: "M5 4v2h6.5l-3.5 9H5v2h14v-2h-6.5l3.5-9H19V4H5z" },
+  { id: "humanities", label: "تاريخ وجغرافيا", icon: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 2c1.9 0 3.7.7 5 1.8-1 .7-2.3 1.2-3.5 1.5-.4-1-1-1.8-1.5-2.3V4zM4 12c0-2 .7-3.8 2-5.2.5 1.5 1.5 2.8 2.8 3.7L7 14.5c-1.8-.3-2.6-1.2-3-2.5zm8 8c-3.3 0-6-2-7.2-4.8C6 16 8 16.5 10 16l2 4zm1-4.5L11 12l3-4 3 4-2 3.5h-2z" },
+  { id: "tech", label: "حاسب آلي وبرمجة", icon: "M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" },
+  { id: "religious", label: "تربية دينية وقرآن", icon: "M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" },
+  { id: "arts", label: "فنون وإبداع", icon: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.6 0 1-.4 1-1 0-.3-.1-.5-.2-.7-.1-.2-.2-.4-.2-.6 0-.6.4-1 1-1h1.8c3 0 5.5-2.5 5.5-5.5C21 5.9 17 2 12 2zM6.5 13c-.8 0-1.5-.7-1.5-1.5S5.7 10 6.5 10 8 10.7 8 11.5 7.3 13 6.5 13zm3-4C8.7 9 8 8.3 8 7.5S8.7 6 9.5 6s1.5.7 1.5 1.5S10.3 9 9.5 9zm5 0c-.8 0-1.5-.7-1.5-1.5S13.7 6 14.5 6s1.5.7 1.5 1.5S15.3 9 14.5 9zm3 4c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" },
+  { id: "general", label: "تعليم عام / أخرى", icon: "M12 3L1 9l4 2.2v6L12 21l7-3.8v-6l2-1.1V17h2V9L12 3zm6.8 6L12 12.7 5.2 9 12 5.3 18.8 9zM17 15.7l-5 2.7-5-2.7v-3.9l5 2.7 5-2.7v3.9z" },
+];
+
+const STAGE_OPTIONS: { id: StageCategory; label: string }[] = [
+  { id: "primary", label: "ابتدائي" },
+  { id: "middle", label: "إعدادي" },
+  { id: "secondary", label: "ثانوي" },
+  { id: "university", label: "جامعي" },
+  { id: "professional", label: "تدريب مهني" },
+];
+
+const PERSONALITY_OPTIONS: { id: PersonalityCategory; label: string; desc: string; gradient: string }[] = [
+  { id: "academic", label: "أكاديمي وموثوق", desc: "منهجٌ منظّمٌ وتقييمٌ دقيق — يليق بمن يعلّم بثقة", gradient: "linear-gradient(135deg, #1e3a5f, #2c5282)" },
+  { id: "modern", label: "عصري ومبتكر", desc: "تقنيّةٌ أنيقة ومحتوى بطريقة جديدة كلّياً", gradient: "linear-gradient(135deg, #2f5fd0, #3b82f6)" },
+  { id: "energetic", label: "حيوي وملهم", desc: "طاقةٌ تُحفّز الطلاب وتجعل التعلّم تجربة ممتعة", gradient: "linear-gradient(135deg, #7c3aed, #a855f7)" },
+  { id: "calm", label: "هادئ ومريح", desc: "بيئةٌ آمنة ودافئة تساعد على التركيز والاستيعاب", gradient: "linear-gradient(135deg, #059669, #10b981)" },
+];
 
 export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; presets: BrandPreset[] }) {
   const [state, setState] = useState<StartState | null>(null);
@@ -42,7 +61,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   const [paying, setPaying] = useState(false);
   const [delivery, setDelivery] = useState<{ adminEmail: string; password: string | null; studentUrl: string; adminUrl: string } | null>(null);
 
-  /* حقولُ التحرير */
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [slug, setSlug] = useState("");
@@ -52,6 +70,12 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   const [colors, setColors] = useState({ primary: "#233b8b", gold: "#c99a3b", paper: "#fbf9f5" });
   const [domain, setDomain] = useState("");
   const [urlBase, setUrlBase] = useState("");
+
+  const [idSubject, setIdSubject] = useState<SubjectCategory | null>(null);
+  const [idStage, setIdStage] = useState<StageCategory | null>(null);
+  const [idPersonality, setIdPersonality] = useState<PersonalityCategory | null>(null);
+  const [idPreferDark, setIdPreferDark] = useState<boolean>(false);
+  const [sortedPresets, setSortedPresets] = useState<BrandPreset[]>(presets);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/start", { cache: "no-store" });
@@ -67,8 +91,8 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
       setDomain(data.draft.customDomain ?? "");
       const s = data.draft.onboardingStep;
       if (STEPS.includes(s as Step)) setStep(s as Step);
+      else if (s === "design") setStep("identity");
     }
-    /* استئنافُ الدفع: خطّةٌ مدفوعةٌ بلا سداد، وقد بلغ المدرّسُ المراجعة */
     if (data.subStatus === "pending_payment" && data.payment?.needPayment &&
         (data.draft?.onboardingStep === "review" || data.payment?.lastInvoice)) {
       setPaying(true);
@@ -83,7 +107,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     setUrlBase(window.location.origin);
   }, [load]);
 
-  /* استطلاعُ الموافقة: المسودّةُ المنتظِرة تُفحص كلَّ خمس ثوانٍ */
   const draft = state?.draft;
   const pending = draft?.status === "pending_approval";
   const poll = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -138,10 +161,10 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   };
 
   const saveStep = async (nextStep: Step | "submit", extra: Record<string, unknown>) => {
-    const d = await call({ action: "save", step: nextStep === "submit" ? "review" : nextStep, ...extra });
+    const serverStep = nextStep === "submit" ? "review" : nextStep === "identity" ? "identity" : nextStep;
+    const d = await call({ action: "save", step: serverStep, ...extra });
     if (!d?.ok) return;
     if (nextStep === "submit") {
-      /* الإرسالُ يُقرأ مباشرةً: ٤٠٢ «يحتاج دفعاً» ليس خطأً بل تحويلٌ لشاشة الدفع */
       setBusy(true);
       try {
         const res = await fetch("/api/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "submit" }) });
@@ -160,6 +183,17 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     setStep(nextStep);
   };
 
+  const finishIdentity = () => {
+    if (!idSubject || !idStage || !idPersonality) return;
+    const answers: IdentityAnswers = { subject: idSubject, stage: idStage, personality: idPersonality, preferDark: idPreferDark };
+    const matched = matchPresets(answers);
+    setSortedPresets(matched);
+    const best = matched[0];
+    setPresetId(best.id);
+    setColors(best.colors);
+    saveStep("design", { logo });
+  };
+
   const onLogo = (file: File) => {
     if (file.size > 2_000_000) { setError("الصورة كبيرة — أقصى ٢ ميجابايت"); return; }
     const reader = new FileReader();
@@ -167,17 +201,23 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     reader.readAsDataURL(file);
   };
 
+  const identityComplete = Boolean(idSubject && idStage && idPersonality);
+
   /* ============ العرض ============ */
 
   if (!state) return <Shell><p className="ob-loading">جارٍ التحميل…</p></Shell>;
 
-  /* ١) غير مسجَّل → الدخول (جوجل أو بريد وكلمة مرور) */
   if (!state.owner) {
     return (
       <Shell>
         <Panel>
-          <h1 className="ob-title">أنشئ منصّتك التعليمية</h1>
-          <p className="ob-sub">ابدأ بتسجيل الدخول — بحساب جوجل أو بالبريد وكلمة المرور.</p>
+          <div className="ob-auth-header">
+            <span className="ob-auth-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </span>
+            <h1 className="ob-title">أنشئ منصّتك التعليمية</h1>
+            <p className="ob-sub">ابدأ بتسجيل الدخول — بحساب جوجل أو بالبريد وكلمة المرور.</p>
+          </div>
           <a href="/api/hub/auth/google?next=/start" className="ob-google">
             <GoogleMark /> المتابعة بحساب جوجل
           </a>
@@ -189,14 +229,13 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     );
   }
 
-  /* التسليم النهائيّ — بيانات الدخول (تُعرض مرّةً) */
   if (delivery) {
     return (
       <Shell>
         <Panel>
-          <span className="ob-done-badge">تمّ إنشاء منصّتك 🎉</span>
+          <span className="ob-done-badge">تمّ إنشاء منصّتك بنجاح</span>
           <h1 className="ob-title">منصّتك جاهزة</h1>
-          <p className="ob-sub">احفظ بيانات الدخول — يمكنك إعادة عرضها لاحقاً (ستُولَّد كلمة مرور جديدة).</p>
+          <p className="ob-sub">احفظ بيانات الدخول — يمكنك إعادة عرضها لاحقاً.</p>
           <div className="ob-creds">
             <Cred label="رابط الطلاب" value={delivery.studentUrl} link />
             <Cred label="لوحة التحكّم" value={delivery.adminUrl} link />
@@ -210,7 +249,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     );
   }
 
-  /* شاشةُ الدفع — خطّةٌ مدفوعةٌ بلا سداد */
   if (paying && draft && state.payment) {
     return (
       <Shell>
@@ -237,7 +275,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     );
   }
 
-  /* بانتظار الموافقة */
   if (pending) {
     return (
       <Shell>
@@ -254,7 +291,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     );
   }
 
-  /* لا مسودّة → إمّا منصّات قائمة أو اختيار خطّة */
   if (!draft) {
     if (state.active.length) {
       return (
@@ -294,9 +330,6 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     );
   }
 
-  /* مسودّة onboarding → الخطوات */
-  const idx = STEPS.indexOf(step);
-
   return (
     <Shell>
       <Panel wide>
@@ -304,7 +337,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         {error && <p className="ob-error">{error}</p>}
 
         {step === "name" && (
-          <Step title="اسم المنصّة" desc="ما يراه طلابك في كل مكان.">
+          <StepBox title="اسم المنصّة" desc="ما يراه طلابك في كل مكان — اختره بعناية.">
             <label className="lbl">اسم المنصّة</label>
             <input className="inp w-full" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} placeholder="مثال: أكاديمية النور" />
             <label className="lbl mt-3">وصف مختصر</label>
@@ -323,11 +356,11 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
               nextEnabled={name.trim().length >= 3 && (slugMsg?.ok ?? Boolean(draft.slug))}
               busy={busy}
             />
-          </Step>
+          </StepBox>
         )}
 
         {step === "logo" && (
-          <Step title="شعار المنصّة" desc="صورةٌ أو شعارٌ يمثّل منصّتك (اختياري).">
+          <StepBox title="شعار المنصّة" desc="صورةٌ أو شعارٌ يمثّل منصّتك (اختياري — يمكنك إضافته لاحقاً).">
             <div className="ob-logo-row">
               <div className="ob-logo-preview">
                 {logo ? <img src={logo} alt="" /> : <span>لا صورة</span>}
@@ -341,21 +374,112 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
                 <p className="ob-hint">PNG أو JPG أو SVG — أقصى ٢ ميجابايت.</p>
               </div>
             </div>
-            <Nav onBack={() => setStep("name")} onNext={() => saveStep("design", { logo })} nextEnabled busy={busy} skipLabel="تخطٍّ الآن" />
-          </Step>
+            <Nav onBack={() => setStep("name")} onNext={() => { saveStep("identity", { logo }); }} nextEnabled busy={busy} skipLabel="تخطٍّ الآن" />
+          </StepBox>
+        )}
+
+        {step === "identity" && (
+          <StepBox title="هويّة منصّتك" desc="أجب عن أسئلة سريعة ونختار لك التصميم الأمثل تلقائياً.">
+
+            <div className="ob-quiz-section">
+              <h3 className="ob-quiz-q">ما المادة أو المجال الذي تُدرّسه؟</h3>
+              <div className="ob-quiz-subjects">
+                {SUBJECT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`ob-quiz-chip ${idSubject === opt.id ? "is-on" : ""}`}
+                    onClick={() => setIdSubject(opt.id)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="ob-quiz-chip-icon"><path d={opt.icon} /></svg>
+                    <span>{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="ob-quiz-section">
+              <h3 className="ob-quiz-q">ما المرحلة الدراسية لطلابك؟</h3>
+              <div className="ob-quiz-stages">
+                {STAGE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`ob-quiz-pill ${idStage === opt.id ? "is-on" : ""}`}
+                    onClick={() => setIdStage(opt.id)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="ob-quiz-section">
+              <h3 className="ob-quiz-q">كيف تصف أسلوبك وشخصيّة منصّتك؟</h3>
+              <div className="ob-quiz-personalities">
+                {PERSONALITY_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`ob-quiz-persona ${idPersonality === opt.id ? "is-on" : ""}`}
+                    onClick={() => setIdPersonality(opt.id)}
+                  >
+                    <span className="ob-quiz-persona-bar" style={{ background: opt.gradient }} />
+                    <b>{opt.label}</b>
+                    <span className="ob-quiz-persona-desc">{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="ob-quiz-section">
+              <h3 className="ob-quiz-q">هل تفضّل أجواء فاتحة أم داكنة؟</h3>
+              <div className="ob-quiz-theme">
+                <button
+                  type="button"
+                  className={`ob-quiz-theme-card ${!idPreferDark ? "is-on" : ""}`}
+                  onClick={() => setIdPreferDark(false)}
+                >
+                  <span className="ob-quiz-theme-preview light">
+                    <span /><span /><span />
+                  </span>
+                  <b>فاتحة ومشرقة</b>
+                </button>
+                <button
+                  type="button"
+                  className={`ob-quiz-theme-card ${idPreferDark ? "is-on" : ""}`}
+                  onClick={() => setIdPreferDark(true)}
+                >
+                  <span className="ob-quiz-theme-preview dark">
+                    <span /><span /><span />
+                  </span>
+                  <b>داكنة وأنيقة</b>
+                </button>
+              </div>
+            </div>
+
+            <Nav
+              onBack={() => setStep("logo")}
+              onNext={finishIdentity}
+              nextEnabled={identityComplete}
+              busy={busy}
+              nextLabel="اكتشف تصميمك"
+            />
+          </StepBox>
         )}
 
         {step === "design" && (
-          <Step title="هويّة المنصّة" desc="اختر تصميماً ولوّنه كما تحب — يمكنك تغييره لاحقاً.">
+          <StepBox title="هويّة المنصّة" desc="اخترنا لك الأنسب — غيّر إن أحببت، يمكنك تعديله لاحقاً.">
             <PresetPreview preset={presets.find((p) => p.id === presetId) ?? presets[0]} colors={colors} />
             <div className="ob-preset-grid">
-              {presets.map((pr) => (
+              {sortedPresets.map((pr, i) => (
                 <button
                   key={pr.id}
                   type="button"
                   onClick={() => { setPresetId(pr.id); setColors(pr.colors); }}
                   className={`ob-preset ${presetId === pr.id ? "is-on" : ""}`}
                 >
+                  {i < 3 && identityComplete && <span className="ob-preset-badge">مقترح</span>}
                   <span className="ob-preset-swatch" style={{ background: `linear-gradient(135deg, ${pr.colors.primary}, ${pr.colors.gold})` }} />
                   <b>{pr.name}</b>
                   <span className="ob-preset-hint">{pr.hint}</span>
@@ -371,15 +495,15 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
               ))}
             </div>
             <Nav
-              onBack={() => setStep("logo")}
+              onBack={() => setStep("identity")}
               onNext={() => saveStep("review", { presetId, colors })}
               nextEnabled busy={busy}
             />
-          </Step>
+          </StepBox>
         )}
 
         {step === "review" && (
-          <Step title="مراجعة وإنشاء" desc="تأكّد من البيانات، ثم أنشئ منصّتك.">
+          <StepBox title="مراجعة وإنشاء" desc="تأكّد من البيانات، ثم أنشئ منصّتك.">
             <ul className="ob-review">
               <li><span>الاسم</span><b>{name || draft.name}</b></li>
               <li><span>الرابط</span><b dir="ltr">{urlBase}/t/{slug || draft.slug}</b></li>
@@ -393,7 +517,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
               nextEnabled busy={busy}
               nextLabel="أنشئ منصّتي"
             />
-          </Step>
+          </StepBox>
         )}
       </Panel>
     </Shell>
@@ -408,7 +532,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Panel({ children, wide }: { children: React.ReactNode; wide?: boolean }) {
   return <div className={`ob-panel ${wide ? "is-wide" : ""}`}>{children}</div>;
 }
-function Step({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
+function StepBox({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
   return (
     <div className="ob-step">
       <h2 className="ob-step-title">{title}</h2>
@@ -433,7 +557,7 @@ function Nav({
 }
 function Progress({ step }: { step: Step }) {
   const idx = STEPS.indexOf(step);
-  const labels: Record<Step, string> = { name: "الاسم", logo: "الشعار", design: "التصميم", review: "مراجعة" };
+  const labels: Record<Step, string> = { name: "الاسم", logo: "الشعار", identity: "الهوية", design: "التصميم", review: "مراجعة" };
   return (
     <div className="ob-progress">
       {STEPS.map((s, i) => (
@@ -459,7 +583,6 @@ function PlanGrid({ plans, onPick, busy, title }: { plans: SaasPlan[]; onPick: (
             <div className="ob-plan-price">
               <><b>{p.priceEGP.toLocaleString("ar-EG")}</b> <span>ج.م/{p.interval === "month" ? "شهر" : p.interval === "quarter" ? "٣ش" : "سنة"}</span></>
             </div>
-            {/* trial removed */}
             <button type="button" className={`ob-plan-cta ${p.highlight ? "is-hot" : ""}`} disabled={busy} onClick={() => onPick(p.id)}>
               اختر هذه الخطّة
             </button>
