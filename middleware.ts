@@ -179,20 +179,11 @@ export function middleware(req: NextRequest) {
     const slug = (parts[2] ?? "").toLowerCase();
     if (slug && SLUG_RE.test(slug)) {
       const rest = "/" + (parts.slice(3).join("/") || "");
-      const rootIsHub2 = (process.env.ROOT_HOST_MODE?.trim() || "tenant") === "hub";
       const cookieName = DEV ? "dev_tenant" : "tenant_slug";
       const cookieOpts = {
         path: "/", httpOnly: true, sameSite: "lax" as const,
         secure: !!process.env.VERCEL, maxAge: 60 * 60 * 24 * 30,
       };
-
-      if (rest === "/") {
-        const url = req.nextUrl.clone();
-        url.pathname = `/t/${slug}/student`;
-        const res = NextResponse.redirect(url);
-        res.cookies.set(cookieName, slug, cookieOpts);
-        return res;
-      }
 
       const url = req.nextUrl.clone();
       url.pathname = rest;
