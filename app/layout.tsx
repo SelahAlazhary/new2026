@@ -65,7 +65,7 @@ const plex = IBM_Plex_Sans_Arabic({
 
 /** إعدادات العرض — viewport-fit=cover ضروري لاحترام حوّاف الشاشة في التطبيق المثبّت. */
 export async function generateViewport(): Promise<Viewport> {
-  if (await onHub()) return { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#1b2a4a" };
+  if (await onHub()) return { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#08070e" };
   /* يربط الطلبَ بمنصّته أوّلاً — وبلا منصّةٍ يُعاد الافتراضيُّ بلا كسر */
   try {
     await loadDB();
@@ -232,7 +232,7 @@ function PausedPage({ brand, message }: { brand?: string; message: string }) {
  */
 function HubRoot({ children, fontClass }: { children: ReactNode; fontClass: string }) {
   return (
-    <html lang="ar" dir="rtl" data-layout="light" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" data-layout="dark" suppressHydrationWarning>
       <body className={`${fontClass} font-sans`}>{children}</body>
     </html>
   );

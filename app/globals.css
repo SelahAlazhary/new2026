@@ -5334,28 +5334,28 @@ select.inp {
 
 /* ── المتغيرات الأساسية ─────────────────────────────────────── */
 .mkt {
-  --mk-bg:        #f5f0ff;
-  --mk-surface:   #ffffff;
-  --mk-surface-2: #faf8ff;
-  --mk-ink:       #1A0F3C;
-  --mk-ink-2:     #2D1B69;
-  --mk-dim:       #6B5B8A;
-  --mk-dim-2:     #9B8CB5;
-  --mk-line:      rgba(123, 79, 176, 0.09);
-  --mk-line-2:    rgba(123, 79, 176, 0.05);
-  --mk-primary:   #7B4FB0;
-  --mk-primary-2: #5B3A8C;
-  --mk-indigo:    #5B3A8C;
-  --mk-gold:      #F5A623;
-  --mk-gold-2:    #f59e0b;
-  --mk-card:      #ffffff;
+  --mk-bg:        #08070e;
+  --mk-surface:   #11101a;
+  --mk-surface-2: #16152a;
+  --mk-ink:       #e0dde8;
+  --mk-ink-2:     #ffffff;
+  --mk-dim:       rgba(255,255,255,0.4);
+  --mk-dim-2:     rgba(255,255,255,0.25);
+  --mk-line:      rgba(255,255,255,0.04);
+  --mk-line-2:    rgba(255,255,255,0.03);
+  --mk-primary:   #8B5CF6;
+  --mk-primary-2: #7C3AED;
+  --mk-indigo:    #7C3AED;
+  --mk-gold:      #F59E0B;
+  --mk-gold-2:    #D97706;
+  --mk-card:      #11101a;
   --mk-radius:    1.5rem;
   --mk-radius-sm: 0.875rem;
-  --mk-shadow-xs: 0 1px 3px rgba(45, 27, 105, 0.06), 0 1px 2px rgba(45, 27, 105, 0.04);
-  --mk-shadow-sm: 0 4px 16px -4px rgba(45, 27, 105, 0.08), 0 2px 6px -2px rgba(45, 27, 105, 0.05);
-  --mk-shadow-md: 0 12px 40px -8px rgba(45, 27, 105, 0.12), 0 4px 12px -4px rgba(45, 27, 105, 0.07);
-  --mk-shadow-lg: 0 24px 64px -16px rgba(45, 27, 105, 0.18), 0 8px 24px -8px rgba(45, 27, 105, 0.1);
-  --mk-shadow-blue: 0 20px 56px -12px rgba(123, 79, 176, 0.35);
+  --mk-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --mk-shadow-sm: 0 4px 16px -4px rgba(0, 0, 0, 0.3), 0 2px 6px -2px rgba(0, 0, 0, 0.2);
+  --mk-shadow-md: 0 12px 40px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -4px rgba(0, 0, 0, 0.25);
+  --mk-shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.5), 0 8px 24px -8px rgba(0, 0, 0, 0.3);
+  --mk-shadow-blue: 0 20px 56px -12px rgba(139, 92, 246, 0.25);
   --mk-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --mk-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
@@ -5374,9 +5374,9 @@ select.inp {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(123, 79, 176, 0.07) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.04) 0%, transparent 60%);
+    radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 60%);
 }
 
 .mkt > * { position: relative; z-index: 1; }
@@ -5393,11 +5393,11 @@ select.inp {
   gap: 1rem;
   padding: 0 clamp(1.25rem, 4vw, 3rem);
   height: 64px;
-  background: rgba(240, 244, 255, 0.75);
+  background: rgba(8, 7, 14, 0.85);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border-bottom: 1px solid rgba(123, 79, 176, 0.08);
-  box-shadow: 0 1px 0 rgba(123, 79, 176, 0.06), 0 4px 24px -8px rgba(10, 20, 60, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 4px 24px -8px rgba(0, 0, 0, 0.3);
 }
 
 .mkt-logo {
@@ -5467,8 +5467,8 @@ select.inp {
   width: 56rem;
   height: 28rem;
   background: radial-gradient(ellipse at center top,
-    rgba(123, 79, 176, 0.12) 0%,
-    rgba(79, 70, 229, 0.07) 40%,
+    rgba(139, 92, 246, 0.15) 0%,
+    rgba(124, 58, 237, 0.08) 40%,
     transparent 70%);
   pointer-events: none;
   z-index: -1;
@@ -5482,13 +5482,13 @@ select.inp {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #92400e;
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 1px solid #fbbf24;
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.15);
   padding: 0.45rem 1.1rem;
   border-radius: 999px;
   margin-bottom: 1.75rem;
-  box-shadow: 0 2px 12px -4px rgba(251, 191, 36, 0.3), inset 0 1px 0 rgba(255,255,255,0.6);
+  box-shadow: 0 2px 12px -4px rgba(139, 92, 246, 0.15);
 }
 
 .mkt-title {
@@ -5496,7 +5496,7 @@ select.inp {
   line-height: 1.12;
   font-size: clamp(2.4rem, 7.5vw, 4.5rem);
   letter-spacing: -0.03em;
-  color: var(--mk-ink);
+  color: #fff;
   margin: 0;
 }
 
@@ -5526,7 +5526,7 @@ select.inp {
   margin: 1.75rem auto 0;
   font-size: clamp(1rem, 2.4vw, 1.15rem);
   line-height: 1.95;
-  color: var(--mk-dim);
+  color: rgba(255,255,255,0.5);
   font-weight: 500;
 }
 
@@ -5616,7 +5616,7 @@ select.inp {
 .mkt-note {
   margin-top: 1.75rem;
   font-size: 0.82rem;
-  color: var(--mk-dim-2);
+  color: rgba(255,255,255,0.2);
   font-weight: 500;
 }
 
