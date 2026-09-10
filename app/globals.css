@@ -5126,6 +5126,76 @@ select.inp {
 .auth-card .lbl { color: rgba(255,255,255,0.45); }
 
 /* ============================================================
+   الصفحات القانونية — تصميم داكن سينمائي
+   ============================================================ */
+.legal-root {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding: 5rem 0;
+  background: #08070e;
+  color: #e0dde8;
+}
+.legal-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 30% at 50% 10%, rgba(139,92,246,0.05), transparent),
+    radial-gradient(ellipse 40% 20% at 30% 90%, rgba(245,158,11,0.02), transparent);
+  pointer-events: none;
+}
+.legal-container {
+  position: relative;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+.legal-back {
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.2s;
+}
+.legal-back:hover { color: #a78bfa; }
+
+.legal-card {
+  position: relative;
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 2rem;
+  background: rgba(17,16,26,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+@media (min-width: 640px) { .legal-card { padding: 2.5rem; } }
+.legal-card-glow {
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent);
+}
+
+.legal-prose h1 { color: #fff; }
+.legal-prose h2 { color: #a78bfa; }
+.legal-prose p,
+.legal-prose li { color: rgba(255,255,255,0.45); }
+.legal-prose strong { color: rgba(255,255,255,0.75); }
+.legal-prose a { color: #a78bfa; text-decoration: underline; text-underline-offset: 2px; }
+.legal-prose a:hover { color: #c4b5fd; }
+
+.legal-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ============================================================
    قشرةُ لوحة الإدارة — بناءٌ جديد
    ------------------------------------------------------------
    لا شيءَ من تنسيق القديم: لا زجاجَ ولا ضبابَ ولا حوافَّ ٢٤ بكسلاً ولا
