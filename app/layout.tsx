@@ -193,11 +193,11 @@ export async function generateMetadata(): Promise<Metadata> {
 function NoTenant() {
   return (
     <html lang="ar" dir="rtl">
-      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#fbf9f5", color: "#1c2340", fontFamily: "system-ui, sans-serif" }}>
+      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#08070e", color: "#e0dde8", fontFamily: "system-ui, sans-serif" }}>
         <main style={{ textAlign: "center", padding: "2rem" }}>
-          <p style={{ fontSize: "3rem", margin: 0 }}>٤٠٤</p>
+          <p style={{ fontSize: "3rem", margin: 0, color: "#8B5CF6" }}>٤٠٤</p>
           <h1 style={{ fontSize: "1.25rem", margin: "0.5rem 0" }}>لا توجد منصّة على هذا العنوان</h1>
-          <p style={{ opacity: 0.7, fontSize: "0.9rem" }}>تأكّد من الرابط الذي وصلك من معلّمك.</p>
+          <p style={{ opacity: 0.5, fontSize: "0.9rem" }}>تأكّد من الرابط الذي وصلك من معلّمك.</p>
         </main>
       </body>
     </html>
@@ -212,12 +212,12 @@ function NoTenant() {
 function PausedPage({ brand, message }: { brand?: string; message: string }) {
   return (
     <html lang="ar" dir="rtl">
-      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#fbf9f5", color: "#1c2340", fontFamily: "system-ui, sans-serif" }}>
+      <body style={{ margin: 0, minHeight: "100vh", display: "grid", placeItems: "center", background: "#08070e", color: "#e0dde8", fontFamily: "system-ui, sans-serif" }}>
         <main style={{ textAlign: "center", padding: "2rem", maxWidth: "34rem" }}>
           <span style={{ fontSize: "2.6rem" }} aria-hidden="true">⏸</span>
           <h1 style={{ fontSize: "1.35rem", margin: "0.75rem 0 0.35rem" }}>{brand ? `${brand} — متوقّفة مؤقّتاً` : "المنصّة متوقّفة مؤقّتاً"}</h1>
-          <p style={{ opacity: 0.75, fontSize: "0.95rem", lineHeight: 1.9 }}>{message}</p>
-          <p style={{ opacity: 0.55, fontSize: "0.8rem", marginTop: "1.5rem" }}>حسابك ودروسك محفوظة، وتعود كما هي فور عودة المنصّة.</p>
+          <p style={{ opacity: 0.6, fontSize: "0.95rem", lineHeight: 1.9 }}>{message}</p>
+          <p style={{ opacity: 0.4, fontSize: "0.8rem", marginTop: "1.5rem" }}>حسابك ودروسك محفوظة، وتعود كما هي فور عودة المنصّة.</p>
         </main>
       </body>
     </html>

@@ -5326,13 +5326,10 @@ select.inp {
 }
 
 /* ============================================================
-   الموقع الأمّ — صفحةُ «أنشئ منصّتك» — تصميم Premium
-   ------------------------------------------------------------
-   هوية بصرية احترافية من الجيل الأول: عمق لوني، هرمية نصية
-   صارمة، micro-interactions، وعناصر بصرية مدروسة.
+   الموقع الأمّ — SpotLight Studio Hub
+   تصميم سينمائي فريد بأنماط هندسية SVG مخصصة وتأثيرات ضوئية
    ============================================================ */
 
-/* ── المتغيرات الأساسية ─────────────────────────────────────── */
 .mkt {
   --mk-bg:        #08070e;
   --mk-surface:   #11101a;
@@ -5341,7 +5338,7 @@ select.inp {
   --mk-ink-2:     #ffffff;
   --mk-dim:       rgba(255,255,255,0.4);
   --mk-dim-2:     rgba(255,255,255,0.25);
-  --mk-line:      rgba(255,255,255,0.04);
+  --mk-line:      rgba(255,255,255,0.05);
   --mk-line-2:    rgba(255,255,255,0.03);
   --mk-primary:   #8B5CF6;
   --mk-primary-2: #7C3AED;
@@ -5350,15 +5347,11 @@ select.inp {
   --mk-gold-2:    #D97706;
   --mk-card:      #11101a;
   --mk-radius:    1.5rem;
-  --mk-radius-sm: 0.875rem;
-  --mk-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
-  --mk-shadow-sm: 0 4px 16px -4px rgba(0, 0, 0, 0.3), 0 2px 6px -2px rgba(0, 0, 0, 0.2);
-  --mk-shadow-md: 0 12px 40px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -4px rgba(0, 0, 0, 0.25);
-  --mk-shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.5), 0 8px 24px -8px rgba(0, 0, 0, 0.3);
-  --mk-shadow-blue: 0 20px 56px -12px rgba(139, 92, 246, 0.25);
+  --mk-shadow-sm: 0 4px 16px -4px rgba(0,0,0,0.3), 0 2px 6px -2px rgba(0,0,0,0.2);
+  --mk-shadow-md: 0 12px 40px -8px rgba(0,0,0,0.4), 0 4px 12px -4px rgba(0,0,0,0.25);
+  --mk-shadow-lg: 0 24px 64px -16px rgba(0,0,0,0.5), 0 8px 24px -8px rgba(0,0,0,0.3);
+  --mk-shadow-glow: 0 20px 56px -12px rgba(139,92,246,0.25);
   --mk-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --mk-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-
   min-height: 100dvh;
   background: var(--mk-bg);
   color: var(--mk-ink);
@@ -5366,7 +5359,6 @@ select.inp {
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
-/* خلفية هندسية خافتة */
 .mkt::before {
   content: "";
   position: fixed;
@@ -5374,615 +5366,644 @@ select.inp {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 60%);
+    radial-gradient(circle at 20% 10%, rgba(139,92,246,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(124,58,237,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(245,158,11,0.03) 0%, transparent 60%);
 }
 
 .mkt > * { position: relative; z-index: 1; }
 .mkt a { color: inherit; text-decoration: none; }
 
-/* ── شريط التنقل ─────────────────────────────────────────────── */
+/* ── علامة البراند ── */
+.mkt-brand-mark {
+  width: 2.25rem; height: 2.25rem; border-radius: 0.7rem;
+  display: grid; place-items: center;
+  font-weight: 900; font-size: 0.85rem; color: #fff;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  box-shadow: 0 4px 12px -3px rgba(139,92,246,0.4);
+}
+.mkt-brand-mark--sm { width: 1.75rem; height: 1.75rem; font-size: 0.7rem; border-radius: 0.5rem; }
+
+/* ── شريط التنقل ── */
 .mkt-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0 clamp(1.25rem, 4vw, 3rem);
-  height: 64px;
-  background: rgba(8, 7, 14, 0.85);
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 0 clamp(1.25rem, 4vw, 3rem); height: 64px;
+  background: rgba(8,7,14,0.85);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 4px 24px -8px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2), 0 4px 24px -8px rgba(0,0,0,0.3);
 }
 
-.mkt-logo {
-  font-weight: 800;
-  font-size: 1.2rem;
-  letter-spacing: -0.02em;
-  color: var(--mk-ink);
-}
+.mkt-logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.02em; color: var(--mk-ink); }
 
 .mkt-bar-nav {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.5rem, 2vw, 1.25rem);
-  font-size: 0.875rem;
-  font-weight: 600;
+  display: flex; align-items: center;
+  gap: clamp(0.5rem, 2vw, 1.25rem); font-size: 0.875rem; font-weight: 600;
 }
 
 .mkt-bar-nav a:not(.mkt-bar-cta) {
-  color: var(--mk-dim);
-  padding: 0.35rem 0.6rem;
-  border-radius: 0.5rem;
-  transition: color 0.18s ease, background 0.18s ease;
+  color: var(--mk-dim); padding: 0.35rem 0.6rem; border-radius: 0.5rem;
+  transition: color 0.18s, background 0.18s;
 }
-
-.mkt-bar-nav a:not(.mkt-bar-cta):hover {
-  color: var(--mk-primary);
-  background: rgba(123, 79, 176, 0.07);
-}
+.mkt-bar-nav a:not(.mkt-bar-cta):hover { color: var(--mk-primary); background: rgba(139,92,246,0.07); }
 
 .mkt-bar-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1.25rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: #fff !important;
-  background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 100%);
-  box-shadow: 0 4px 14px -4px rgba(123, 79, 176, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1.25rem; border-radius: 999px;
+  font-weight: 700; font-size: 0.85rem; color: #fff !important;
+  background: linear-gradient(135deg, var(--mk-primary), var(--mk-indigo));
+  box-shadow: 0 4px 14px -4px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
   transition: all 0.22s var(--mk-ease);
 }
+.mkt-bar-cta:hover { transform: translateY(-1px) scale(1.02); box-shadow: 0 8px 24px -6px rgba(139,92,246,0.55); }
 
-.mkt-bar-cta:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 8px 24px -6px rgba(123, 79, 176, 0.55);
-}
-
-.mkt-bar-cta:active { transform: translateY(0) scale(0.99); }
-
-/* ── قسم الهيرو ──────────────────────────────────────────────── */
+/* ── الهيرو ── */
 .mkt-hero {
-  position: relative;
-  max-width: 62rem;
-  margin-inline: auto;
-  padding: clamp(4rem, 10vw, 7rem) 1.5rem 3rem;
-  text-align: center;
+  position: relative; max-width: 64rem; margin-inline: auto;
+  padding: clamp(5rem, 12vw, 8rem) 1.5rem 4rem; text-align: center;
 }
 
-/* دائرة الضوء الرئيسية */
 .mkt-hero::before {
-  content: "";
-  position: absolute;
-  top: -4rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 56rem;
-  height: 28rem;
-  background: radial-gradient(ellipse at center top,
-    rgba(139, 92, 246, 0.15) 0%,
-    rgba(124, 58, 237, 0.08) 40%,
-    transparent 70%);
-  pointer-events: none;
-  z-index: -1;
+  content: ""; position: absolute; top: -6rem; left: 50%; transform: translateX(-50%);
+  width: 60rem; height: 32rem; pointer-events: none; z-index: -1;
+  background: radial-gradient(ellipse at center top, rgba(139,92,246,0.14) 0%, rgba(124,58,237,0.07) 40%, transparent 70%);
 }
+
+.mkt-hero-orbits {
+  position: absolute; top: -8rem; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px; pointer-events: none; z-index: -1; opacity: 0.6;
+}
+
+.mkt-hero-grid-pat {
+  position: absolute; top: 2rem; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 400px; pointer-events: none; z-index: -1; opacity: 0.5;
+}
+
+.mkt-hero-content { position: relative; }
 
 .mkt-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em;
   color: #a78bfa;
-  background: rgba(139, 92, 246, 0.08);
-  border: 1px solid rgba(139, 92, 246, 0.15);
-  padding: 0.45rem 1.1rem;
-  border-radius: 999px;
-  margin-bottom: 1.75rem;
-  box-shadow: 0 2px 12px -4px rgba(139, 92, 246, 0.15);
+  background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15);
+  padding: 0.45rem 1.1rem; border-radius: 999px; margin-bottom: 1.75rem;
+}
+
+.mkt-eyebrow-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #F59E0B;
+  animation: mktPulse 2s ease-in-out infinite;
 }
 
 .mkt-title {
-  font-weight: 900;
-  line-height: 1.12;
+  font-weight: 900; line-height: 1.12;
   font-size: clamp(2.4rem, 7.5vw, 4.5rem);
-  letter-spacing: -0.03em;
-  color: #fff;
-  margin: 0;
+  letter-spacing: -0.03em; color: #fff; margin: 0;
 }
 
 .mkt-title-em {
   display: block;
   background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 45%, var(--mk-gold) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  position: relative;
-}
-
-/* خط تحت العنوان المميز */
-.mkt-title-em::after {
-  content: "";
-  display: block;
-  margin: 0.5rem auto 0;
-  width: 5rem;
-  height: 3px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--mk-primary), var(--mk-gold));
-  opacity: 0.6;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
 .mkt-sub {
-  max-width: 44rem;
-  margin: 1.75rem auto 0;
-  font-size: clamp(1rem, 2.4vw, 1.15rem);
-  line-height: 1.95;
-  color: rgba(255,255,255,0.5);
-  font-weight: 500;
+  max-width: 40rem; margin: 1.5rem auto 0;
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  line-height: 2; color: rgba(255,255,255,0.45); font-weight: 500;
 }
 
-.mkt-hero-cta {
-  margin-top: 2.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
+.mkt-hero-actions {
+  margin-top: 2.5rem; display: flex; flex-wrap: wrap;
+  gap: 1rem; justify-content: center; align-items: center;
 }
 
-.mkt-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 100%);
-  color: #fff !important;
-  padding: 0.95rem 2.25rem;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: -0.01em;
-  box-shadow:
-    0 16px 40px -10px rgba(123, 79, 176, 0.45),
-    0 4px 12px -4px rgba(123, 79, 176, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+.mkt-cta-primary {
+  position: relative; overflow: hidden; display: inline-flex;
+  align-items: center; gap: 0.5rem;
+  padding: 1rem 2.5rem; border-radius: 999px;
+  font-weight: 800; font-size: 1.05rem; color: #fff !important;
   transition: all 0.28s var(--mk-ease);
-  position: relative;
-  overflow: hidden;
 }
 
-/* shimmer effect */
-.mkt-primary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg,
-    transparent 30%,
-    rgba(255,255,255,0.18) 50%,
-    transparent 70%);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
+.mkt-cta-primary-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--mk-primary), var(--mk-indigo));
+  z-index: 0;
 }
 
-.mkt-primary:hover::before { transform: translateX(100%); }
+.mkt-cta-primary-bg::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+  transform: translateX(-100%); transition: transform 0.6s ease;
+}
+.mkt-cta-primary:hover .mkt-cta-primary-bg::before { transform: translateX(100%); }
 
-.mkt-primary:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 24px 56px -10px rgba(123, 79, 176, 0.55),
-    0 8px 20px -6px rgba(123, 79, 176, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+.mkt-cta-primary::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 999px; z-index: -1;
+  background: linear-gradient(135deg, rgba(139,92,246,0.5), rgba(124,58,237,0.3));
+  filter: blur(12px); opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.mkt-cta-primary:hover::after { opacity: 1; }
+.mkt-cta-primary:hover { transform: translateY(-3px); }
+
+.mkt-cta-ghost {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 1rem 2rem; border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px); font-weight: 700; font-size: 0.95rem;
+  color: var(--mk-ink-2); transition: all 0.22s var(--mk-ease);
+}
+.mkt-cta-ghost svg { color: var(--mk-primary); fill: rgba(139,92,246,0.15); }
+.mkt-cta-ghost:hover {
+  border-color: var(--mk-primary); color: var(--mk-primary);
+  background: rgba(139,92,246,0.06); transform: translateY(-2px);
 }
 
-.mkt-primary:active { transform: translateY(-1px); }
+.mkt-hero-checks {
+  margin-top: 1.5rem; display: flex; flex-wrap: wrap;
+  gap: 1rem; justify-content: center;
+  font-size: 0.8rem; color: rgba(255,255,255,0.35); font-weight: 500;
+}
+.mkt-hero-check { display: inline-flex; align-items: center; gap: 0.35rem; }
 
-.mkt-primary-lg {
-  padding: 1.1rem 2.75rem;
-  font-size: 1.1rem;
+/* ── شريط الثقة ── */
+.mkt-trust {
+  margin-top: 3rem; display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 2rem;
+  padding: 1.5rem 2rem; border-radius: 1.25rem;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--mk-line);
+  max-width: 36rem; margin-inline: auto; margin-top: 3rem;
+}
+.mkt-trust-item { display: flex; align-items: center; gap: 0.5rem; }
+.mkt-trust-sep { width: 1px; height: 2rem; background: rgba(255,255,255,0.06); }
+.mkt-trust-val { font-weight: 900; font-size: 1.1rem; color: #fff; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.mkt-trust-label { font-size: 0.78rem; color: rgba(255,255,255,0.3); font-weight: 500; }
+
+/* ── المعاينة التفاعلية ── */
+.mkt-demo {
+  margin-top: 3.5rem; width: 100%; max-width: 60rem; margin-inline: auto;
+  border-radius: 1.5rem; border: 1px solid var(--mk-line);
+  background: rgba(255,255,255,0.02); overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 24px 56px -16px rgba(0,0,0,0.18);
 }
 
-.mkt-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.95rem 2rem;
-  border-radius: 999px;
-  border: 1.5px solid rgba(123, 79, 176, 0.2);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--mk-ink-2);
-  transition: all 0.22s var(--mk-ease);
-  box-shadow: var(--mk-shadow-xs);
+.mkt-demo-chrome {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.75rem; padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--mk-line);
 }
 
-.mkt-ghost:hover {
-  border-color: var(--mk-primary);
-  color: var(--mk-primary);
-  background: rgba(255, 255, 255, 0.95);
-  transform: translateY(-2px);
-  box-shadow: var(--mk-shadow-sm);
+.mkt-demo-dots { display: flex; align-items: center; gap: 0.4rem; }
+.mkt-demo-dots > span:nth-child(-n+3) { width: 10px; height: 10px; border-radius: 50%; }
+.mkt-demo-dots > span:nth-child(1) { background: rgba(244,63,94,0.7); }
+.mkt-demo-dots > span:nth-child(2) { background: rgba(251,191,36,0.7); }
+.mkt-demo-dots > span:nth-child(3) { background: rgba(52,211,153,0.7); }
+.mkt-demo-url {
+  margin-inline-start: 0.75rem; font-size: 0.72rem; font-weight: 700;
+  font-family: ui-monospace, monospace; color: rgba(255,255,255,0.2);
 }
 
-.mkt-note {
-  margin-top: 1.75rem;
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.2);
-  font-weight: 500;
+.mkt-demo-tabs {
+  display: flex; align-items: center; gap: 0.25rem;
+  padding: 0.25rem; border-radius: 0.75rem;
+  background: rgba(255,255,255,0.03); font-size: 0.75rem; font-weight: 700;
+}
+.mkt-demo-tab {
+  padding: 0.35rem 0.75rem; border-radius: 0.5rem; border: none;
+  background: transparent; color: rgba(255,255,255,0.3);
+  cursor: pointer; transition: all 0.2s;
+}
+.mkt-demo-tab.is-active {
+  background: rgba(255,255,255,0.07); color: var(--mk-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-/* ── الخطوات الأربع ──────────────────────────────────────────── */
-.mkt-steps {
-  max-width: 68rem;
-  margin: clamp(4rem, 8vw, 6rem) auto 0;
-  padding: 0 1.5rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.mkt-demo-screen {
+  padding: 1.5rem; min-height: 12rem;
+  background: linear-gradient(160deg, #0c0b15, #11101a);
 }
 
-.mkt-step {
-  position: relative;
-  background: var(--mk-card);
-  border: 1px solid var(--mk-line);
-  border-radius: var(--mk-radius);
-  padding: 1.6rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  box-shadow: var(--mk-shadow-sm);
-  transition: transform 0.28s var(--mk-ease), box-shadow 0.28s var(--mk-ease), border-color 0.2s ease;
-  overflow: hidden;
+.mkt-demo-stat {
+  border-radius: 1rem; padding: 1rem;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04);
+}
+.mkt-demo-stat-label { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.25); }
+.mkt-demo-stat-val { margin-top: 0.25rem; font-size: 1.15rem; font-weight: 900; color: #fff; letter-spacing: -0.03em; }
+.mkt-demo-stat-sub { font-size: 0.65rem; font-weight: 700; }
+
+.mkt-demo-course {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+  padding: 1rem; border-radius: 1rem;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04);
+}
+.mkt-demo-course-icon {
+  width: 3rem; height: 3rem; border-radius: 0.75rem;
+  display: grid; place-items: center; font-size: 1.2rem;
+  background: rgba(139,92,246,0.08);
+}
+.mkt-demo-course-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+.mkt-demo-course-meta { font-size: 0.72rem; margin-top: 0.15rem; color: rgba(255,255,255,0.25); }
+.mkt-demo-course-badge {
+  padding: 0.3rem 0.75rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700;
+  background: rgba(16,185,129,0.08); color: #10B981;
+  border: 1px solid rgba(16,185,129,0.2);
 }
 
-/* خط علوي ملوّن */
-.mkt-step::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  inset-inline: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--mk-primary), var(--mk-indigo));
-  opacity: 0;
-  transition: opacity 0.25s ease;
+.mkt-demo-student-card {
+  border-radius: 1rem; padding: 1.5rem; color: #fff;
+  background: linear-gradient(135deg, #2D1B69, #7B4FB0, #5B3A8C);
+  box-shadow: 0 12px 40px -12px rgba(139,92,246,0.4);
+}
+.mkt-demo-student-greeting { font-size: 0.75rem; font-weight: 600; color: #D4C4E8; }
+.mkt-demo-student-title { font-size: 1.1rem; font-weight: 700; margin-top: 0.25rem; }
+.mkt-demo-student-tags { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.mkt-demo-student-tags > span {
+  padding: 0.35rem 0.75rem; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 600;
+  background: rgba(255,255,255,0.12);
 }
 
-.mkt-step:hover::before { opacity: 1; }
-
-.mkt-step:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--mk-shadow-md);
-  border-color: rgba(123, 79, 176, 0.15);
+.mkt-demo-player {
+  position: relative; aspect-ratio: 16/9; width: 100%;
+  border-radius: 1rem; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; color: #fff; overflow: hidden;
+  background: linear-gradient(135deg, #0a0f1e, #1a2240);
+}
+.mkt-demo-watermark {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  padding: 0.25rem 0.75rem; border-radius: 0.5rem;
+  font-size: 0.65rem; font-family: monospace;
+  background: rgba(0,0,0,0.5); color: #fbbf24;
+}
+.mkt-demo-play-btn {
+  width: 4rem; height: 4rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  box-shadow: 0 8px 32px rgba(139,92,246,0.5);
+  cursor: pointer; transition: transform 0.2s;
+}
+.mkt-demo-play-btn:hover { transform: scale(1.05); }
+.mkt-demo-player-label {
+  margin-top: 1rem; font-size: 0.8rem; font-weight: 600; color: #D4C4E8;
 }
 
-.mkt-step-n {
-  width: 2.4rem;
-  height: 2.4rem;
-  display: grid;
-  place-items: center;
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  border: 1px solid rgba(123, 79, 176, 0.12);
-  color: var(--mk-primary);
-  font-weight: 900;
-  font-size: 0.875rem;
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 2px 6px -2px rgba(123, 79, 176, 0.15);
-}
+/* ── عنوان الأقسام المشترك ── */
+.mkt-section-header { text-align: center; margin-bottom: 3rem; }
 
-.mkt-step-t {
-  font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: -0.01em;
-  color: var(--mk-ink);
-  line-height: 1.4;
-  margin-top: 0.15rem;
+.mkt-section-tag {
+  display: inline-block; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.04em; padding: 0.4rem 1rem; border-radius: 999px;
+  border: 1px solid; margin-bottom: 1rem;
 }
+.mkt-section-tag--purple { color: #a78bfa; background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+.mkt-section-tag--amber { color: #fbbf24; background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+.mkt-section-tag--dim { color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); }
 
-.mkt-step-d {
-  font-size: 0.85rem;
-  color: var(--mk-dim);
-  line-height: 1.75;
-}
-
-/* ── عنوان الأقسام ────────────────────────────────────────────── */
 .mkt-h2 {
-  text-align: center;
-  font-weight: 900;
-  font-size: clamp(1.85rem, 4.5vw, 2.75rem);
-  letter-spacing: -0.025em;
-  color: var(--mk-ink);
-  line-height: 1.2;
+  font-weight: 900; font-size: clamp(1.85rem, 4.5vw, 2.75rem);
+  letter-spacing: -0.025em; color: var(--mk-ink); line-height: 1.35;
+}
+.mkt-h2-em {
+  background: linear-gradient(135deg, var(--mk-primary), var(--mk-gold));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
-/* ── المميزات — Bento Grid ────────────────────────────────────── */
-.mkt-features {
-  max-width: 70rem;
-  margin: clamp(5rem, 10vw, 7.5rem) auto 0;
-  padding: 0 1.5rem;
+.mkt-section-sub {
+  max-width: 32rem; margin: 0.75rem auto 0;
+  font-size: 0.9rem; line-height: 1.9; color: rgba(255,255,255,0.35);
 }
 
-.mkt-grid {
-  margin-top: 2.5rem;
-  display: grid;
-  gap: 1.25rem;
+/* ── خطوات بتايم لاين ── */
+.mkt-steps-section {
+  max-width: 56rem; margin: clamp(5rem, 10vw, 8rem) auto 0; padding: 0 1.5rem;
+}
+
+.mkt-timeline {
+  position: relative; display: grid; gap: 2rem;
+  grid-template-columns: 1fr;
+  margin-top: 1rem;
+}
+
+.mkt-timeline-line {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mkt-timeline { grid-template-columns: 1fr 1fr; gap: 1.5rem 3rem; }
+  .mkt-timeline-line {
+    display: block; position: absolute;
+    left: 50%; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--mk-primary), rgba(139,92,246,0.1));
+    transform: translateX(-50%);
+  }
+}
+
+.mkt-timeline-node { position: relative; }
+
+.mkt-timeline-dot {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mkt-timeline-dot {
+    display: grid; place-items: center;
+    position: absolute; width: 2.5rem; height: 2.5rem;
+    border-radius: 50%; z-index: 2;
+    background: var(--mk-bg); border: 2px solid var(--mk-primary);
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.12);
+  }
+  .mkt-timeline-node:nth-child(odd) .mkt-timeline-dot { right: -1.25rem; top: 1.5rem; transform: translateX(50%); }
+  .mkt-timeline-node:nth-child(even) .mkt-timeline-dot { left: -1.25rem; top: 1.5rem; transform: translateX(-50%); }
+}
+
+.mkt-timeline-dot-n { font-size: 0.7rem; font-weight: 900; color: var(--mk-primary); font-variant-numeric: tabular-nums; }
+
+.mkt-timeline-card {
+  background: var(--mk-card); border: 1px solid var(--mk-line);
+  border-radius: var(--mk-radius); padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  box-shadow: var(--mk-shadow-sm);
+  transition: transform 0.28s var(--mk-ease), box-shadow 0.28s var(--mk-ease), border-color 0.2s;
+}
+.mkt-timeline-card:hover { transform: translateY(-4px); box-shadow: var(--mk-shadow-md); border-color: rgba(139,92,246,0.15); }
+
+.mkt-timeline-card-icon {
+  width: 2.5rem; height: 2.5rem; border-radius: 0.75rem;
+  display: grid; place-items: center;
+  background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.15);
+}
+
+.mkt-timeline-card-title { font-weight: 800; font-size: 1rem; color: var(--mk-ink); letter-spacing: -0.01em; }
+.mkt-timeline-card-desc { font-size: 0.85rem; color: var(--mk-dim); line-height: 1.75; }
+
+/* ── مميزات Bento ── */
+.mkt-features-section {
+  max-width: 68rem; margin: clamp(5rem, 10vw, 8rem) auto 0; padding: 0 1.5rem;
+}
+
+.mkt-bento {
+  display: grid; gap: 1.25rem; margin-top: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
 }
+.mkt-bento-wide { grid-column: span 1; }
+@media (min-width: 640px) { .mkt-bento-wide { grid-column: span 2; } }
 
-.mkt-feat {
-  position: relative;
-  background: var(--mk-card);
-  border: 1px solid var(--mk-line);
-  border-radius: var(--mk-radius);
-  padding: 1.85rem;
-  box-shadow: var(--mk-shadow-sm);
-  transition: transform 0.28s var(--mk-ease), box-shadow 0.28s var(--mk-ease), border-color 0.2s ease;
-  overflow: hidden;
+.mkt-bento-card {
+  position: relative; height: 100%;
+  background: var(--mk-card); border: 1px solid var(--mk-line);
+  border-radius: var(--mk-radius); overflow: hidden;
+  transition: transform 0.28s var(--mk-ease), box-shadow 0.28s var(--mk-ease), border-color 0.2s;
+}
+.mkt-bento-card:hover { transform: translateY(-4px); box-shadow: var(--mk-shadow-md); border-color: rgba(139,92,246,0.12); }
+
+.mkt-bento-card-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0; transition: opacity 0.35s;
+}
+.mkt-bento-card:hover .mkt-bento-card-glow { opacity: 1; }
+
+.mkt-bento-card-inner { position: relative; padding: 1.75rem; }
+
+.mkt-bento-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+
+.mkt-bento-icon {
+  width: 2.75rem; height: 2.75rem; border-radius: 0.85rem;
+  display: grid; place-items: center;
+  border: 1px solid; background: rgba(0,0,0,0.2);
+  transition: transform 0.3s var(--mk-ease);
+}
+.mkt-bento-card:hover .mkt-bento-icon { transform: scale(1.1); }
+
+.mkt-bento-tag {
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid;
 }
 
-/* توهج عند الـ hover */
-.mkt-feat::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(123, 79, 176, 0.04) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+.mkt-bento-title { font-weight: 800; font-size: 1.05rem; color: var(--mk-ink); letter-spacing: -0.01em; line-height: 1.35; display: block; }
+.mkt-bento-desc { margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.85; color: var(--mk-dim); }
+
+.mkt-bento-accent-line {
+  margin-top: 1rem; height: 2px; border-radius: 999px; opacity: 0.3;
+  transition: opacity 0.3s;
 }
+.mkt-bento-card:hover .mkt-bento-accent-line { opacity: 0.7; }
 
-.mkt-feat:hover::after { opacity: 1; }
-
-.mkt-feat:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--mk-shadow-md);
-  border-color: rgba(123, 79, 176, 0.18);
-}
-
-.mkt-feat-t {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--mk-ink);
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-}
-
-.mkt-feat-d {
-  margin-top: 0.65rem;
-  font-size: 0.88rem;
-  line-height: 1.85;
-  color: var(--mk-dim);
-}
-
-/* ── خطط الأسعار ─────────────────────────────────────────────── */
-.mkt-plans {
-  max-width: 70rem;
-  margin: clamp(5rem, 10vw, 7.5rem) auto 0;
-  padding: 0 1.5rem;
+/* ── خطط الأسعار ── */
+.mkt-pricing-section {
+  max-width: 68rem; margin: clamp(5rem, 10vw, 8rem) auto 0; padding: 0 1.5rem;
 }
 
 .mkt-plan-grid {
-  margin-top: 2.75rem;
-  display: grid;
-  gap: 1.5rem;
+  margin-top: 2.5rem; display: grid; gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   align-items: start;
 }
 
 .mkt-plan {
-  position: relative;
-  background: var(--mk-card);
-  border: 1.5px solid var(--mk-line);
-  border-radius: 1.85rem;
-  padding: 2.1rem 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  position: relative; background: var(--mk-card);
+  border: 1.5px solid var(--mk-line); border-radius: 1.85rem;
+  padding: 2rem 1.75rem; display: flex; flex-direction: column; gap: 0.5rem;
   box-shadow: var(--mk-shadow-sm);
   transition: transform 0.28s var(--mk-ease), box-shadow 0.28s var(--mk-ease);
 }
+.mkt-plan:hover { transform: translateY(-4px); box-shadow: var(--mk-shadow-md); }
 
-.mkt-plan:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--mk-shadow-md);
-}
-
-/* الخطة المميزة */
 .mkt-plan.is-hot {
   border-color: var(--mk-primary);
-  box-shadow:
-    0 0 0 1px rgba(123, 79, 176, 0.15),
-    var(--mk-shadow-blue),
-    inset 0 0 0 1px rgba(123, 79, 176, 0.08);
+  box-shadow: 0 0 0 1px rgba(139,92,246,0.15), var(--mk-shadow-glow), inset 0 0 0 1px rgba(139,92,246,0.08);
   transform: translateY(-8px) scale(1.015);
-  background: linear-gradient(160deg, #ffffff 0%, #f0f5ff 100%);
+  background: linear-gradient(160deg, rgba(139,92,246,0.08), rgba(124,58,237,0.04));
 }
-
 .mkt-plan.is-hot:hover { transform: translateY(-12px) scale(1.015); }
 
-/* خلفية زخرفية للخطة المميزة */
+.mkt-plan-glow {
+  position: absolute; inset: -1px; border-radius: inherit; z-index: -1;
+  background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(124,58,237,0.15));
+  filter: blur(16px); opacity: 0.5; animation: mktGlow 4s ease-in-out infinite;
+}
+
 .mkt-plan.is-hot::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  inset-inline: 15%;
-  height: 2px;
+  content: ""; position: absolute; top: -1px; inset-inline: 15%; height: 2px;
   background: linear-gradient(90deg, transparent, var(--mk-primary), var(--mk-indigo), transparent);
   border-radius: 999px;
 }
 
 .mkt-plan-badge {
-  position: absolute;
-  top: -0.9rem;
-  inset-inline-start: 1.75rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.38rem 0.9rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.72rem;
-  letter-spacing: 0.01em;
-  box-shadow: 0 4px 14px -4px rgba(217, 119, 6, 0.45);
+  position: absolute; top: -0.9rem; inset-inline-start: 1.75rem;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.38rem 0.9rem; border-radius: 999px;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+  font-weight: 800; font-size: 0.72rem;
+  box-shadow: 0 4px 14px -4px rgba(217,119,6,0.45);
 }
 
-.mkt-plan-name {
-  font-weight: 800;
-  font-size: 1.35rem;
-  letter-spacing: -0.02em;
-  color: var(--mk-ink);
-}
-
-.mkt-plan-desc {
-  font-size: 0.85rem;
-  color: var(--mk-dim);
-  line-height: 1.65;
-  min-height: 2.5em;
-}
+.mkt-plan-name { font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--mk-ink); }
+.mkt-plan-desc { font-size: 0.85rem; color: var(--mk-dim); line-height: 1.65; min-height: 2.5em; }
 
 .mkt-plan-price {
-  margin-top: 0.5rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--mk-line-2);
-  border-bottom: 1px solid var(--mk-line-2);
-  display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
+  margin-top: 0.5rem; padding: 1rem 0;
+  border-top: 1px solid var(--mk-line-2); border-bottom: 1px solid var(--mk-line-2);
+  display: flex; align-items: baseline; gap: 0.35rem;
 }
-
 .mkt-plan-num {
-  font-weight: 900;
-  font-size: 2.5rem;
-  letter-spacing: -0.03em;
-  color: var(--mk-ink);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+  font-weight: 900; font-size: 2.5rem; letter-spacing: -0.03em;
+  color: var(--mk-ink); line-height: 1; font-variant-numeric: tabular-nums;
 }
-
 .mkt-plan.is-hot .mkt-plan-num { color: var(--mk-primary); }
+.mkt-plan-cur { font-size: 0.85rem; color: var(--mk-dim); font-weight: 600; }
 
-.mkt-plan-cur {
-  font-size: 0.85rem;
-  color: var(--mk-dim);
-  font-weight: 600;
-}
-
-.mkt-plan-free {
-  font-weight: 900;
-  font-size: 2.5rem;
-  color: var(--mk-primary);
-  letter-spacing: -0.03em;
-}
-
-.mkt-plan-trial {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--mk-dim);
+.mkt-plan-features { list-style: none; margin: 1rem 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.mkt-plan-features li {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.35);
 }
 
 .mkt-plan-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  margin-top: auto;
-  padding: 0.9rem 1.4rem;
-  border-radius: 999px;
-  border: 1.5px solid rgba(123, 79, 176, 0.3);
-  color: var(--mk-primary) !important;
-  font-weight: 700;
-  font-size: 0.9rem;
-  background: rgba(123, 79, 176, 0.04);
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  margin-top: auto; padding: 0.9rem 1.4rem; border-radius: 999px;
+  border: 1.5px solid rgba(139,92,246,0.3); color: var(--mk-primary) !important;
+  font-weight: 700; font-size: 0.9rem; background: rgba(139,92,246,0.04);
   transition: all 0.22s var(--mk-ease);
 }
-
 .mkt-plan-cta:hover {
-  background: var(--mk-primary);
-  border-color: var(--mk-primary);
-  color: #fff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px -6px rgba(123, 79, 176, 0.4);
+  background: var(--mk-primary); border-color: var(--mk-primary); color: #fff !important;
+  transform: translateY(-2px); box-shadow: 0 8px 24px -6px rgba(139,92,246,0.4);
 }
-
 .mkt-plan-cta.is-hot {
-  background: linear-gradient(135deg, var(--mk-primary) 0%, var(--mk-indigo) 100%);
-  border-color: transparent;
-  color: #fff !important;
-  box-shadow: 0 8px 28px -6px rgba(123, 79, 176, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  background: linear-gradient(135deg, var(--mk-primary), var(--mk-indigo));
+  border-color: transparent; color: #fff !important;
+  box-shadow: 0 8px 28px -6px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.mkt-plan-cta.is-hot:hover { box-shadow: 0 14px 40px -8px rgba(139,92,246,0.55); transform: translateY(-2px); }
+
+/* ── الأسئلة الشائعة ── */
+.mkt-faq-section { max-width: 48rem; margin: clamp(5rem, 10vw, 8rem) auto 0; padding: 0 1.5rem; }
+
+.mkt-faq-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.mkt-faq-item {
+  border-radius: 1.25rem; overflow: hidden;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--mk-line);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.mkt-faq-item.is-open {
+  border-color: rgba(139,92,246,0.2);
+  background: linear-gradient(135deg, #0c0b15, #11101a);
+  box-shadow: 0 8px 24px -8px rgba(139,92,246,0.1);
 }
 
-.mkt-plan-cta.is-hot:hover {
-  box-shadow: 0 14px 40px -8px rgba(123, 79, 176, 0.55);
-  transform: translateY(-2px);
+.mkt-faq-q {
+  width: 100%; padding: 1rem 1.25rem; text-align: right; border: none; background: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  font-weight: 700; font-size: 0.9rem; color: #fff; cursor: pointer;
+  transition: color 0.2s;
+}
+.mkt-faq-item.is-open .mkt-faq-q { color: var(--mk-primary); }
+
+.mkt-faq-a {
+  padding: 0 1.25rem 1rem; font-size: 0.85rem; line-height: 1.9;
+  color: rgba(255,255,255,0.4); border-top: 1px solid rgba(139,92,246,0.08);
+  padding-top: 0.75rem;
 }
 
-/* ── القسم الختامي ────────────────────────────────────────────── */
-.mkt-final {
-  max-width: 56rem;
-  margin: clamp(5rem, 10vw, 8rem) auto;
-  padding: 0 1.5rem;
-  text-align: center;
+/* ── القسم الختامي ── */
+.mkt-final-section {
+  max-width: 56rem; margin: clamp(5rem, 10vw, 8rem) auto; padding: 0 1.5rem;
+}
+
+.mkt-final-card {
+  position: relative; overflow: hidden; border-radius: 2rem;
+  padding: clamp(3rem, 8vw, 5rem) 2rem; text-align: center; color: #fff;
+  background: linear-gradient(135deg, #1A0F3C 0%, #4A2D7A 35%, #7B4FB0 65%, #5B3A8C 100%);
+  box-shadow: 0 32px 80px -24px rgba(139,92,246,0.45);
+}
+
+.mkt-final-glow {
+  position: absolute; width: 18rem; height: 18rem; border-radius: 50%; pointer-events: none;
+}
+.mkt-final-glow--1 { top: -4rem; right: -4rem; background: radial-gradient(circle, rgba(255,255,255,0.2), transparent); opacity: 0.4; }
+.mkt-final-glow--2 { bottom: -4rem; left: -4rem; background: radial-gradient(circle, rgba(251,191,36,0.35), transparent); opacity: 0.3; }
+
+.mkt-final-orbits {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 500px; height: 500px; pointer-events: none; opacity: 0.15;
+}
+
+.mkt-final-tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 1rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 700;
+  background: rgba(255,255,255,0.12); color: #fbbf24;
+  border: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 1.25rem; position: relative;
 }
 
 .mkt-final-h {
-  font-weight: 900;
-  font-size: clamp(1.85rem, 5vw, 3rem);
-  letter-spacing: -0.025em;
-  margin-bottom: 1.25rem;
-  line-height: 1.15;
+  position: relative;
+  font-weight: 900; font-size: clamp(1.85rem, 5vw, 3rem);
+  letter-spacing: -0.025em; margin-bottom: 1rem; line-height: 1.2;
 }
 
-/* ── الفوتر ────────────────────────────────────────────────────── */
+.mkt-final-sub {
+  position: relative;
+  font-size: 0.95rem; max-width: 28rem; margin: 0 auto 2rem;
+  color: rgba(191,219,254,0.8); line-height: 1.8;
+}
+
+.mkt-final-cta {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 1rem 2.5rem; border-radius: 999px;
+  font-weight: 800; font-size: 1rem; color: #1a0f3c !important;
+  background: #fff;
+  box-shadow: 0 8px 24px -6px rgba(0,0,0,0.3);
+  transition: all 0.22s var(--mk-ease);
+}
+.mkt-final-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px -8px rgba(0,0,0,0.4); }
+
+/* ── الفوتر ── */
 .mkt-foot {
   border-top: 1px solid var(--mk-line);
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-  font-size: 0.85rem;
-  color: var(--mk-dim);
-  background: linear-gradient(180deg, var(--mk-surface-2) 0%, var(--mk-bg) 100%);
+  padding: 2rem 1.5rem; text-align: center;
+  display: flex; flex-direction: column; gap: 1rem; align-items: center;
+  font-size: 0.85rem; color: var(--mk-dim);
+  background: linear-gradient(180deg, var(--mk-surface-2), var(--mk-bg));
 }
 
-.mkt-foot-dim { font-size: 0.75rem; opacity: 0.7; }
-
-/* ── أنيميشن ──────────────────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+.mkt-foot-inner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 60rem; gap: 1rem;
 }
 
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
+.mkt-foot-brand { display: flex; align-items: center; gap: 0.5rem; }
+.mkt-foot-name { font-weight: 700; color: #fff; }
+.mkt-foot-tagline { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+.mkt-foot-links {
+  display: flex; align-items: center; gap: 1.5rem;
+  font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.35);
+}
+.mkt-foot-links a { transition: color 0.18s; }
+.mkt-foot-links a:hover { color: var(--mk-primary); }
+.mkt-foot-start { font-weight: 700; color: var(--mk-primary) !important; }
+
+.mkt-foot-copy { font-size: 0.7rem; color: rgba(255,255,255,0.2); padding-top: 0.75rem; border-top: 1px solid var(--mk-line); width: 100%; }
+
+/* ── أنيميشن ── */
+@keyframes mktPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
 
 @keyframes mktGlow {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 0.9; }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
 }
-
-.animate-fadeIn  { animation: fadeIn  0.35s var(--mk-ease) forwards; }
-.animate-scaleIn { animation: scaleIn 0.35s var(--mk-ease) forwards; }
-.animate-slideUp { animation: slideUp 0.4s  var(--mk-ease) forwards; }
 
 /* ============================================================
    رحلةُ إنشاء المنصّة (Onboarding)
