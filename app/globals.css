@@ -474,14 +474,24 @@ body::before {
   overscroll-behavior: contain;
   padding: 1.25rem;
   border-radius: 1.75rem;
-  background: hsl(var(--card) / 0.92);
+  background: hsl(var(--card) / 0.94);
   border: 1px solid hsl(var(--border) / 0.5);
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   box-shadow:
-    0 1px 0 0 hsl(var(--gold) / 0.08) inset,
-    0 1px 2px rgba(16,24,40,0.06),
-    0 12px 32px -12px rgba(16,24,40,0.22);
+    0 1px 0 0 hsl(var(--gold) / 0.1) inset,
+    0 1px 2px rgba(16,24,40,0.05),
+    0 8px 24px -8px rgba(16,24,40,0.18),
+    0 24px 48px -16px rgba(16,24,40,0.12);
+  transition: box-shadow 0.3s;
+}
+[data-layout="dark"] .app-sidebar {
+  background: hsl(var(--card) / 0.7);
+  border-color: hsl(var(--gold) / 0.12);
+  box-shadow:
+    0 1px 0 0 hsl(var(--gold) / 0.1) inset,
+    0 8px 24px -8px rgba(0,0,0,0.5),
+    0 24px 48px -16px rgba(0,0,0,0.3);
 }
 @media (min-width: 1024px) { .app-sidebar { display: flex; } }
 
@@ -513,10 +523,15 @@ body::before {
   padding-inline: 1rem;
   padding-block: 0.75rem;
   padding-top: max(0.75rem, env(safe-area-inset-top));
-  background: hsl(var(--background) / 0.8);
-  border-bottom: 1px solid hsl(var(--border) / 0.5);
-  backdrop-filter: blur(16px) saturate(1.3);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  background: hsl(var(--background) / 0.82);
+  border-bottom: 1px solid hsl(var(--border) / 0.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+}
+[data-layout="dark"] .app-topbar {
+  background: hsl(var(--background) / 0.75);
+  border-bottom-color: hsl(var(--gold) / 0.08);
+  box-shadow: 0 1px 0 0 hsl(0 0% 100% / 0.02);
 }
 @media (min-width: 640px) { .app-topbar { padding-inline: 1.5rem; } }
 
@@ -660,10 +675,12 @@ body::before {
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid hsl(var(--border));
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   [data-layout="dark"] .glass {
     background: hsl(var(--card) / 0.62);
     border-color: hsl(var(--gold) / 0.14);
+    box-shadow: 0 1px 0 0 hsl(var(--gold) / 0.06) inset;
   }
 
   /* بطاقة مذهّبة — حدّ مزدوج كإطار المخطوط */
@@ -787,6 +804,155 @@ body::before {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ============================================================
+   تحسينات بصرية شاملة — بطاقات ، جداول ، نماذج ، أزرار
+   ============================================================ */
+
+/* بطاقات إحصائية — تفاعل عند التمرير */
+.glass.rounded-3xl:hover {
+  border-color: hsl(var(--gold) / 0.28);
+}
+[data-layout="dark"] .glass.rounded-3xl:hover {
+  border-color: hsl(var(--gold) / 0.3);
+  box-shadow: 0 0 24px -8px hsl(var(--gold) / 0.08);
+}
+
+/* ظلّ البنتو — تدرّج أعمق في الداكن */
+[data-layout="dark"] .shadow-bento {
+  box-shadow:
+    0 2px 6px -1px hsl(0 0% 0% / 0.35),
+    0 16px 38px -20px hsl(var(--primary) / 0.15);
+}
+
+/* جداول البيانات — تحسين الصفوف والترويسات */
+.glass table thead tr {
+  background: linear-gradient(100deg, hsl(var(--gold) / 0.08), hsl(var(--gold) / 0.04)) !important;
+}
+[data-layout="dark"] .glass table thead tr {
+  background: linear-gradient(100deg, hsl(var(--gold) / 0.12), hsl(var(--gold) / 0.05)) !important;
+}
+.glass table tbody tr {
+  transition: background 0.15s;
+}
+.glass table tbody tr:hover {
+  background: hsl(var(--gold) / 0.04);
+}
+[data-layout="dark"] .glass table tbody tr:hover {
+  background: hsl(var(--gold) / 0.06);
+}
+
+/* حقول الإدخال — تحسين الحدود والتأثيرات */
+input.inp:focus,
+select.inp:focus,
+textarea.inp:focus,
+.inp:focus {
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+}
+[data-layout="dark"] input.inp:focus,
+[data-layout="dark"] select.inp:focus,
+[data-layout="dark"] textarea.inp:focus,
+[data-layout="dark"] .inp:focus {
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+}
+
+/* نوافذ الحوار — خلفية أكثر عمقاً */
+[data-layout="dark"] .fixed.bg-black\/60,
+[data-layout="dark"] .fixed.bg-black\/50 {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* أزرار متعدّدة التحسينات */
+.btn-glow {
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+}
+.btn-glow:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.btn-glow:active {
+  transform: translateY(0);
+}
+
+.btn-foil {
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.btn-foil:hover {
+  border-color: hsl(var(--gold) / 0.7);
+}
+
+/* شريط التقدّم — لمعان خفيف */
+.relative.h-2\.5 .h-full.rounded-full {
+  position: relative;
+}
+.relative.h-2\.5 .h-full.rounded-full::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(0 0% 100% / 0.18) 50%,
+    transparent 100%
+  );
+}
+
+/* شارات الحالة — تحسين */
+[data-layout="dark"] .bg-emerald-500\/14 { background: hsl(152 60% 42% / 0.16); }
+[data-layout="dark"] .bg-accent\/18 { background: hsl(var(--accent) / 0.2); }
+[data-layout="dark"] .bg-rose-500\/15 { background: hsl(0 84% 60% / 0.18); }
+[data-layout="dark"] .bg-sky-500\/15 { background: hsl(200 84% 50% / 0.18); }
+
+/* مخطّطات الأعمدة — تدرّجات وانتقالات محسّنة */
+.flex.items-end .group .rounded-t-lg {
+  transition: filter 0.2s;
+  position: relative;
+}
+.flex.items-end .group:hover .rounded-t-lg {
+  filter: brightness(1.15);
+}
+
+/* رؤوس الأقسام (Section) — خطّ ذهبي أفضل */
+section.glass > header .absolute.inset-x-0.top-0 {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--gold) / 0.85) 30%,
+    hsl(var(--gold)) 50%,
+    hsl(var(--gold) / 0.85) 70%,
+    transparent
+  ) !important;
+}
+section.glass > header .absolute.inset-x-0.top-0[class*="bg-rose"] {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(0 84% 60% / 0.85) 30%,
+    hsl(0 84% 60%) 50%,
+    hsl(0 84% 60% / 0.85) 70%,
+    transparent
+  ) !important;
+}
+
+/* تحسين الروابط النشطة والتنقّل */
+a.text-primary:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ميداليات مثمّنة — لمعان في الداكن */
+[data-layout="dark"] .relative.grid.shrink-0.place-items-center svg path[fill-opacity] {
+  fill-opacity: 0.15;
+}
+
+/* تحسين زرّ البحث في شريط التنقّل */
+.tb-search {
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.tb-search:focus-within {
+  border-color: hsl(var(--primary) / 0.5);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.08);
 }
 
 /* ============================================================
@@ -5058,20 +5224,25 @@ select.inp {
   max-width: 26rem;
   padding: 2rem;
   border-radius: 1.75rem;
-  background: rgba(17,16,26,0.6);
-  border: 1px solid rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(17,16,26,0.65);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow:
+    0 4px 24px -4px rgba(0,0,0,0.4),
+    0 24px 48px -12px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.04);
 }
 .auth-card-glow {
   position: absolute;
   top: -1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 55%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), rgba(245,158,11,0.3), transparent);
   border-radius: 2px;
+  filter: blur(0.5px);
 }
 .auth-back {
   display: inline-flex;
@@ -5112,18 +5283,31 @@ select.inp {
   background: rgba(255,255,255,0.03);
   border-color: rgba(255,255,255,0.08);
   color: #e0dde8;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 .auth-card .inp:hover:not(:focus):not(:disabled) {
-  border-color: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.14);
   background: rgba(255,255,255,0.05);
 }
 .auth-card .inp:focus {
-  border-color: rgba(139,92,246,0.4);
-  box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+  border-color: rgba(139,92,246,0.45);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12), 0 0 16px -4px rgba(139,92,246,0.08);
   background: rgba(255,255,255,0.04);
 }
 .auth-card .inp::placeholder { color: rgba(255,255,255,0.2); }
 .auth-card .lbl { color: rgba(255,255,255,0.45); }
+.auth-card .btn-glow {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED 50%, #6D28D9);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    0 4px 16px -4px rgba(139,92,246,0.5);
+}
+.auth-card .btn-glow:hover {
+  filter: brightness(1.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    0 6px 24px -4px rgba(139,92,246,0.6);
+}
 
 /* ============================================================
    الصفحات القانونية — تصميم داكن سينمائي
@@ -5165,19 +5349,24 @@ select.inp {
   margin-top: 2rem;
   padding: 2rem;
   border-radius: 2rem;
-  background: rgba(17,16,26,0.6);
-  border: 1px solid rgba(255,255,255,0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(17,16,26,0.65);
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow:
+    0 4px 24px -4px rgba(0,0,0,0.35),
+    0 24px 48px -12px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.03);
 }
-@media (min-width: 640px) { .legal-card { padding: 2.5rem; } }
+@media (min-width: 640px) { .legal-card { padding: 2.5rem 3rem; } }
 .legal-card-glow {
   position: absolute;
   top: -1px;
   left: 20%;
   right: 20%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.4), rgba(245,158,11,0.2), transparent);
+  border-radius: 2px;
 }
 
 .legal-prose h1 { color: #fff; }
@@ -5245,8 +5434,11 @@ select.inp {
   align-items: center;
   gap: 0.35rem;
   padding: 0.75rem 0;
-  background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary) / 0.9));
-  border-inline-end: 1px solid hsl(var(--primary) / 0.7);
+  background:
+    linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.88) 100%),
+    radial-gradient(ellipse at 50% 0%, hsl(var(--gold) / 0.12) 0%, transparent 60%);
+  border-inline-end: 1px solid hsl(var(--gold) / 0.18);
+  box-shadow: inset -1px 0 0 hsl(0 0% 100% / 0.05);
 }
 @media (min-width: 1024px) { .ad-rail { display: flex; } }
 
@@ -5255,14 +5447,14 @@ select.inp {
   place-items: center;
   width: 2.25rem; height: 2.25rem;
   border-radius: 0.7rem;
-  background: hsl(var(--gold) / 0.22);
+  background: linear-gradient(135deg, hsl(var(--gold) / 0.28), hsl(var(--gold) / 0.16));
   color: hsl(var(--gold));
   margin-bottom: 0.5rem;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .ad-mark:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px hsl(var(--gold) / 0.3);
+  transform: scale(1.08);
+  box-shadow: 0 0 16px hsl(var(--gold) / 0.35);
 }
 .ad-rail-nav { display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 auto; }
 .ad-rail-btn {
@@ -5301,7 +5493,12 @@ select.inp {
   transform: translateX(100%);
   transition: transform .22s ease;
 }
-.ad-panel.is-open { transform: none; box-shadow: -12px 0 32px -16px rgb(16 24 40 / .3); }
+.ad-panel.is-open {
+  transform: none;
+  box-shadow:
+    -8px 0 24px -8px rgb(16 24 40 / .2),
+    -24px 0 48px -16px rgb(16 24 40 / .15);
+}
 @media (min-width: 1024px) {
   .ad-panel { inset-inline-start: var(--ad-rail); transform: none; }
 }
@@ -5365,10 +5562,11 @@ select.inp {
   display: flex; align-items: center; gap: 0.6rem;
   height: var(--ad-top);
   padding-inline: 0.9rem;
-  background: hsl(var(--background) / .85);
+  background: hsl(var(--background) / .88);
   border-bottom: 1px solid var(--ad-line);
-  backdrop-filter: blur(16px) saturate(1.3);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 1px 3px -1px hsl(0 0% 0% / 0.04);
 }
 .ad-crumb { display: flex; align-items: center; gap: 0.35rem; min-width: 0; font-size: 0.72rem; }
 .ad-crumb-l { color: hsl(var(--muted-foreground)); white-space: nowrap; }
@@ -5411,9 +5609,14 @@ select.inp {
   background: var(--ad-surface) !important;
   backdrop-filter: none !important;
   border: 1px solid var(--ad-line) !important;
-  box-shadow: none !important;
+  box-shadow: 0 1px 3px -1px hsl(0 0% 0% / 0.04) !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.ad-root .shadow-bento { box-shadow: none !important; }
+.ad-root .glass:hover {
+  border-color: hsl(var(--gold) / 0.25) !important;
+  box-shadow: 0 4px 16px -6px hsl(var(--primary) / 0.06) !important;
+}
+.ad-root .shadow-bento { box-shadow: 0 1px 3px -1px hsl(0 0% 0% / 0.04) !important; }
 .ad-root .rounded-3xl { border-radius: 0.9rem !important; }
 .ad-root .rounded-\[1\.5rem\] { border-radius: 0.9rem !important; }
 .ad-root .rounded-2xl { border-radius: 0.75rem !important; }
@@ -5440,20 +5643,30 @@ select.inp {
   padding: 1rem 1.15rem;
   border-radius: 1.75rem;
   background:
-    linear-gradient(180deg, hsl(var(--card) / .96), hsl(var(--background) / .92));
+    linear-gradient(180deg, hsl(var(--card) / .97), hsl(var(--background) / .94));
   border: 1px solid var(--ad-line, hsl(var(--border)));
-  box-shadow: 0 1px 2px hsl(var(--foreground) / .04), 0 16px 34px -26px hsl(var(--foreground) / .35);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow:
+    0 1px 2px hsl(var(--foreground) / .04),
+    0 8px 24px -12px hsl(var(--foreground) / .2),
+    0 24px 48px -24px hsl(var(--foreground) / .15);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   overflow: hidden;
+  transition: box-shadow 0.3s;
 }
-/* خيطُ التذهيب في الأعلى — يتلاشى نحو الطرفين فلا يبدو حدّاً مقصوصاً */
 .ad-bar::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
   height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(var(--gold) / .85), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    hsl(var(--gold) / .7) 25%,
+    hsl(var(--gold) / .9) 50%,
+    hsl(var(--gold) / .7) 75%,
+    transparent 95%
+  );
 }
 @media (min-width: 640px) {
   .ad-bar { margin: 0 0 1.35rem; padding: 1.2rem 1.5rem; border-radius: 2rem; }
