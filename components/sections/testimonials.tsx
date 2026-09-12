@@ -52,7 +52,7 @@ export function Testimonials() {
                 key={t.id}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
+                viewport={{ once: false, margin: "-40px" }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
               >
                 <Card t={t} brand={brand} />
@@ -71,7 +71,7 @@ function FeaturedCard({ t, brand }: { t: Testimonial; brand?: boolean }) {
     <motion.figure
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: false, margin: "-40px" }}
       transition={{ duration: 0.5 }}
       className={`sx-card relative overflow-hidden rounded-3xl p-5 sm:p-7 ${brand ? "glass border border-primary/30" : ""}`}
     >

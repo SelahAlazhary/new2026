@@ -39,7 +39,7 @@ export function CtaFooter() {
       {showCta && (
       <section className={`relative py-24 ${ctaClass(CT)}`} data-cta-style={CT.id}>
         <div className="container">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ duration: 0.6 }}
             className={`ct-panel relative overflow-hidden rounded-[2.5rem] px-8 py-16 text-center text-white ${ctBrand}`}>
             <span className="ct-decor">
               <Shamsa size={520} rays={32} className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 opacity-25" />

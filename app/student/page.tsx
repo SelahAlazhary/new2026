@@ -431,7 +431,7 @@ export default function StudentHome() {
             key={c.id}
             initial={{ opacity: 0, y: 24, scale: 0.96 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+            viewport={{ once: false, margin: "0px 0px -40px 0px" }}
             transition={{ delay: (i % 6) * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <Link href={`/student/course/${c.id}`} className="group block">

@@ -97,7 +97,7 @@ export function SectionHeading({
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: false, margin: "-80px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       /* sx-head: خطّاف تصميم القسم — المعالجة تأتي من CSS لا من هنا. */
       className={`sx-head mb-12 max-w-2xl ${center ? "mx-auto text-center" : ""}`}
@@ -145,7 +145,7 @@ export function Reveal({
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: false, margin: "-60px" }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >

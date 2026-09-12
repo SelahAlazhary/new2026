@@ -5,7 +5,9 @@ import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
 import { planPrice } from "@/lib/business/plans";
-import { ArrowLeft, ChevronDown, Check } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, Video, ShieldCheck, Wallet, Globe2, Smartphone, BarChart3 } from "lucide-react";
+
+const withoutHarakat = (text: string) => text.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "");
 
 /* ═══════════════════════════════════════════════════════════════
    SpotLight Studio — صفحة الموقع الأمّ · «الديوان»
@@ -26,16 +28,19 @@ const STEPS = [
   { t: "اختر خطّتك", d: "تُرقّى في أيّ وقتٍ ولا تُفقد بياناتُك." },
   { t: "اكتب هويّتك", d: "اسمُك وألوانُك وشعارُك في شاشةٍ واحدة." },
   { t: "افتح الباب", d: "رابطٌ خاصٌّ ولوحةٌ جاهزةٌ تستقبل طلابك." },
-];
+].map((item) => ({ t: withoutHarakat(item.t), d: withoutHarakat(item.d) }));
 
 const FEATURES = [
-  { t: "دروسٌ محميّةٌ وبثٌّ مباشر", d: "مشغّلٌ بلا إعلانات، وبثٌّ حيٌّ، وواجبٌ بعد كلّ درس." },
-  { t: "حمايةُ المحتوى", d: "علامةٌ مائيّةٌ باسم الطالب، وقفلُ الحساب بجهازٍ واحد، وروابطُ بثٍّ مشفّرة." },
-  { t: "بوّاباتُ دفعٍ محليّة", d: "فودافون كاش وإنستاباي والفيزا، وأكوادُ شحنٍ تُفعَّل في ثانية." },
-  { t: "نطاقُك واسمُك", d: "اربط نطاقَك المملوكَ لك فتظهر أكاديميّةً مستقلّةً لا صفحةً على موقعِ غيرك." },
-  { t: "تطبيقٌ بلا متجر", d: "يُثبَّت على الهاتف كتطبيقٍ خفيفٍ بلا تحميلٍ من متجر." },
-  { t: "تقاريرُ تُقرأ", d: "درجاتٌ ونسبُ مشاهدةٍ وإيرادٌ وحضور — أرقامٌ تُبنى عليها قرارات." },
-];
+  { t: "دروسٌ محميّةٌ وبثٌّ مباشر", d: "مشغّلٌ بلا إعلانات، وبثٌّ حيٌّ، وواجبٌ بعد كلّ درس.", tone: "navy", Icon: Video },
+  { t: "حمايةُ المحتوى", d: "علامةٌ مائيّةٌ باسم الطالب، وقفلُ الحساب بجهازٍ واحد، وروابطُ بثٍّ مشفّرة.", tone: "blue", Icon: ShieldCheck },
+  { t: "بوّاباتُ دفعٍ محليّة", d: "فودافون كاش وإنستاباي والفيزا، وأكوادُ شحنٍ تُفعَّل في ثانية.", tone: "green", Icon: Wallet },
+  { t: "نطاقُك واسمُك", d: "اربط نطاقَك المملوكَ لك فتظهر أكاديميّةً مستقلّةً لا صفحةً على موقعِ غيرك.", tone: "cyan", Icon: Globe2 },
+  { t: "تطبيقٌ بلا متجر", d: "يُثبَّت على الهاتف كتطبيقٍ خفيفٍ بلا تحميلٍ من متجر.", tone: "orange", Icon: Smartphone },
+  { t: "تقاريرُ تُقرأ", d: "درجاتٌ ونسبُ مشاهدةٍ وإيرادٌ وحضور — أرقامٌ تُبنى عليها قرارات.", tone: "blue", Icon: BarChart3 },
+].map((item) => ({ ...item, t: withoutHarakat(item.t), d: withoutHarakat(item.d) }));
+
+/** أربعُ هيئاتِ دخولٍ متتابعةٌ — لا تكرارَ الشكل نفسِه على بطاقاتٍ متجاورة. */
+const FEATURE_FROM = ["up", "right", "scale", "left"] as const;
 
 const FAQS = [
   { q: "كيف أستلم أموالي من اشتراكات الطلاب؟", a: "تصلك كاملةً ومباشرةً على حسابك البنكي أو محفظتك الإلكترونية (فودافون كاش، إنستاباي، أو بوّابات الدفع) — بلا وسيطٍ ولا تأخير." },
@@ -43,13 +48,13 @@ const FAQS = [
   { q: "هل أحتاج خبرةً برمجيّة؟", a: "لا. تكتب اسمك، وترفع دروسك، وتحدّد أسعارك — من لوحةٍ عربيّةٍ كاملة. ولا سطرَ كودٍ واحد." },
   { q: "هل أربط نطاقاً خاصّاً بي؟", a: "نعم، أيَّ نطاقٍ تملكه. أو تستعمل النطاقَ الفرعيَّ المجّانيَّ الذي يُمنح لك فور التسجيل." },
   { q: "كيف أغيّر خطّتي لاحقاً؟", a: "من لوحة التحكّم في أيّ وقت. ودروسُك وبياناتُ طلابك تبقى كما هي." },
-];
+].map((item) => ({ q: withoutHarakat(item.q), a: withoutHarakat(item.a) }));
 
 const TRUST = [
   { v: "+٢٬٤٠٠", l: "معلّمٌ ومحاضر" },
   { v: "+٨٦٬٠٠٠", l: "طالبٌ مسجّل" },
   { v: "٩٨٫٤٪", l: "رضا المستخدمين" },
-];
+].map((item) => ({ ...item, l: withoutHarakat(item.l) }));
 
 /* ── لبناتٌ مرسومةٌ بالـSVG — من مفردات المنصّات نفسِها ───────── */
 
@@ -57,20 +62,6 @@ const TRUST = [
 function Seal({ children, size = 56 }: { children: React.ReactNode; size?: number }) {
   return (
     <span className="mkt-seal" style={{ width: size, height: size }}>
-      <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
-        <path
-          d="M22 2 30.5 5.5 38.5 13.5 38.5 30.5 30.5 38.5 22 42 13.5 38.5 5.5 30.5 5.5 13.5 13.5 5.5Z"
-          fill="currentColor"
-          fillOpacity="0.08"
-        />
-        <path
-          d="M22 2 30.5 5.5 38.5 13.5 38.5 30.5 30.5 38.5 22 42 13.5 38.5 5.5 30.5 5.5 13.5 13.5 5.5Z"
-          stroke="currentColor"
-          strokeOpacity="0.42"
-          strokeWidth="1"
-        />
-        <circle cx="22" cy="22" r="13.5" stroke="currentColor" strokeOpacity="0.18" strokeWidth="0.8" />
-      </svg>
       <span className="mkt-seal-in">{children}</span>
     </span>
   );
@@ -116,7 +107,7 @@ function Reveal({
   from?: "up" | "right" | "left" | "scale";
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-70px" });
+  const inView = useInView(ref, { once: false, margin: "-70px" });
   /* بلا مراقبِ تقاطعٍ لا يُحجب شيء: المحتوى أولى من الحركة. */
   const observable = typeof IntersectionObserver !== "undefined";
   const shown = inView || !observable;
@@ -130,6 +121,7 @@ function Reveal({
   return (
     <div ref={ref} className={className}>
       <motion.div
+        className={`mkt-reveal-content ${shown ? "is-visible" : ""}`}
         initial={start}
         animate={shown ? { opacity: 1, x: 0, y: 0, scale: 1 } : start}
         transition={{ duration: 0.62, delay, ease: [0.22, 1, 0.36, 1] }}
@@ -174,11 +166,11 @@ function SignaturePanel({ brand }: { brand: string }) {
       <Corner className="mkt-sig-corner" />
 
       <label className="mkt-sig-field">
-        <span className="mkt-sig-label">اكتب اسمك كما تريده أن يُعرف</span>
+        <span className="mkt-sig-label">{withoutHarakat("اكتب اسمك كما تريده أن يُعرف")}</span>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="مثال: أ. محمد كامل"
+          placeholder={withoutHarakat("مثال: أ. محمد كامل")}
           maxLength={32}
           className="mkt-sig-input"
           aria-label="اسمك"
@@ -204,15 +196,48 @@ function SignaturePanel({ brand }: { brand: string }) {
 
           <p className="mkt-door-sig">{shown || "اسمك هنا"}</p>
           <Rule className="mkt-door-rule" />
-          <p className="mkt-door-tag">أكاديميّةٌ مستقلّةٌ — دروسٌ واختباراتٌ وبثٌّ مباشر</p>
+          <p className="mkt-door-tag">{withoutHarakat("أكاديميّةٌ مستقلّةٌ — دروسٌ واختباراتٌ وبثٌّ مباشر")}</p>
 
           <div className="mkt-door-row">
             <span className="mkt-door-chip">لوحة المعلّم</span>
             <span className="mkt-door-chip">بوّابة الطالب</span>
-            <span className="mkt-door-chip">مشغّل محميّ</span>
+            <span className="mkt-door-chip">{withoutHarakat("مشغّل محميّ")}</span>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+const DIAGRAM_ITEMS = [
+  { label: "التسجيل", detail: "حسابك في دقيقة", tone: "blue" },
+  { label: "الهوية", detail: "اسمك وشعارك", tone: "green" },
+  { label: "المحتوى", detail: "دروسك واختباراتك", tone: "cyan" },
+  { label: "الطلاب", detail: "بوابة خاصة بهم", tone: "navy" },
+  { label: "الدفع", detail: "اشتراكاتك بسهولة", tone: "orange" },
+  { label: "التحليلات", detail: "أرقام واضحة", tone: "blue" },
+] as const;
+
+function PlatformDiagram({ brand }: { brand: string }) {
+  return (
+    <div className="mkt-diagram" aria-label="مراحل إنشاء منصتك">
+      <svg className="mkt-diagram-lines" viewBox="0 0 520 420" aria-hidden="true">
+        <path d="M260 210 260 55M260 210 445 108M260 210 445 312M260 210 260 365M260 210 75 312M260 210 75 108" />
+      </svg>
+      <div className="mkt-diagram-center">
+        <span className="mkt-diagram-center-mark">{brand.slice(0, 1) || "S"}</span>
+        <b>منصتك</b>
+        <small>جاهزة للنمو</small>
+      </div>
+      {DIAGRAM_ITEMS.map((item, index) => (
+        <div key={item.label} className={`mkt-diagram-node mkt-diagram-node-${index + 1} tone-${item.tone}`}>
+          <span className="mkt-diagram-node-icon">{index + 1}</span>
+          <span className="mkt-diagram-node-copy">
+            <b>{item.label}</b>
+            <small>{item.detail}</small>
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -255,40 +280,40 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
       <section className="mkt-hero">
         <div className="mkt-hero-wash" aria-hidden="true" />
 
+        <Reveal from="right" className="mkt-hero-reveal">
         <div className="mkt-hero-text">
-          <span className="mkt-eyebrow">
-            <span className="mkt-eyebrow-dot" />
-            منصّتُك أنت — لا صفحةٌ على موقعِ غيرك
-          </span>
-
           <h1 className="mkt-h1">
-            اسمُك على الباب
-            <span className="mkt-h1-em">لا اسمُ أحدٍ سواك</span>
+            {withoutHarakat("اسمُك على الباب")}
+            <span className="mkt-h1-em">{withoutHarakat("لا اسمُ أحدٍ سواك")}</span>
           </h1>
 
           <p className="mkt-lede">
-            أكاديميّةٌ كاملةٌ برابطك: دروسٌ محميّة، واختبارات، وبثٌّ مباشر،
-            وبوّاباتُ دفعٍ محليّة — تُفتح في دقيقة، بلا سطرِ كود.
+            {withoutHarakat("أكاديميّةٌ كاملةٌ برابطك: دروسٌ محميّة، واختبارات، وبثٌّ مباشر، وبوّاباتُ دفعٍ محليّة — تُفتح في دقيقة، بلا سطرِ كود.")}
           </p>
 
           <div className="mkt-cta-row">
             <Link href="/start" className="mkt-cta">
-              أنشئ منصّتك الآن <ArrowLeft className="size-4" />
+              {withoutHarakat("أنشئ منصّتك الآن")} <ArrowLeft className="size-4" />
             </Link>
             <a href="#how" className="mkt-cta-ghost">كيف تسير؟</a>
           </div>
         </div>
+        </Reveal>
 
-        <SignaturePanel brand={brand} />
+        <Reveal from="scale" className="mkt-hero-reveal">
+          <PlatformDiagram brand={brand} />
+        </Reveal>
 
-        <div className="mkt-trust">
-          {TRUST.map((s) => (
-            <div key={s.l} className="mkt-trust-item">
-              <span className="mkt-trust-v">{s.v}</span>
-              <span className="mkt-trust-l">{s.l}</span>
-            </div>
-          ))}
-        </div>
+        <Reveal delay={0.15} from="up" className="mkt-hero-reveal">
+          <div className="mkt-trust">
+            {TRUST.map((s) => (
+              <div key={s.l} className="mkt-trust-item">
+                <span className="mkt-trust-v">{s.v}</span>
+                <span className="mkt-trust-l">{s.l}</span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       {/* ════════ الطريق ════════ */}
@@ -296,8 +321,8 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <Reveal>
           <header className="mkt-head">
             <Rule className="mkt-head-rule" />
-            <h2 className="mkt-h2">أربعُ خطواتٍ ثمّ تفتح</h2>
-            <p className="mkt-head-sub">لا تركيبَ ولا استضافةَ ولا انتظار.</p>
+            <h2 className="mkt-h2">{withoutHarakat("أربعُ خطواتٍ ثمّ تفتح")}</h2>
+            <p className="mkt-head-sub">{withoutHarakat("لا تركيبَ ولا استضافةَ ولا انتظار.")}</p>
           </header>
         </Reveal>
 
@@ -323,16 +348,19 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <Reveal>
           <header className="mkt-head">
             <Rule className="mkt-head-rule" />
-            <h2 className="mkt-h2">ما تملكه فعلاً</h2>
-            <p className="mkt-head-sub">لا مزايا تُعدّ، بل ما ستستعمله كلّ يوم.</p>
+            <h2 className="mkt-h2">{withoutHarakat("ما تملكه فعلاً")}</h2>
+            <p className="mkt-head-sub">{withoutHarakat("لا مزايا تُعدّ، بل ما ستستعمله كلّ يوم.")}</p>
           </header>
         </Reveal>
 
         <div className="mkt-feats">
           {FEATURES.map((f, i) => (
-            <Reveal key={f.t} delay={(i % 3) * 0.07} from="scale">
+            <Reveal key={f.t} delay={(i % 3) * 0.07} from={FEATURE_FROM[i % FEATURE_FROM.length]}>
               <article className="mkt-feat">
                 <Corner className="mkt-feat-corner" />
+                <span className={`mkt-feat-icon tone-${f.tone}`}>
+                  <f.Icon className="size-5" />
+                </span>
                 <b className="mkt-feat-t">{f.t}</b>
                 <p className="mkt-feat-d">{f.d}</p>
               </article>
@@ -346,8 +374,8 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <Reveal>
           <header className="mkt-head">
             <Rule className="mkt-head-rule" />
-            <h2 className="mkt-h2">كشفُ الأسعار</h2>
-            <p className="mkt-head-sub">تُرقّى أو تُخفّض في أيّ وقتٍ — وبياناتُك تبقى.</p>
+            <h2 className="mkt-h2">{withoutHarakat("كشفُ الأسعار")}</h2>
+            <p className="mkt-head-sub">{withoutHarakat("تُرقّى أو تُخفّض في أيّ وقتٍ — وبياناتُك تبقى.")}</p>
           </header>
         </Reveal>
 
@@ -358,10 +386,10 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             return (
               <Reveal key={p.id} delay={i * 0.08} from="up">
                 <div className={`mkt-plan ${hot ? "is-hot" : ""}`}>
-                  {hot && <span className="mkt-plan-ribbon">{p.badge || "الأكثر اختياراً"}</span>}
+                  {hot && <span className="mkt-plan-ribbon">{withoutHarakat(p.badge || "الأكثر اختياراً")}</span>}
 
-                  <b className="mkt-plan-name">{p.name}</b>
-                  {p.desc && <span className="mkt-plan-desc">{p.desc}</span>}
+                  <b className="mkt-plan-name">{withoutHarakat(p.name)}</b>
+                  {p.desc && <span className="mkt-plan-desc">{withoutHarakat(p.desc)}</span>}
 
                   <Rule className="mkt-plan-rule" />
 
@@ -374,10 +402,10 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
                   <ul className="mkt-plan-feats">
                     {[
-                      p.limits?.maxStudents ? `حتى ${p.limits.maxStudents.toLocaleString("ar-EG")} طالب` : "طلابٌ بلا حدّ",
-                      p.limits?.customDomain ? "نطاقٌ خاصٌّ بك" : "نطاقٌ فرعيٌّ مجّاني",
-                      "حمايةٌ وعلامةٌ مائيّة",
-                      "دعمٌ طوال الأسبوع",
+                      p.limits?.maxStudents ? `حتى ${p.limits.maxStudents.toLocaleString("ar-EG")} طالب` : withoutHarakat("طلابٌ بلا حدّ"),
+                      p.limits?.customDomain ? withoutHarakat("نطاقٌ خاصٌّ بك") : withoutHarakat("نطاقٌ فرعيٌّ مجّاني"),
+                      withoutHarakat("حمايةٌ وعلامةٌ مائيّة"),
+                      withoutHarakat("دعمٌ طوال الأسبوع"),
                     ].map((t) => (
                       <li key={t}>
                         <Check className="size-3.5 shrink-0" />
@@ -387,7 +415,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
                   </ul>
 
                   <Link href="/start" className={`mkt-plan-cta ${hot ? "is-hot" : ""}`}>
-                    اختر {p.name} <ArrowLeft className="size-3.5" />
+                    {withoutHarakat(`اختر ${p.name}`)} <ArrowLeft className="size-3.5" />
                   </Link>
                 </div>
               </Reveal>
@@ -401,7 +429,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <Reveal>
           <header className="mkt-head">
             <Rule className="mkt-head-rule" />
-            <h2 className="mkt-h2">أسئلةٌ تُسأل كثيراً</h2>
+            <h2 className="mkt-h2">{withoutHarakat("أسئلةٌ تُسأل كثيراً")}</h2>
           </header>
         </Reveal>
 
@@ -445,10 +473,10 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             </Seal>
             <h2 className="mkt-final-h">الباب مفتوح</h2>
             <p className="mkt-final-p">
-              أنشئ منصّتك الآن — تكتب اسمك، وتختار خطّتك، وتفتح. ولا شيءَ يُدفع قبل أن ترى ما بنيته.
+              {withoutHarakat("أنشئ منصّتك الآن — تكتب اسمك، وتختار خطّتك، وتفتح. ولا شيءَ يُدفع قبل أن ترى ما بنيته.")}
             </p>
             <Link href="/start" className="mkt-cta">
-              أنشئ منصّتك <ArrowLeft className="size-4" />
+              {withoutHarakat("أنشئ منصّتك")} <ArrowLeft className="size-4" />
             </Link>
           </div>
         </Reveal>
@@ -466,7 +494,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           </nav>
         </div>
         <p className="mkt-foot-copy">
-          {brand} — منصّةٌ لإطلاق الأكاديميّات التعليميّة. جميع الحقوق محفوظة.
+          {withoutHarakat(`${brand} — منصّةٌ لإطلاق الأكاديميّات التعليميّة. جميع الحقوق محفوظة.`)}
         </p>
       </footer>
     </div>

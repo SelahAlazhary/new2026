@@ -50,7 +50,7 @@ export function Stars({ value = 4.9 }: { value?: number }) {
 /** علامة صح تُرسم بالـ stroke عند دخولها إطار العرض */
 export function DrawCheck({ className = "" }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: false, margin: "-40px" });
   return (
     <svg
       ref={ref}
@@ -84,7 +84,7 @@ export function CountUp({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: false });
   const [val, setVal] = useState(0);
 
   useEffect(() => {

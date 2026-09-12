@@ -18,7 +18,57 @@ const toneMap: Record<string, string> = {
   amber: "text-amber-600",
   violet: "text-violet-600",
   gold: "text-accent",
+  blue: "text-blue-600",
+  cyan: "text-cyan-600",
+  navy: "text-slate-700",
+  orange: "text-orange-600",
+  rose: "text-rose-600",
 };
+
+/**
+ * لونُ الحلقة المصمَتة لشارة الإحصاء — ثابتٌ لكلّ نبرة، لا مشتقٌّ من
+ * الثيم إلا في «الأساسي» و«الذهبي»: البقيّةُ منظومةُ ألوانٍ تصنيفيّةٌ
+ * (كالمخطّطات) يجب أن تبقى واحدةً بصرفِ النظر عن هويّة المنصّة.
+ */
+const TONE_ICON: Record<string, { bg: string; glow: string }> = {
+  primary: { bg: "hsl(var(--primary))", glow: "0 0 0 1px hsl(var(--primary)/0.5), 0 0 16px 2px hsl(var(--primary)/0.45), 0 0 34px 6px hsl(var(--primary)/0.22)" },
+  gold: { bg: "hsl(var(--accent))", glow: "0 0 0 1px hsl(var(--accent)/0.55), 0 0 16px 2px hsl(var(--accent)/0.5), 0 0 34px 6px hsl(var(--accent)/0.24)" },
+  emerald: { bg: "#059669", glow: "0 0 0 1px rgba(5,150,105,0.5), 0 0 16px 2px rgba(16,185,129,0.45), 0 0 34px 6px rgba(16,185,129,0.2)" },
+  amber: { bg: "#d97706", glow: "0 0 0 1px rgba(217,119,6,0.5), 0 0 16px 2px rgba(245,158,11,0.45), 0 0 34px 6px rgba(245,158,11,0.2)" },
+  violet: { bg: "#7c3aed", glow: "0 0 0 1px rgba(124,58,237,0.5), 0 0 16px 2px rgba(139,92,246,0.45), 0 0 34px 6px rgba(139,92,246,0.2)" },
+  blue: { bg: "#2563eb", glow: "0 0 0 1px rgba(37,99,235,0.5), 0 0 16px 2px rgba(59,130,246,0.45), 0 0 34px 6px rgba(59,130,246,0.2)" },
+  cyan: { bg: "#0891b2", glow: "0 0 0 1px rgba(8,145,178,0.5), 0 0 16px 2px rgba(6,182,212,0.45), 0 0 34px 6px rgba(6,182,212,0.2)" },
+  navy: { bg: "#1e3a5f", glow: "0 0 0 1px rgba(30,58,95,0.5), 0 0 16px 2px rgba(30,58,95,0.4), 0 0 34px 6px rgba(30,58,95,0.18)" },
+  orange: { bg: "#ea580c", glow: "0 0 0 1px rgba(234,88,12,0.5), 0 0 16px 2px rgba(249,115,22,0.45), 0 0 34px 6px rgba(249,115,22,0.2)" },
+  rose: { bg: "#e11d48", glow: "0 0 0 1px rgba(225,29,72,0.5), 0 0 16px 2px rgba(244,63,94,0.45), 0 0 34px 6px rgba(244,63,94,0.2)" },
+};
+
+/**
+ * شارةُ أيقونةٍ مصمَتة — دائرةٌ ملوّنةٌ بحافّةٍ نيونيّة، أيقونتُها بيضاء.
+ * لغةُ الإنفوجرافيك القياسيّة: دائرةٌ صلبةٌ لا ميداليةٌ شفّافة، لتُقرأ
+ * فئةُ الرقم بالنظرة الأولى قبل قراءة رقمه.
+ */
+export function IconDot({
+  size = 44,
+  tone = "primary",
+  className = "",
+  children,
+}: {
+  size?: number;
+  tone?: string;
+  className?: string;
+  children?: ReactNode;
+}) {
+  const t = TONE_ICON[tone] ?? TONE_ICON.primary;
+  return (
+    <span
+      className={`grid shrink-0 place-items-center rounded-full text-white ${className}`}
+      style={{ width: size, height: size, background: t.bg, boxShadow: t.glow }}
+    >
+      {children}
+    </span>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  لبنات SVG مشتركة                                                   */
@@ -167,7 +217,7 @@ export function Donut({
           strokeDasharray={c}
           initial={{ strokeDashoffset: c }}
           whileInView={{ strokeDashoffset: c - (pct / 100) * c }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 1, ease: "easeOut" }}
         />
       </svg>
@@ -183,7 +233,18 @@ export function Donut({
 /*  بطاقات ورؤوس الصفحات                                               */
 /* ------------------------------------------------------------------ */
 
-/** بطاقة إحصائية — ميدالية مثمّنة، رقم بخطّ المخطوط، وخطّ اتجاه اختياري. */
+/**
+ * أربعُ هيئات دخولٍ مختلفة — تتناوب بترتيب البطاقة لا تتكرّر كلّها بشكلٍ
+ * واحد: صفٌّ من أربع بطاقاتٍ يدخل كلٌّ منها بحركةٍ غير حركة جارتها.
+ */
+const STAT_ENTRANCE = [
+  { initial: { opacity: 0, y: 26, scale: 0.94 }, show: { opacity: 1, y: 0, scale: 1 } },
+  { initial: { opacity: 0, x: 34, rotate: 2 }, show: { opacity: 1, x: 0, rotate: 0 } },
+  { initial: { opacity: 0, x: -34, rotate: -2 }, show: { opacity: 1, x: 0, rotate: 0 } },
+  { initial: { opacity: 0, scale: 0.8, rotate: -4 }, show: { opacity: 1, scale: 1, rotate: 0 } },
+];
+
+/** بطاقة إحصائية — شارةُ أيقونةٍ نيونيّةٌ صلبة، رقمٌ بخطّ المخطوط، وخطّ اتجاهٍ اختياري. */
 export function StatCard({
   label,
   value,
@@ -203,20 +264,21 @@ export function StatCard({
   trend?: number[];
 }) {
   const t = toneMap[tone] ?? toneMap.primary;
+  const anim = STAT_ENTRANCE[index % STAT_ENTRANCE.length];
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24, scale: 0.94 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
-      transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      initial={anim.initial}
+      whileInView={anim.show}
+      viewport={{ once: false, margin: "0px 0px -40px 0px" }}
+      transition={{ delay: (index % 4) * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="glass relative overflow-hidden rounded-3xl p-5 shadow-bento"
     >
       <CardCorner className="text-accent/45" />
 
       <div className="relative flex items-start justify-between">
-        <Medallion size={44} className={t}>
+        <IconDot size={44} tone={tone}>
           {icon}
-        </Medallion>
+        </IconDot>
         {delta && (
           <span className="font-kufi rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
             {delta}
@@ -314,7 +376,7 @@ export function Progress({ value, color }: { value: number; color?: string }) {
       <motion.div
         initial={{ width: 0 }}
         whileInView={{ width: `${pct}%` }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.9, ease: "easeOut" }}
         className="h-full rounded-full"
         style={{

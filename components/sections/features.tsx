@@ -10,7 +10,6 @@ import { SectionHeading, Reveal } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
 import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/styles/section-styles";
 import { featureIcon } from "@/components/brand/icons";
-import { ArchTile } from "@/components/brand/pattern";
 
 /** رقم عربي-هندي (١٢٣) لهوية أدقّ. */
 const ar = (n: number) => n.toLocaleString("ar-EG");
@@ -33,7 +32,6 @@ export function Features() {
 
       <div className="container">
         <SectionHeading
-        anim="capOpenBookAnim"
           eyebrow="لماذا نحن"
           title={
             <>
@@ -75,8 +73,7 @@ export function Features() {
                   </span>
 
                   {/* لوحة الأيقونة */}
-                  <span className="ic-frame relative mb-5 grid size-12 place-items-center text-primary">
-                    <ArchTile size={48} className="absolute inset-0" />
+                  <span className="feature-icon-dot relative mb-5 grid size-12 place-items-center text-primary">
                     <Icon anim="draw" className="relative size-6" />
                   </span>
 

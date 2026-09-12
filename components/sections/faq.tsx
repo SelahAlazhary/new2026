@@ -33,7 +33,7 @@ export function Faq() {
             const isOpen = open === i;
             return (
               <motion.div key={f.q} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.4, delay: i * 0.05 }}
+                viewport={{ once: false, margin: "-40px" }} transition={{ duration: 0.4, delay: i * 0.05 }}
                 data-open={isOpen ? "1" : "0"}
                 className={`fq-item overflow-hidden rounded-3xl transition ${
                   brand ? `glass border ${isOpen ? "border-accent/55 shadow-bento" : "border-border"}` : ""

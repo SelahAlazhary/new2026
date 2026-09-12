@@ -78,7 +78,7 @@ export function StatTile({
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      viewport={{ once: false, margin: "0px 0px -40px 0px" }}
       transition={{ delay: (index % 8) * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
       style={shape}
