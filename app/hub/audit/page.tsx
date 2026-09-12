@@ -9,7 +9,7 @@ export default async function AuditPage() {
 
   return (
     <>
-      <header className="mb-5">
+      <header className="mb-5" data-reveal="down" data-reveal-duration="fast">
         <h1 className="font-display text-2xl font-bold">سجلّ التدقيق</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
           كلُّ فعلٍ وقع من لوحة المنصّات — بفاعله ووقته وعنوانه. لا يُحذف من هنا.
@@ -21,7 +21,7 @@ export default async function AuditPage() {
           السجلّ فارغ.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
+        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white" data-reveal="scale-up">
           <table className="w-full min-w-[680px] text-right text-[12.5px]">
             <thead>
               <tr className="border-b border-black/[0.08] bg-black/[0.02] text-[10px] text-muted-foreground">

@@ -33,7 +33,7 @@ export default async function TenantsPage({
 
   return (
     <>
-      <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-3" data-reveal="down" data-reveal-duration="fast">
         <div>
           <h1 className="font-display text-2xl font-bold">المنصّات</h1>
           <p className="mt-1 text-[13px] text-muted-foreground">{all.length} منصّة — اضغط أيّها لفتح لوحة التحكّم فيها.</p>
@@ -47,7 +47,7 @@ export default async function TenantsPage({
         </a>
       </header>
 
-      <form className="mb-4 flex flex-wrap items-center gap-2">
+      <form className="mb-4 flex flex-wrap items-center gap-2" data-reveal="right" data-reveal-duration="fast">
         <input
           name="q" defaultValue={q} placeholder="ابحث باسم المنصّة أو رابطها…"
           className="inp min-w-[12rem] flex-1"
@@ -65,7 +65,7 @@ export default async function TenantsPage({
           لا توجد منصّة تطابق البحث.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white">
+        <div className="overflow-hidden rounded-2xl border border-black/[0.07] bg-white" data-reveal="scale-up">
           <table className="w-full min-w-[640px] text-right text-[13px]">
             <thead>
               <tr className="border-b border-black/[0.08] bg-black/[0.02] text-[10px] text-muted-foreground">

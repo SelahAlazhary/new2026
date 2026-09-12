@@ -17,6 +17,7 @@ import { findIconCover, iconCoverClass } from "@/lib/icons/icon-covers";
 import { findVectorLib, vectorLibClass } from "@/lib/art/vector-libs";
 import { RouteTransition } from "@/components/ui/route-transition";
 import { RegisterSW } from "@/components/pwa/register-sw";
+import { ScrollRevealInit } from "@/components/ui/scroll-reveal";
 import { headers } from "next/headers";
 import { getPublicDB, getScopedDB, loadDB } from "@/lib/db/db";
 import { TenantNotFound, currentTenant } from "@/lib/hub/context";
@@ -233,7 +234,15 @@ function PausedPage({ brand, message }: { brand?: string; message: string }) {
 function HubRoot({ children, fontClass }: { children: ReactNode; fontClass: string }) {
   return (
     <html lang="ar" dir="rtl" data-layout="dark" suppressHydrationWarning>
-      <body className={`${fontClass} font-sans`}>{children}</body>
+      <head>
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;animation:none!important}`}</style>
+        </noscript>
+      </head>
+      <body className={`${fontClass} font-sans`}>
+        {children}
+        <ScrollRevealInit />
+      </body>
     </html>
   );
 }
@@ -344,6 +353,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <style dangerouslySetInnerHTML={{ __html: `:root{--art-lit:${db.content?.artDepth === "deep" ? "0.55" : "0.34"}}` }} />
         )}
         {glow && <style dangerouslySetInnerHTML={{ __html: glow }} />}
+        {/* بلا جافاسكربت لا أنيميشن — ولا محتوًى مخفيّاً إلى الأبد */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;animation:none!important}`}</style>
+        </noscript>
       </head>
       <body
         /*
@@ -379,6 +392,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           */}
           <CookieConsent />
           <RegisterSW />
+          <ScrollRevealInit />
         </ContentProvider>
       </body>
     </html>

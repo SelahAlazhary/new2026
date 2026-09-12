@@ -18,7 +18,7 @@ export default async function RequestsPage() {
 
   return (
     <>
-      <header className="mb-5">
+      <header className="mb-5" data-reveal="down" data-reveal-duration="fast">
         <h1 className="font-display text-2xl font-bold">الطلبات</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">ما ينتظر قراراً منك.</p>
       </header>
@@ -52,7 +52,7 @@ function Group({
   actions?: boolean;
 }) {
   return (
-    <section className="mb-7">
+    <section className="mb-7" data-reveal="stretch">
       <h2 className="font-display mb-1 text-lg font-bold">{title}</h2>
       {hint && <p className="mb-2 text-[11.5px] text-muted-foreground">{hint}</p>}
       {items.length === 0 ? (

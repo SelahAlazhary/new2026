@@ -17,11 +17,11 @@ export default async function LegalLayout({ children }: { children: ReactNode })
           ← العودة إلى {content.brand}
         </Link>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center" data-reveal="fade">
           <RuleOrnament width={200} className="text-accent" />
         </div>
 
-        <div className="legal-card">
+        <div className="legal-card" data-reveal="blur">
           <div className="legal-card-glow" />
           <div
             className="
@@ -37,7 +37,7 @@ export default async function LegalLayout({ children }: { children: ReactNode })
           </div>
         </div>
 
-        <p className="legal-footer">
+        <p className="legal-footer" data-reveal="up">
           {content.brand} — {content.platformSubtitle}
         </p>
       </article>

@@ -44,16 +44,18 @@ export default async function HubOverview() {
 
   return (
     <>
-      <header className="mb-6">
+      <header className="mb-6" data-reveal="down" data-reveal-duration="fast">
         <h1 className="font-display text-2xl font-bold">نظرة عامة</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">حالةُ المنصّات وآخرُ ما جرى عليها.</p>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((c) => (
+        {cards.map((c, i) => (
           <Link
             key={c.label}
             href={c.href}
+            data-reveal="scale-up"
+            data-reveal-delay={i + 1}
             className="rounded-2xl border border-black/[0.07] bg-white p-4 transition hover:border-black/15"
           >
             <span className={`font-kufi inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${tone[c.tone]}`}>
@@ -66,8 +68,13 @@ export default async function HubOverview() {
 
       {agg.students > 0 && (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {statsCards.map((c) => (
-            <div key={c.label} className="rounded-2xl border border-black/[0.07] bg-white p-4">
+          {statsCards.map((c, i) => (
+            <div
+              key={c.label}
+              data-reveal="flip"
+              data-reveal-delay={i + 1}
+              className="rounded-2xl border border-black/[0.07] bg-white p-4"
+            >
               <span className="font-kufi text-[10px] text-muted-foreground">{c.label}</span>
               <p className="font-display mt-1 text-2xl font-bold leading-none">{c.value}</p>
             </div>
@@ -75,7 +82,7 @@ export default async function HubOverview() {
         </div>
       )}
 
-      <section className="mt-8">
+      <section className="mt-8" data-reveal="up">
         <div className="mb-3 flex items-end justify-between">
           <h2 className="font-display text-lg font-bold">أحدثُ المنصّات</h2>
           <Link href="/hub/tenants" className="text-[12px] text-muted-foreground underline underline-offset-4">الكل</Link>
@@ -104,7 +111,7 @@ export default async function HubOverview() {
         )}
       </section>
 
-      <section className="mt-8">
+      <section className="mt-8" data-reveal="stretch">
         <div className="mb-3 flex items-end justify-between">
           <h2 className="font-display text-lg font-bold">آخرُ ما جرى</h2>
           <Link href="/hub/audit" className="text-[12px] text-muted-foreground underline underline-offset-4">السجلّ كاملاً</Link>

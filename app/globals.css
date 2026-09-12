@@ -807,6 +807,103 @@ body::before {
 }
 
 /* ============================================================
+   نظام أنيميشن التمرير — ScrollReveal
+   كل عنصر يحمل data-reveal يبدأ مخفيّاً ويظهر عند وصوله لمنطقة
+   الرؤية بأنيميشن مميّز حسب القيمة.
+   ============================================================ */
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes reveal-down {
+  from { opacity: 0; transform: translateY(-28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes reveal-scale {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes reveal-scale-up {
+  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes reveal-blur {
+  from { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  to   { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+@keyframes reveal-rotate {
+  from { opacity: 0; transform: perspective(800px) rotateX(8deg) translateY(20px); }
+  to   { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0); }
+}
+@keyframes reveal-flip {
+  from { opacity: 0; transform: perspective(600px) rotateY(-12deg) translateX(20px); }
+  to   { opacity: 1; transform: perspective(600px) rotateY(0deg) translateX(0); }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes reveal-zoom {
+  from { opacity: 0; transform: scale(1.12); filter: blur(4px); }
+  to   { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes reveal-slide-stretch {
+  from { opacity: 0; transform: scaleY(0.85) translateY(24px); transform-origin: top; }
+  to   { opacity: 1; transform: scaleY(1) translateY(0); transform-origin: top; }
+}
+
+[data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal="up"].is-visible       { animation-name: reveal-up; }
+[data-reveal="down"].is-visible     { animation-name: reveal-down; }
+[data-reveal="left"].is-visible     { animation-name: reveal-left; }
+[data-reveal="right"].is-visible    { animation-name: reveal-right; }
+[data-reveal="scale"].is-visible    { animation-name: reveal-scale; }
+[data-reveal="scale-up"].is-visible { animation-name: reveal-scale-up; }
+[data-reveal="blur"].is-visible     { animation-name: reveal-blur; }
+[data-reveal="rotate"].is-visible   { animation-name: reveal-rotate; }
+[data-reveal="flip"].is-visible     { animation-name: reveal-flip; }
+[data-reveal="fade"].is-visible     { animation-name: reveal-fade; }
+[data-reveal="zoom"].is-visible     { animation-name: reveal-zoom; }
+[data-reveal="stretch"].is-visible  { animation-name: reveal-slide-stretch; }
+
+[data-reveal].is-visible { animation-duration: 0.7s; }
+
+[data-reveal-delay="1"] { animation-delay: 0.08s; }
+[data-reveal-delay="2"] { animation-delay: 0.16s; }
+[data-reveal-delay="3"] { animation-delay: 0.24s; }
+[data-reveal-delay="4"] { animation-delay: 0.32s; }
+[data-reveal-delay="5"] { animation-delay: 0.40s; }
+[data-reveal-delay="6"] { animation-delay: 0.48s; }
+[data-reveal-delay="7"] { animation-delay: 0.56s; }
+[data-reveal-delay="8"] { animation-delay: 0.64s; }
+
+[data-reveal-duration="fast"]   { animation-duration: 0.45s !important; }
+[data-reveal-duration="normal"] { animation-duration: 0.7s !important; }
+[data-reveal-duration="slow"]   { animation-duration: 1s !important; }
+[data-reveal-duration="slower"] { animation-duration: 1.3s !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1 !important; animation: none !important; }
+}
+
+/* ============================================================
    تحسينات بصرية شاملة — بطاقات ، جداول ، نماذج ، أزرار
    ============================================================ */
 

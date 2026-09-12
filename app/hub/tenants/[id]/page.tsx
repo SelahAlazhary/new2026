@@ -47,7 +47,7 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
         <span> ← {tenant.name || tenant.slug}</span>
       </nav>
 
-      <header className="mb-6 flex flex-wrap items-center gap-3">
+      <header className="mb-6 flex flex-wrap items-center gap-3" data-reveal="down" data-reveal-duration="fast">
         <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#1b2a4a] text-lg font-bold text-white">
           {(tenant.name || tenant.slug).charAt(0)}
         </span>
@@ -67,7 +67,7 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
             <DomainManager tenantId={tenant.id} domains={domains} canAdd={featureOn(tenant, "customDomain")} />
           </div>
 
-          <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4">
+          <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="stretch">
             <h3 className="font-display text-[15px] font-bold">سجلّ هذه المنصّة</h3>
             <p className="mb-3 mt-1 text-[11.5px] text-muted-foreground">كلُّ ما جرى عليها من لوحة المنصّات — لا يُحذف.</p>
             {events.length === 0 ? (
@@ -90,7 +90,7 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
         </div>
 
         <aside className="order-1 space-y-4 lg:order-2">
-          <section className="rounded-2xl border border-black/[0.07] bg-white p-4">
+          <section className="rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="left">
             <h3 className="font-display text-[15px] font-bold">الروابط</h3>
             <div className="mt-3 space-y-2 text-[12px]">
               <a href={base} target="_blank" rel="noreferrer" className="block truncate rounded-xl bg-black/[0.03] px-3 py-2 underline-offset-4 hover:underline" dir="ltr">
@@ -102,7 +102,7 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
             </div>
           </section>
 
-          <section className="rounded-2xl border border-black/[0.07] bg-white p-4">
+          <section className="rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="left" data-reveal-delay="2">
             <h3 className="font-display text-[15px] font-bold">بيانات</h3>
             <dl className="mt-3 space-y-2 text-[12px]">
               {rows.map(([k, v]) => (

@@ -77,6 +77,7 @@ export function Section({
     <section
       id={`sec-${uid}`}
       hidden={hidden}
+      data-reveal="stretch"
       /*
         المفتوحُ من الشبكة يُبرَز بحلقةٍ وظلّ — فيُعرف أنّه متنُ التبويب
         المضاء لا قسمٌ عاديٌّ وقع تحته.

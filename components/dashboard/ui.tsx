@@ -205,9 +205,10 @@ export function StatCard({
   const t = toneMap[tone] ?? toneMap.primary;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06 }}
+      initial={{ opacity: 0, y: 24, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="glass relative overflow-hidden rounded-3xl p-5 shadow-bento"
     >
       <CardCorner className="text-accent/45" />
@@ -248,7 +249,7 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-7">
+    <div className="mb-7" data-reveal="down" data-reveal-duration="fast">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold sm:text-3xl">{title}</h1>
@@ -267,7 +268,7 @@ export function PageHeader({
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   /* ما في البطاقة محتوًى لا قسمُ صفحة — انظر `SectionLocal`. */
   return (
-    <div className={`glass rounded-3xl p-5 shadow-bento ${className}`}>
+    <div className={`glass rounded-3xl p-5 shadow-bento ${className}`} data-reveal="up">
       <SectionLocal>{children}</SectionLocal>
     </div>
   );
@@ -327,7 +328,7 @@ export function Progress({ value, color }: { value: number; color?: string }) {
 /** جدول بيانات متجاوب برأس مذهّب. */
 export function DataTable({ head, children }: { head: string[]; children: ReactNode }) {
   return (
-    <div className="glass overflow-hidden rounded-3xl shadow-bento">
+    <div className="glass overflow-hidden rounded-3xl shadow-bento" data-reveal="scale-up">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-right text-sm">
           <thead>

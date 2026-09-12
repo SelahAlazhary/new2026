@@ -10,14 +10,14 @@ export default async function HubSettingsPage() {
 
   return (
     <>
-      <header className="mb-5">
+      <header className="mb-5" data-reveal="down" data-reveal-duration="fast">
         <h1 className="font-display text-2xl font-bold">إعدادات المنصّة الأمّ</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">هويّةُ الـHub وسياسةُ قبول المنصّات.</p>
       </header>
 
       <HubSettingsForm settings={settings} />
 
-      <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4">
+      <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="up">
         <h3 className="font-display text-[15px] font-bold">حسابات لوحة المنصّات</h3>
         <p className="mb-3 mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
           يُنشأ الحسابُ الأوّل من متغيّرَي البيئة <code dir="ltr">SUPER_ADMIN_EMAIL</code> و
@@ -39,7 +39,7 @@ export default async function HubSettingsPage() {
         </ul>
       </section>
 
-      <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4">
+      <section className="mt-5 rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="stretch">
         <h3 className="font-display text-[15px] font-bold">النطاق الجذري</h3>
         <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
           يُقرأ من متغيّر البيئة <code dir="ltr">ROOT_DOMAIN</code> لا من هنا — لأنّه ما يخدم عليه الخادمُ فعلاً،
