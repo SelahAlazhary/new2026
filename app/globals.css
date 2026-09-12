@@ -7598,20 +7598,52 @@ select.inp {
 .ob-nav { margin-top: 1.8rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 
 /* شريط التقدّم */
-.ob-progress { display: flex; align-items: flex-start; margin-bottom: 2rem; gap: 0; }
-.ob-progress-step { display: flex; align-items: center; flex: 1; min-width: 0; position: relative; }
+/*
+  عمودٌ على يمين اللوح — لا شريطٌ أفقيٌّ فوقه.
+  ------------------------------------------------------------
+  الشريطُ الأفقيُّ يُقرأ مرّةً أعلى الصفحة ثمّ يغيب عن النظر وأنت تملأ
+  الحقولَ تحته؛ والعمودُ الجانبيُّ يبقى ظاهراً طَوال العمل على الخطوة.
+  والخطُّ الواصل صار رأسياً بين النقاط بدل أفقيٍّ بينها.
+*/
+.ob-layout { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 2rem; }
+.ob-main { flex: 1 1 0; min-width: 0; }
+.ob-progress {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0;
+  flex-shrink: 0; width: 9.5rem; padding-inline-start: 1.5rem;
+  border-inline-start: 1px solid var(--ob-line);
+}
+.ob-progress-step {
+  display: flex; flex-direction: row-reverse; align-items: center; gap: .7rem;
+  position: relative; padding-block: .1rem;
+}
 .ob-progress-dot {
   width: 2.2rem; height: 2.2rem; border-radius: 999px; display: grid; place-items: center;
   background: var(--ob-bg); color: var(--ob-dim); font-size: 0.84rem; font-weight: 800;
   flex-shrink: 0; border: 2px solid var(--ob-line); transition: all .3s ease; position: relative; z-index: 1;
 }
-.ob-progress-label { position: absolute; top: 2.7rem; right: 50%; transform: translateX(50%); white-space: nowrap; font-size: 0.78rem; color: var(--ob-dim); transition: color .3s; }
-.ob-progress-line { flex: 1; height: 2px; background: var(--ob-line); margin: 0 .3rem; transition: background .3s; }
+.ob-progress-label { white-space: nowrap; font-size: 0.8rem; color: var(--ob-dim); transition: color .3s; text-align: end; }
+.ob-progress-line {
+  position: absolute; inset-inline-end: 1.05rem; top: 2.2rem; bottom: -1.5rem;
+  width: 2px; background: var(--ob-line); transition: background .3s;
+}
+.ob-progress-step:last-child { padding-bottom: 0; }
 .ob-progress-step.done .ob-progress-dot { background: rgba(16,185,129,.15); color: #34d399; border-color: rgba(16,185,129,.4); }
 .ob-progress-step.done .ob-progress-label { color: #34d399; font-weight: 700; }
 .ob-progress-step.done .ob-progress-line { background: rgba(16,185,129,.4); }
 .ob-progress-step.active .ob-progress-dot { background: var(--ob-primary); color: #fff; border-color: var(--ob-primary); box-shadow: 0 0 0 4px rgba(139,92,246,.2); }
 .ob-progress-step.active .ob-progress-label { color: var(--ob-primary); font-weight: 700; }
+
+@media (max-width: 40rem) {
+  /* الجوّالُ ضيّق — يعود الشريطُ أفقياً في أعلى اللوح كما كان */
+  .ob-layout { flex-direction: column; gap: 1.25rem; }
+  .ob-progress {
+    flex-direction: row; align-items: flex-start; width: 100%;
+    padding-inline-start: 0; border-inline-start: 0; gap: 0;
+  }
+  .ob-progress-step { flex-direction: column; flex: 1; min-width: 0; gap: .4rem; }
+  .ob-progress-label { position: absolute; top: 2.6rem; white-space: nowrap; font-size: .7rem; }
+  .ob-progress-line { position: static; width: auto; height: 2px; flex: 1; top: auto; inset-inline-end: auto; margin-top: 1.1rem; }
+}
 
 .ob-step-title { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: 1.3rem; }
 .ob-step-desc { margin: .35rem 0 1.2rem; color: var(--ob-dim); font-size: 0.9rem; line-height: 1.7; }
@@ -8106,3 +8138,15 @@ section.glass:hover {
 }
 .mkt-hero-text::before { content: none !important; display: none !important; }
 .mkt-hero-logo { display: inline-flex; margin-bottom: 1.1rem; }
+.mkt-logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 999px; }
+
+/* ============================================================
+   الأسئلة — السؤالُ والسهمُ متجاوران لا على طرفَي صفٍّ عريض
+   ------------------------------------------------------------
+   `justify-content: space-between` على صفٍّ بعرض ٥٤rem مع سؤالٍ قصير
+   يُباعد بين النصّ والسهم مسافةً فارغةً واسعةً تبدو خطأً لا تصميماً.
+   السهمُ يجاور النصَّ الآن، والعمودُ أضيقُ فلا يتّسع لهذا التباعد أصلاً.
+   ============================================================ */
+.mkt-faqs { max-width: 40rem !important; }
+.mkt-faq-q { justify-content: flex-start !important; }
+.mkt-faq-chev { margin-inline-start: auto !important; }

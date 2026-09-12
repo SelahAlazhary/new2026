@@ -349,7 +349,9 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   return (
     <Shell>
       <Panel wide>
+      <div className="ob-layout">
         <Progress step={step} />
+        <div className="ob-main">
         {error && <p className="ob-error">{error}</p>}
 
         {step === "name" && (
@@ -555,6 +557,8 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
             />
           </StepBox>
         )}
+        </div>
+      </div>
       </Panel>
     </Shell>
   );
@@ -591,6 +595,11 @@ function Nav({
     </div>
   );
 }
+/**
+ * شريطُ الخطوات — عمودٌ على يمين اللوح لا شريطٌ أفقيٌّ فوقه.
+ * فيبقى ظاهراً طَوال العمل على أيّ خطوة، بدل أن يُقرأ مرّةً أعلى الصفحة
+ * ثمّ يُنسى وأنت تملأ الحقول تحته.
+ */
 function Progress({ step }: { step: Step }) {
   const idx = STEPS.indexOf(step);
   const labels: Record<Step, string> = { name: "الاسم", logo: "الشعار", identity: "الهوية", design: "التصميم", review: "مراجعة" };
@@ -606,6 +615,7 @@ function Progress({ step }: { step: Step }) {
     </div>
   );
 }
+
 function PlanGrid({ plans, onPick, busy, title }: { plans: SaasPlan[]; onPick: (id: string) => void; busy: boolean; title?: string }) {
   return (
     <>

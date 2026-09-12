@@ -2,6 +2,7 @@
 
 import { useState, useRef, useDeferredValue } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
 import { planPrice } from "@/lib/business/plans";
@@ -255,7 +256,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
       <header className="mkt-bar">
         <Link href="/" className="mkt-brand">
           <Seal size={34}>
-            <span className="mkt-brand-initial">{brand.slice(0, 1) || "S"}</span>
+            <Image src="/logo.jpg" alt={brand} width={34} height={34} className="mkt-logo-img" />
           </Seal>
           <span className="mkt-brand-name">{brand}</span>
         </Link>
@@ -284,7 +285,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <div className="mkt-hero-text">
           <span className="mkt-hero-logo">
             <Seal size={52}>
-              <span className="mkt-brand-initial">{brand.slice(0, 1) || "S"}</span>
+              <Image src="/logo.jpg" alt={brand} width={52} height={52} className="mkt-logo-img" />
             </Seal>
           </span>
           <h1 className="mkt-h1">
@@ -474,7 +475,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           <div className="mkt-final">
             <Corner className="mkt-final-corner" />
             <Seal size={56}>
-              <span className="mkt-final-initial">{brand.slice(0, 1) || "S"}</span>
+              <Image src="/logo.jpg" alt={brand} width={56} height={56} className="mkt-logo-img" />
             </Seal>
             <h2 className="mkt-final-h">الباب مفتوح</h2>
             <p className="mkt-final-p">
