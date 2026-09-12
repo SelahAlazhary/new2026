@@ -7549,7 +7549,18 @@ select.inp {
   box-shadow: var(--ob-glow), 0 24px 60px -30px rgba(0,0,0,.55);
 }
 .ob-panel.is-wide { max-width: 52rem; }
-.ob-loading { text-align: center; color: var(--ob-dim); padding: 3rem; }
+.ob-loading {
+  display: block;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin: 3rem auto;
+  border-radius: 999px;
+  border: 3px solid var(--ob-line);
+  border-top-color: var(--ob-primary);
+  animation: ob-spin 0.8s linear infinite;
+}
+@keyframes ob-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ob-loading { animation: none; } }
 .ob-title { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: clamp(1.4rem, 4vw, 1.8rem); letter-spacing: -.01em; }
 .ob-sub { margin-top: .5rem; color: var(--ob-dim); font-size: 0.92rem; line-height: 1.8; }
 .ob-error { margin: 1rem 0 0; background: rgba(220,38,38,.12); color: #f87171; border: 1px solid rgba(220,38,38,.25); border-radius: .8rem; padding: .6rem .9rem; font-size: 0.87rem; font-weight: 700; }
@@ -7828,7 +7839,20 @@ select.inp {
 .ob-pay .w-full { width: 100%; } .ob-pay .mt-3 { margin-top: .75rem; } .ob-pay .mt-2 { margin-top: .5rem; }
 
 /* ============ اختبار الهوية (Identity Quiz) ============ */
+/* سؤالٌ واحدٌ في الشاشة — نقاطٌ صغيرةٌ تقول أين هو من أربعة، لا مربّعُ
+   تقدّمٍ ثانٍ يزاحم شريط الخطوات الأكبر فوقه. */
+.ob-quiz-dots { display: flex; justify-content: center; gap: .4rem; margin-bottom: 1.4rem; }
+.ob-quiz-dot {
+  width: .45rem; height: .45rem; border-radius: 999px;
+  background: var(--ob-line); transition: background .2s, transform .2s, width .2s;
+}
+.ob-quiz-dot.is-on { background: var(--ob-primary); width: 1.3rem; border-radius: 999px; }
+.ob-quiz-dot.is-done { background: var(--ob-accent); }
+
 .ob-quiz-section { margin-bottom: 1.6rem; }
+.ob-quiz-section.is-active { animation: ob-quiz-in .32s cubic-bezier(0.22,1,0.36,1); }
+@keyframes ob-quiz-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .ob-quiz-section.is-active { animation: none; } }
 .ob-quiz-q { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: .95rem; margin-bottom: .7rem; color: var(--ob-ink); }
 
 .ob-quiz-subjects { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: .45rem; }
@@ -8051,3 +8075,34 @@ section.glass:hover {
     0 0 18px 3px hsl(var(--gold) / 0.58),
     0 0 38px 7px hsl(var(--gold) / 0.32) !important;
 }
+
+/* ============================================================
+   هيرو الواجهة — كسرُ هيئة «البطاقة البيضاء الموسَّطة» المولَّدة
+   ------------------------------------------------------------
+   قاعدةٌ لاحقةٌ بلا شرطٍ كانت تُعيد الشبكةَ عموداً واحداً موسَّطاً عند
+   العرض الواسع، فتُلغي التخطيطَ غيرَ المتناظر المقصود، وتُغلّف نصَّ
+   الهيرو ببطاقةٍ بيضاءَ بخطٍّ متدرّجٍ فوقها — وهذا هو الشكلُ نفسُه
+   الذي تراه في كلّ صفحةِ هبوطٍ مولَّدة.
+   ============================================================ */
+@media (min-width: 62rem) {
+  .mkt-hero {
+    grid-template-columns: 1.15fr 0.85fr !important;
+    justify-items: stretch !important;
+  }
+  .mkt-hero-text { padding-top: clamp(1rem, 3vw, 2.25rem) !important; text-align: start !important; }
+  .mkt-lede { margin-inline: 0 !important; }
+  .mkt-cta-row { justify-content: flex-start !important; }
+  .mkt-trust { grid-column: 1 !important; justify-content: flex-start !important; }
+  .mkt-trust-item { justify-items: start !important; }
+}
+.mkt-hero-text {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
+  width: auto !important;
+}
+.mkt-hero-text::before { content: none !important; display: none !important; }
+.mkt-hero-logo { display: inline-flex; margin-bottom: 1.1rem; }

@@ -125,7 +125,21 @@ export async function PATCH(req: Request) {
       if (current.status !== "pending_approval" && current.status !== "onboarding") {
         return NextResponse.json({ error: "هذه المنصّة ليست بانتظار الموافقة" }, { status: 400 });
       }
-      const result = await provisionTenant(id);
+      /*
+        بلا try/catch كان عطبٌ في `provisionTenant` (خطأٌ في بيانات
+        منصّةٍ بعينها، أو اتصالٌ عابر بالقاعدة) يسقط الطلبَ بلا جسم JSON،
+        فيقرأ العميلُ خطأً فارغاً ويعرض «تعذّر» — لا يُعرف منها شيء.
+        والرسالةُ الحقيقيّةُ هنا تُدوَّن في السجلّ وتُعاد للوحة، فيُرى
+        السببُ لا عرَضُه.
+      */
+      let result;
+      try {
+        result = await provisionTenant(id);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "خطأٌ غيرُ معروف";
+        await audit("tenant.approve_failed", actor, { tenantId: id, details: { error: msg } });
+        return NextResponse.json({ error: `تعذّر التفعيل: ${msg}` }, { status: 500 });
+      }
       /* الفاتورةُ اليدويّةُ المعلّقة تُعتمَد مع الموافقة — فالتفعيلُ قرارٌ واحد */
       const pendingInv = (await listInvoices({ tenantId: id, status: "pending" }))[0];
       if (pendingInv) {

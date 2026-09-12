@@ -282,6 +282,11 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
         <Reveal from="right" className="mkt-hero-reveal">
         <div className="mkt-hero-text">
+          <span className="mkt-hero-logo">
+            <Seal size={52}>
+              <span className="mkt-brand-initial">{brand.slice(0, 1) || "S"}</span>
+            </Seal>
+          </span>
           <h1 className="mkt-h1">
             {withoutHarakat("اسمُك على الباب")}
             <span className="mkt-h1-em">{withoutHarakat("لا اسمُ أحدٍ سواك")}</span>

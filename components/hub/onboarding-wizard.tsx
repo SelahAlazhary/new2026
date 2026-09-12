@@ -75,6 +75,11 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
   const [idStage, setIdStage] = useState<StageCategory | null>(null);
   const [idPersonality, setIdPersonality] = useState<PersonalityCategory | null>(null);
   const [idPreferDark, setIdPreferDark] = useState<boolean>(false);
+  /* سؤالٌ تلو آخر، لا الأربعةُ معاً في شاشةٍ واحدة — أسهلُ على الجوّال
+     وأثبتُ في الانتباه: من يرى أربعةَ أسئلةٍ دفعةً يقرأ أوّلها بعناية
+     وآخرَها بعجَلة. */
+  const [quizQ, setQuizQ] = useState(0);
+  const QUIZ_STEPS = 4;
   const [sortedPresets, setSortedPresets] = useState<BrandPreset[]>(presets);
 
   const load = useCallback(async () => {
@@ -191,7 +196,18 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     const best = matched[0];
     setPresetId(best.id);
     setColors(best.colors);
-    saveStep("design", { logo });
+    /*
+      كانت الإجاباتُ تُستهلَك لاختيار القالب وحدَه ثمّ تُهدَر — فمن اختار
+      «رياضيات» رأى موقعَه لا يزال يتكلّم عن «اللغة العربية» (القيمةُ
+      الافتراضيّةُ حين يخلو حقلُ الوصف). فيُشتقّ منها وصفٌ حقيقيٌّ يُكتب
+      في الحقل نفسِه — ولا يُكتب فوق وصفٍ خطّه صاحبُ المنصّة بيده في
+      الخطوة الأولى.
+    */
+    const subjLabel = SUBJECT_OPTIONS.find((s) => s.id === idSubject)?.label ?? "";
+    const stageLabel = STAGE_OPTIONS.find((s) => s.id === idStage)?.label ?? "";
+    const derived = description.trim() || [subjLabel, stageLabel].filter(Boolean).join(" — ");
+    if (derived !== description) setDescription(derived);
+    saveStep("design", { logo, description: derived });
   };
 
   const onLogo = (file: File) => {
@@ -205,7 +221,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
 
   /* ============ العرض ============ */
 
-  if (!state) return <Shell><p className="ob-loading">جارٍ التحميل…</p></Shell>;
+  if (!state) return <Shell><span className="ob-loading" aria-label="جارٍ التحميل" /></Shell>;
 
   if (!state.owner) {
     return (
@@ -381,89 +397,109 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         {step === "identity" && (
           <StepBox title="هويّة منصّتك" desc="أجب عن أسئلة سريعة ونختار لك التصميم الأمثل تلقائياً.">
 
-            <div className="ob-quiz-section">
-              <h3 className="ob-quiz-q">ما المادة أو المجال الذي تُدرّسه؟</h3>
-              <div className="ob-quiz-subjects">
-                {SUBJECT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`ob-quiz-chip ${idSubject === opt.id ? "is-on" : ""}`}
-                    onClick={() => setIdSubject(opt.id)}
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="ob-quiz-chip-icon"><path d={opt.icon} /></svg>
-                    <span>{opt.label}</span>
-                  </button>
-                ))}
-              </div>
+            {/* نقاطُ التقدّم داخل الاختبار نفسِه — أربعةٌ لا أكثر، فتبقى مقروءةً بنظرة */}
+            <div className="ob-quiz-dots" role="progressbar" aria-valuenow={quizQ + 1} aria-valuemin={1} aria-valuemax={QUIZ_STEPS}>
+              {Array.from({ length: QUIZ_STEPS }).map((_, i) => (
+                <span key={i} className={`ob-quiz-dot ${i === quizQ ? "is-on" : i < quizQ ? "is-done" : ""}`} />
+              ))}
             </div>
 
-            <div className="ob-quiz-section">
-              <h3 className="ob-quiz-q">ما المرحلة الدراسية لطلابك؟</h3>
-              <div className="ob-quiz-stages">
-                {STAGE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`ob-quiz-pill ${idStage === opt.id ? "is-on" : ""}`}
-                    onClick={() => setIdStage(opt.id)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+            {quizQ === 0 && (
+              <div className="ob-quiz-section is-active">
+                <h3 className="ob-quiz-q">ما المادة أو المجال الذي تُدرّسه؟</h3>
+                <div className="ob-quiz-subjects">
+                  {SUBJECT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`ob-quiz-chip ${idSubject === opt.id ? "is-on" : ""}`}
+                      onClick={() => { setIdSubject(opt.id); setQuizQ(1); }}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="ob-quiz-chip-icon"><path d={opt.icon} /></svg>
+                      <span>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="ob-quiz-section">
-              <h3 className="ob-quiz-q">كيف تصف أسلوبك وشخصيّة منصّتك؟</h3>
-              <div className="ob-quiz-personalities">
-                {PERSONALITY_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`ob-quiz-persona ${idPersonality === opt.id ? "is-on" : ""}`}
-                    onClick={() => setIdPersonality(opt.id)}
-                  >
-                    <span className="ob-quiz-persona-bar" style={{ background: opt.gradient }} />
-                    <b>{opt.label}</b>
-                    <span className="ob-quiz-persona-desc">{opt.desc}</span>
-                  </button>
-                ))}
+            {quizQ === 1 && (
+              <div className="ob-quiz-section is-active">
+                <h3 className="ob-quiz-q">ما المرحلة الدراسية لطلابك؟</h3>
+                <div className="ob-quiz-stages">
+                  {STAGE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`ob-quiz-pill ${idStage === opt.id ? "is-on" : ""}`}
+                      onClick={() => { setIdStage(opt.id); setQuizQ(2); }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="ob-quiz-section">
-              <h3 className="ob-quiz-q">هل تفضّل أجواء فاتحة أم داكنة؟</h3>
-              <div className="ob-quiz-theme">
-                <button
-                  type="button"
-                  className={`ob-quiz-theme-card ${!idPreferDark ? "is-on" : ""}`}
-                  onClick={() => setIdPreferDark(false)}
-                >
-                  <span className="ob-quiz-theme-preview light">
-                    <span /><span /><span />
-                  </span>
-                  <b>فاتحة ومشرقة</b>
-                </button>
-                <button
-                  type="button"
-                  className={`ob-quiz-theme-card ${idPreferDark ? "is-on" : ""}`}
-                  onClick={() => setIdPreferDark(true)}
-                >
-                  <span className="ob-quiz-theme-preview dark">
-                    <span /><span /><span />
-                  </span>
-                  <b>داكنة وأنيقة</b>
-                </button>
+            {quizQ === 2 && (
+              <div className="ob-quiz-section is-active">
+                <h3 className="ob-quiz-q">كيف تصف أسلوبك وشخصيّة منصّتك؟</h3>
+                <div className="ob-quiz-personalities">
+                  {PERSONALITY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`ob-quiz-persona ${idPersonality === opt.id ? "is-on" : ""}`}
+                      onClick={() => { setIdPersonality(opt.id); setQuizQ(3); }}
+                    >
+                      <span className="ob-quiz-persona-bar" style={{ background: opt.gradient }} />
+                      <b>{opt.label}</b>
+                      <span className="ob-quiz-persona-desc">{opt.desc}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {quizQ === 3 && (
+              <div className="ob-quiz-section is-active">
+                <h3 className="ob-quiz-q">هل تفضّل أجواء فاتحة أم داكنة؟</h3>
+                <div className="ob-quiz-theme">
+                  <button
+                    type="button"
+                    className={`ob-quiz-theme-card ${!idPreferDark ? "is-on" : ""}`}
+                    onClick={() => setIdPreferDark(false)}
+                  >
+                    <span className="ob-quiz-theme-preview light">
+                      <span /><span /><span />
+                    </span>
+                    <b>فاتحة ومشرقة</b>
+                  </button>
+                  <button
+                    type="button"
+                    className={`ob-quiz-theme-card ${idPreferDark ? "is-on" : ""}`}
+                    onClick={() => setIdPreferDark(true)}
+                  >
+                    <span className="ob-quiz-theme-preview dark">
+                      <span /><span /><span />
+                    </span>
+                    <b>داكنة وأنيقة</b>
+                  </button>
+                </div>
+              </div>
+            )}
 
             <Nav
-              onBack={() => setStep("logo")}
-              onNext={finishIdentity}
-              nextEnabled={identityComplete}
+              onBack={() => (quizQ === 0 ? setStep("logo") : setQuizQ(quizQ - 1))}
+              onNext={quizQ === 3 ? finishIdentity : () => setQuizQ(quizQ + 1)}
+              nextEnabled={
+                quizQ === 0 ? Boolean(idSubject)
+                  : quizQ === 1 ? Boolean(idStage)
+                    : quizQ === 2 ? Boolean(idPersonality)
+                      : identityComplete
+              }
               busy={busy}
-              nextLabel="اكتشف تصميمك"
+              nextLabel={quizQ === 3 ? "اكتشف تصميمك" : "التالي"}
             />
           </StepBox>
         )}
