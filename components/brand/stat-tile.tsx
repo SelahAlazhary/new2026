@@ -76,9 +76,10 @@ export function StatTile({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      transition={{ delay: (index % 8) * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
       style={shape}
       /* الحشو = حشو البطاقة + هامش أمان الشكل، فلا يقصّ القصّ النصّ. */

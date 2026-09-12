@@ -350,6 +350,8 @@ export function AzhariStudentHeader({
           فتلقى الوجهَ ثمّ تقرأ صاحبَه — كما في كلّ بطاقةِ تعريف.
         */}
         <div
+          data-reveal="right"
+          data-reveal-duration="fast"
           className={`relative flex items-center gap-4 px-6 sm:px-9 ${
             align === "center" ? "justify-center text-center" : align === "end" ? "justify-end" : ""
           }`}

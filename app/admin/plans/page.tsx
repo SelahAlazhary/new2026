@@ -663,7 +663,7 @@ export default function PlansPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[...plans].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((p, i) => (
-            <motion.div key={p.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+            <motion.div key={p.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
               <Card className={`flex h-full flex-col ${p.highlight ? "ring-1 ring-primary/40" : ""}`}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-start gap-2">

@@ -437,7 +437,7 @@ export default function LivePage() {
             const subscribersOnly = audience === "subscribers";
             const isPublic = audience === "public";
             return (
-              <motion.div key={l.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
+              <motion.div key={l.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.06 }}>
                 <Card className="flex h-full flex-col">
                   <div className="mb-3 flex items-center justify-between">
                     <span className="grid size-10 place-items-center rounded-2xl bg-primary/12 text-primary"><Radio className="size-5" /></span>

@@ -59,7 +59,7 @@ export default function GradesPage() {
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {grades.map((g, i) => (
-            <motion.div key={g.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+            <motion.div key={g.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.08 }}>
               <Card className="group relative overflow-hidden">
                 <span className="pointer-events-none absolute -left-6 -top-6 size-24 rounded-full opacity-20 blur-2xl transition group-hover:opacity-40" style={{ background: g.color }} />
                 <div className="flex items-start justify-between">

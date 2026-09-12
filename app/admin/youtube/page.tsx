@@ -203,7 +203,7 @@ export default function YoutubePage() {
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {rows.map((v, i) => (
-              <motion.div key={v.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 8) * 0.04 }}>
+              <motion.div key={v.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: Math.min(i, 8) * 0.04 }}>
                 <Card className={`flex h-full flex-col !p-3 ${v.hidden ? "opacity-60" : ""}`}>
                   <div className="relative mb-3 aspect-video overflow-hidden rounded-2xl bg-muted">
                     {v.thumbnail && (

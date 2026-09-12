@@ -167,7 +167,7 @@ export default function StudentHome() {
 
       {/* ---------------- لوح الترحيب ---------------- */}
       {!showHeader && (
-        <div className="mb-5">
+        <div className="mb-5" data-reveal="right" data-reveal-duration="fast">
           <p className="font-kufi text-sm font-bold text-muted-foreground">
             أهلاً {fem ? "بكِ" : "بك"}
           </p>
@@ -567,7 +567,7 @@ function PayNotice() {
 
   if (ready) {
     return (
-      <div className="mb-5 flex flex-wrap items-center gap-3 rounded-3xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-4">
+      <div className="mb-5 flex flex-wrap items-center gap-3 rounded-3xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-4" data-reveal="down" data-reveal-duration="fast">
         <span className="font-display text-sm font-extrabold text-emerald-700 dark:text-emerald-300">
           تم قبول تحويلك لخطة «{ready.planName}»
         </span>
@@ -588,7 +588,7 @@ function PayNotice() {
   }
 
   return (
-    <div className="mb-5 flex flex-wrap items-center gap-3 rounded-3xl border border-amber-500/40 bg-amber-500/10 px-5 py-4">
+    <div className="mb-5 flex flex-wrap items-center gap-3 rounded-3xl border border-amber-500/40 bg-amber-500/10 px-5 py-4" data-reveal="down" data-reveal-duration="fast">
       <span className="font-display text-sm font-extrabold text-amber-700 dark:text-amber-300">
         تحويلك لخطة «{waiting!.planName}» قيد المراجعة
       </span>

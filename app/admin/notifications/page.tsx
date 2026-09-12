@@ -101,7 +101,7 @@ export default function NotificationsPage() {
       ) : (
         <div className="space-y-3">
           {notifications.map((n, i) => (
-            <motion.div key={n.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+            <motion.div key={n.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.04 }}>
               <Card className="!p-4">
                 <div className="flex items-start gap-3">
                   <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary"><Bell className="size-5" /></span>

@@ -268,7 +268,7 @@ export default function ExamsPage() {
             const subscribersOnly = (e.audience ?? "subscribers") === "subscribers";
             const rows = attemptsOf(e.id);
             return (
-              <motion.div key={e.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <motion.div key={e.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
                 <Card>
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="min-w-0">
