@@ -5,6 +5,7 @@ import { AUTH_SECRET } from "@/lib/auth/secrets";
 import { tenantById } from "./registry";
 import { hubGet } from "./store";
 import { runInTenant, ctxForTenantId } from "./context";
+import { tenantBaseUrl } from "./resolve";
 import { loadDB, getDB } from "@/lib/db/db";
 import { audit } from "./audit";
 import type { SuperAdmin } from "./types";
@@ -111,11 +112,7 @@ export async function startImpersonation(
     tenantId, details: { adminUid: adminUser.id },
   });
 
-  const rootDomain = process.env.ROOT_DOMAIN?.trim();
-  const url = rootDomain
-    ? `https://${tenant.slug}.${rootDomain}/admin`
-    : `http://localhost:3000/admin?tenant=${tenant.slug}`;
-  return { ok: true, url };
+  return { ok: true, url: `${tenantBaseUrl(tenant, process.env.ROOT_DOMAIN)}/admin` };
 }
 
 export async function endImpersonation(): Promise<void> {

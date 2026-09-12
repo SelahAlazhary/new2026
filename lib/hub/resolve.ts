@@ -72,6 +72,29 @@ export function classifyHost(rawHost: string | null | undefined, rootDomain?: st
   return { kind: "custom", host };
 }
 
+/**
+ * عنوانُ المنصّة الأساسُ — مصدرٌ واحدٌ لا يُكرَّر.
+ * ------------------------------------------------------------------
+ * كان يُبنى في أربعة مواضعَ متفرّقة، فسها اثنان عن نطاق فيرسل وبنيا
+ * نطاقاً فرعيّاً (`{slug}.{root}`) — وفيرسل لا يخدم النطاقاتِ الفرعيةَ
+ * البرّيةَ على `*.vercel.app`، فالرابطُ لا يُحلّ أصلاً. ومنه انكسر زرُّ
+ * «الدخول كمدير» وروابطُ صفحة المنصّة.
+ *
+ * والبادئةُ الماريّة `/t/{slug}` تعمل في كلّ الأحوال (انظر الوسيط):
+ * تُعاد كتابتُها وتُثبَّت كوكي المنصّة. أمّا `?tenant=` فللتطوير وحدَه.
+ */
+export function tenantBaseUrl(
+  tenant: { slug: string; customDomain?: string | null },
+  rootDomain?: string | null,
+): string {
+  if (tenant.customDomain) return `https://${tenant.customDomain}`;
+  const root = cleanHost(rootDomain);
+  if (!root) return `http://localhost:3000/t/${tenant.slug}`;
+  return root.endsWith(".vercel.app")
+    ? `https://${root}/t/${tenant.slug}`
+    : `https://${tenant.slug}.${root}`;
+}
+
 /** مساراتُ الـHub — تعمل على الجذر وحده. */
 export function isHubPath(pathname: string): boolean {
   return /^\/(hub|start|api\/hub|api\/start)(\/|$)/.test(pathname);

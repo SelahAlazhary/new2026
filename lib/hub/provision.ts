@@ -8,6 +8,7 @@ import { patchTenant, tenantById } from "./registry";
 import { subscriptionForTenant, planById } from "./plans";
 import { linkTenantToOwner, ownerById } from "./owner";
 import { presetById } from "./presets";
+import { tenantBaseUrl } from "./resolve";
 import type { Tenant } from "./types";
 import { generatePassword } from "./onboarding";
 import { audit } from "./audit";
@@ -70,14 +71,7 @@ export async function provisionTenant(tenantId: string): Promise<ProvisionResult
 
   const owner = tenant.ownerId ? await ownerById(tenant.ownerId) : null;
   const ownerEmail = tenant.adminEmail || owner?.email || "";
-  const root = process.env.ROOT_DOMAIN?.trim();
-  const base = tenant.customDomain
-    ? `https://${tenant.customDomain}`
-    : root
-      ? root.endsWith(".vercel.app")
-        ? `https://${root}/t/${tenant.slug}`
-        : `https://${tenant.slug}.${root}`
-      : `http://${tenant.slug}.localhost:3000`;
+  const base = tenantBaseUrl(tenant, process.env.ROOT_DOMAIN);
 
   const ctx = await ctxForTenantId(tenantId);
 

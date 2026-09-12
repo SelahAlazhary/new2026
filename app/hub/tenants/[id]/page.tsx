@@ -5,6 +5,7 @@ import { readAudit } from "@/lib/hub/audit";
 import { SECTIONS, FEATURES, featureOn } from "@/lib/hub/sections";
 import { getHubSettings } from "@/lib/hub/settings";
 import { listDomains } from "@/lib/hub/domains";
+import { tenantBaseUrl } from "@/lib/hub/resolve";
 import { TenantControls } from "@/components/hub/tenant-controls";
 import { DomainManager } from "@/components/hub/domain-manager";
 import { ImpersonateBtn } from "@/components/hub/impersonate-btn";
@@ -24,12 +25,7 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
     listDomains(id),
   ]);
 
-  const root = settings.rootDomain;
-  const base = tenant.customDomain
-    ? `https://${tenant.customDomain}`
-    : root
-      ? `https://${tenant.slug}.${root}`
-      : `http://${tenant.slug}.localhost:3000`;
+  const base = tenantBaseUrl(tenant, settings.rootDomain);
 
   const rows: [string, string][] = [
     ["معرّف المنصّة", tenant.id],

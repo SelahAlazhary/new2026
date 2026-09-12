@@ -7,6 +7,7 @@ import { hubId } from "@/lib/hub/store";
 import { availableSlug, checkSlug } from "@/lib/hub/onboarding";
 import { visiblePlans, planById, createSubscription, subscriptionForTenant, setSubscriptionStatus } from "@/lib/hub/plans";
 import { getHubSettings } from "@/lib/hub/settings";
+import { tenantBaseUrl } from "@/lib/hub/resolve";
 import { createInvoice, updateInvoice, listInvoices } from "@/lib/hub/invoices";
 import { createCheckout, paymobConfigured } from "@/lib/hub/billing/paymob";
 import { presetById } from "@/lib/hub/presets";
@@ -214,14 +215,7 @@ export async function POST(req: Request) {
       if (!password) {
         password = await resetTenantPassword(t.id);
       }
-      const root = process.env.ROOT_DOMAIN?.trim();
-      const base = t.customDomain
-        ? `https://${t.customDomain}`
-        : root
-          ? root.endsWith(".vercel.app")
-            ? `https://${root}/t/${t.slug}`
-            : `https://${t.slug}.${root}`
-          : `http://${t.slug}.localhost:3000`;
+      const base = tenantBaseUrl(t, process.env.ROOT_DOMAIN);
       return NextResponse.json({
         ok: true,
         adminEmail: t.adminEmail,
