@@ -7,7 +7,6 @@
  */
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Radio, Users, Calendar, Plus, Trash2, X, Video, Link2, Copy, Check,
   Loader2, LogOut, ShieldCheck, Globe, AlertTriangle, Gift, Tv, Users2, Square, PlayCircle,
@@ -431,13 +430,13 @@ export default function LivePage() {
           لا توجد جلسات بث بعد.
         </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {live.map((l, i) => {
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+          {live.map((l) => {
             const audience = l.audience ?? "subscribers";
             const subscribersOnly = audience === "subscribers";
             const isPublic = audience === "public";
             return (
-              <motion.div key={l.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.06 }}>
+              <div key={l.id}>
                 <Card className="flex h-full flex-col">
                   <div className="mb-3 flex items-center justify-between">
                     <span className="grid size-10 place-items-center rounded-2xl bg-primary/12 text-primary"><Radio className="size-5" /></span>
@@ -505,7 +504,7 @@ export default function LivePage() {
                     )}
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             );
           })}
         </div>

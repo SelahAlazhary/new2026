@@ -2,7 +2,6 @@
 
 /** الخطط — إضافة/تعديل خطط الاشتراك التي تظهر على الصفحة الرئيسية وفي بوابة الطالب. */
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
   Plus, Trash2, Pencil, X, Check, Eye, EyeOff, Layers, BookOpen, CalendarClock, Sparkles, Star,
   Percent, Palette, Tag, Image as ImageIcon, FileText, Wallet, Users,
@@ -661,9 +660,9 @@ export default function PlansPage() {
           لا توجد خطط بعد. أضِف أول خطة لتظهر على الصفحة الرئيسية ويُولَّد منها كود تفعيل.
         </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[...plans].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((p, i) => (
-            <motion.div key={p.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+          {[...plans].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((p) => (
+            <div key={p.id}>
               <Card className={`flex h-full flex-col ${p.highlight ? "ring-1 ring-primary/40" : ""}`}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-start gap-2">
@@ -718,7 +717,7 @@ export default function PlansPage() {
                   <button onClick={() => remove(p.id)} title="حذف" className="grid size-8 place-items-center rounded-full border border-border text-rose-500 transition hover:border-rose-500"><Trash2 className="size-4" /></button>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}

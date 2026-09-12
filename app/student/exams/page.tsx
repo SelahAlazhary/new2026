@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   IconClipboardCheck, IconClock, IconCheckCircle, IconCalendar, IconLock, IconArrowLeft,
 } from "@/components/brand/icons";
@@ -106,14 +105,14 @@ export default function StudentExamsPage() {
         </Card>
       )}
 
-      <div className="space-y-3">
-        {exams.map((e, i) => {
+      <div className="space-y-3" data-reveal-group>
+        {exams.map((e) => {
           const b = best(e.id);
           const isLocked = locked(e.id);
           const tries = (me?.examAttempts ?? []).filter((a) => a.examId === e.id).length;
           const exhausted = (e.attempts ?? 0) > 0 && tries >= (e.attempts ?? 0);
           return (
-            <motion.div key={e.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
+            <div key={e.id}>
               <Card className="!p-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary">
@@ -148,7 +147,7 @@ export default function StudentExamsPage() {
                   )}
                 </div>
               </Card>
-            </motion.div>
+            </div>
           );
         })}
       </div>

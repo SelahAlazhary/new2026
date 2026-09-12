@@ -6,7 +6,6 @@
  * الإجابات الصحيحة لا تغادر الخادم إطلاقاً.
  */
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
   FileCheck2, Clock, Users, Percent, Trash2, Plus, X, Check, Pencil,
   ListChecks, ShieldCheck, Globe, Eye, EyeOff, BarChart3,
@@ -263,12 +262,12 @@ export default function ExamsPage() {
           لا توجد اختبارات بعد. أنشئ أول اختبار وأضِف أسئلته.
         </p>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {exams.map((e, i) => {
+        <div className="grid gap-4 lg:grid-cols-2" data-reveal-group>
+          {exams.map((e) => {
             const subscribersOnly = (e.audience ?? "subscribers") === "subscribers";
             const rows = attemptsOf(e.id);
             return (
-              <motion.div key={e.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
+              <div key={e.id}>
                 <Card>
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -337,7 +336,7 @@ export default function ExamsPage() {
                     </div>
                   )}
                 </Card>
-              </motion.div>
+              </div>
             );
           })}
         </div>

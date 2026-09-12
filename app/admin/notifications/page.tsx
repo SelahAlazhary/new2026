@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Bell, Send, Trash2 } from "lucide-react";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
@@ -99,9 +98,9 @@ export default function NotificationsPage() {
       {notifications.length === 0 ? (
         <p className="rounded-3xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">لا توجد إشعارات بعد.</p>
       ) : (
-        <div className="space-y-3">
-          {notifications.map((n, i) => (
-            <motion.div key={n.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.04 }}>
+        <div className="space-y-3" data-reveal-group>
+          {notifications.map((n) => (
+            <div key={n.id}>
               <Card className="!p-4">
                 <div className="flex items-start gap-3">
                   <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary"><Bell className="size-5" /></span>
@@ -126,7 +125,7 @@ export default function NotificationsPage() {
                   <button onClick={() => remove(n.id)} title="حذف" className="grid size-8 shrink-0 place-items-center rounded-full border border-border text-rose-500 transition hover:border-rose-500"><Trash2 className="size-4" /></button>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}

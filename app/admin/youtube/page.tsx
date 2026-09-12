@@ -7,7 +7,6 @@
  */
 import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   Youtube, RefreshCw, Link2, Loader2, Eye, EyeOff, Star, Plus, Trash2,
   ExternalLink, Search, Check, PlaySquare,
@@ -201,9 +200,9 @@ export default function YoutubePage() {
               className="w-full rounded-full border border-border bg-card/60 py-2 pr-10 pl-4 text-sm outline-none focus:border-primary/50" />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {rows.map((v, i) => (
-              <motion.div key={v.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: Math.min(i, 8) * 0.04 }}>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" data-reveal-group>
+            {rows.map((v) => (
+              <div key={v.id}>
                 <Card className={`flex h-full flex-col !p-3 ${v.hidden ? "opacity-60" : ""}`}>
                   <div className="relative mb-3 aspect-video overflow-hidden rounded-2xl bg-muted">
                     {v.thumbnail && (
@@ -252,7 +251,7 @@ export default function YoutubePage() {
                     </button>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
 

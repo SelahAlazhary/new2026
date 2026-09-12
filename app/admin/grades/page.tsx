@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Users, BookOpen, Plus, Trash2, X } from "lucide-react";
 import { PageHeader, Card } from "@/components/dashboard/ui";
 import { Button } from "@/components/ui/primitives";
@@ -57,9 +56,9 @@ export default function GradesPage() {
       {grades.length === 0 ? (
         <p className="rounded-3xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">لا توجد صفوف دراسية. أضِف أول صف ليظهر على الموقع.</p>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {grades.map((g, i) => (
-            <motion.div key={g.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.08 }}>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+          {grades.map((g) => (
+            <div key={g.id}>
               <Card className="group relative overflow-hidden">
                 <span className="pointer-events-none absolute -left-6 -top-6 size-24 rounded-full opacity-20 blur-2xl transition group-hover:opacity-40" style={{ background: g.color }} />
                 <div className="flex items-start justify-between">
@@ -72,7 +71,7 @@ export default function GradesPage() {
                   <span className="inline-flex items-center gap-1"><BookOpen className="size-4" /> {g.subjects} مواد</span>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
