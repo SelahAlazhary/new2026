@@ -405,10 +405,12 @@ export function AzhariStudentHeader({
             ? "-mt-[calc(var(--az-lift)+1rem)]"
             : "-mt-3 gap-0 sm:gap-0"
         }`}
+        data-reveal-group
       >
         {cards.map((c) => (
           <div
             key={c.key}
+            data-reveal="scale-up"
             style={{
               borderRadius: st.cards === "strip" ? 0 : "var(--az-radius)",
               background:

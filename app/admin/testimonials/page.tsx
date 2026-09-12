@@ -73,7 +73,7 @@ export default function TestimonialsPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex flex-wrap items-center gap-3">
+      <header className="flex flex-wrap items-center gap-3" data-reveal="down" data-reveal-duration="fast">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary">
           <IconStar className="size-5" />
         </span>
@@ -113,15 +113,15 @@ export default function TestimonialsPage() {
       {loading ? (
         <p className="text-sm text-muted-foreground">جارٍ التحميل…</p>
       ) : items.length === 0 ? (
-        <div className="glass rounded-3xl p-8 text-center">
+        <div className="glass rounded-3xl p-8 text-center" data-reveal="scale">
           <IconStar className="mx-auto size-10 text-muted-foreground" />
           <p className="mt-3 font-display font-extrabold">لا توجد شهادات بعد</p>
           <p className="mt-1 text-sm text-muted-foreground">اضغطي «شهادة جديدة» لإضافة أول رأي طالب.</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-reveal-group>
           {items.map((t, i) => (
-            <section key={t.id} className="glass space-y-3 rounded-3xl p-4 sm:p-5">
+            <section key={t.id} className="glass space-y-3 rounded-3xl p-4 sm:p-5" data-reveal="up">
               <div className="flex flex-wrap items-center gap-2">
                 <Preview t={t} />
                 <span className="min-w-0 flex-1 truncate text-sm font-bold">

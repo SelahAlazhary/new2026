@@ -389,7 +389,7 @@ export default function StudentHome() {
       )}
 
       {/* ---------------- الكورسات ---------------- */}
-      <div className="mb-4">
+      <div className="mb-4" data-reveal="right" data-reveal-duration="fast">
         <div className="flex items-center justify-between gap-3">
           <p className="font-display text-lg font-bold">{y("أكمل")} المذاكرة</p>
           <Link
@@ -427,7 +427,13 @@ export default function StudentHome() {
         }`}
       >
         {courses.map((c, i) => (
-          <motion.div key={c.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
+          <motion.div
+            key={c.id}
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+            transition={{ delay: (i % 6) * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
             <Link href={`/student/course/${c.id}`} className="group block">
               {/*
                 نمطُ «الصفوف»: سطرٌ يُقرأ لا لوحةٌ تُنظر.

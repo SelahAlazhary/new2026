@@ -29,10 +29,10 @@ export default async function BillingPage() {
         <p className="mt-1 text-[13px] text-muted-foreground">اعتماد التحويلات اليدوية ومتابعة الدفعات.</p>
       </header>
 
-      <div className="mb-5 grid gap-3 sm:grid-cols-3">
-        <Stat label="إيراد الشهر" value={`${thisMonth.toLocaleString("ar-EG")} ج.م`} tone="ok" index={0} />
-        <Stat label="الإيراد الكلّي" value={`${revenue.toLocaleString("ar-EG")} ج.م`} tone="plain" index={1} />
-        <Stat label="بانتظار المراجعة" value={pending.length.toLocaleString("ar-EG")} tone="wait" index={2} />
+      <div className="mb-5 grid gap-3 sm:grid-cols-3" data-reveal-group>
+        <Stat label="إيراد الشهر" value={`${thisMonth.toLocaleString("ar-EG")} ج.م`} tone="ok" />
+        <Stat label="الإيراد الكلّي" value={`${revenue.toLocaleString("ar-EG")} ج.م`} tone="plain" />
+        <Stat label="بانتظار المراجعة" value={pending.length.toLocaleString("ar-EG")} tone="wait" />
       </div>
 
       {!settings.manualPay.enabled && !settings.paymob.enabled && (
@@ -85,10 +85,10 @@ export default async function BillingPage() {
   );
 }
 
-function Stat({ label, value, tone, index = 0 }: { label: string; value: string; tone: "ok" | "wait" | "plain"; index?: number }) {
+function Stat({ label, value, tone }: { label: string; value: string; tone: "ok" | "wait" | "plain" }) {
   const t: Record<string, string> = { ok: "text-emerald-600 bg-emerald-500/10", wait: "text-amber-600 bg-amber-500/10", plain: "text-[#1b2a4a] bg-black/[0.04]" };
   return (
-    <div className="rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="scale-up" data-reveal-delay={index + 1}>
+    <div className="rounded-2xl border border-black/[0.07] bg-white p-4" data-reveal="scale-up">
       <span className={`font-kufi inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${t[tone]}`}>{label}</span>
       <p className="font-display mt-2.5 text-2xl font-bold leading-none">{value}</p>
     </div>

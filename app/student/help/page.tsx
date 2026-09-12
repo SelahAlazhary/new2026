@@ -26,7 +26,7 @@ export default function HelpPage() {
       <InstallApp className="mb-6" />
 
       {/* محادثة مباشرة مع فريق الدعم داخل المنصّة */}
-      <section className="mb-8">
+      <section className="mb-8" data-reveal="up">
         <div className="mb-3 flex items-center gap-2">
           <IconLifebuoy className="size-5 text-primary" />
           <h2 className="font-display font-extrabold">تحدّث مع فريق الدعم</h2>
@@ -34,7 +34,7 @@ export default function HelpPage() {
         <SupportChat emptyHint="اكتب سؤالك وسيصلك الردّ هنا — وإشعار على جهازك." />
       </section>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid gap-4 sm:grid-cols-3" data-reveal-group>
         <a href={`https://wa.me/${content.support?.whatsapp || content.whatsapp}?text=${encodeURIComponent("السلام عليكم، أحتاج مساعدة")}`} target="_blank" rel="noreferrer" className="group">
           <Card className="flex items-center gap-3 transition group-hover:border-primary/40">
             <span className="grid size-11 place-items-center rounded-2xl bg-emerald-500/12 text-emerald-500"><IconWhatsapp className="size-5" /></span>
@@ -58,7 +58,7 @@ export default function HelpPage() {
       </div>
 
       {(content.support?.links ?? []).filter((l) => l.visible).length > 0 && (
-        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+        <div className="mb-8 grid gap-4 sm:grid-cols-3" data-reveal-group>
           {(content.support?.links ?? [])
             .filter((l) => l.visible)
             .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
@@ -84,12 +84,12 @@ export default function HelpPage() {
         </p>
       )}
 
-      <div className="mb-3 flex items-center gap-2"><IconLifebuoy className="size-5 text-primary" /><p className="font-display text-lg font-extrabold">الأسئلة الشائعة</p></div>
-      <div className="space-y-3">
+      <div className="mb-3 flex items-center gap-2" data-reveal="right"><IconLifebuoy className="size-5 text-primary" /><p className="font-display text-lg font-extrabold">الأسئلة الشائعة</p></div>
+      <div className="space-y-3" data-reveal-group>
         {(content.faqs ?? []).map((f, i) => {
           const isOpen = open === i;
           return (
-            <div key={f.q} className={`glass overflow-hidden rounded-3xl border transition ${isOpen ? "border-primary/40" : "border-border"}`}>
+            <div key={f.q} data-reveal="up" className={`glass overflow-hidden rounded-3xl border transition ${isOpen ? "border-primary/40" : "border-border"}`}>
               <button onClick={() => setOpen(isOpen ? null : i)} className="flex w-full items-center justify-between gap-4 p-5 text-right">
                 <span className="font-display font-bold">{f.q}</span>
                 <motion.span animate={{ rotate: isOpen ? 45 : 0 }} className={`grid size-8 shrink-0 place-items-center rounded-full ${isOpen ? "btn-glow text-white" : "bg-muted"}`}><IconPlus className="size-4" /></motion.span>

@@ -147,7 +147,13 @@ export default function MySubjects() {
           const color = COLORS[i % COLORS.length];
           const progress = me?.progress?.[c.id] ?? 0;
           return (
-            <motion.div key={c.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
+            <motion.div
+              key={c.id}
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+              transition={{ delay: (i % 6) * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
               <Card className="group relative flex h-full flex-col overflow-hidden !p-4">
 
                 {/* لوحة الغلاف — SVG بالكامل (زخرفة مولّدة من معرّف الكورس بلا صورة) */}

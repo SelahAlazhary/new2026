@@ -899,6 +899,26 @@ body::before {
 [data-reveal-duration="slow"]   { animation-duration: 1s !important; }
 [data-reveal-duration="slower"] { animation-duration: 1.3s !important; }
 
+/* تتابعٌ تلقائيٌّ لأبناء الشبكة — يُوضع على الحاوية فتتدرّج أبناؤها
+   بلا تأخيرٍ يُكتب لكلّ ابنٍ على حدة. والصيغةُ الثانيةُ لمن لُفّ ابنُه
+   برابطٍ أو غلاف، فالموسومُ حفيدٌ لا ابن. */
+[data-reveal-group] > [data-reveal]:nth-child(1),
+[data-reveal-group] > :nth-child(1) [data-reveal] { animation-delay: 0.04s; }
+[data-reveal-group] > [data-reveal]:nth-child(2),
+[data-reveal-group] > :nth-child(2) [data-reveal] { animation-delay: 0.12s; }
+[data-reveal-group] > [data-reveal]:nth-child(3),
+[data-reveal-group] > :nth-child(3) [data-reveal] { animation-delay: 0.20s; }
+[data-reveal-group] > [data-reveal]:nth-child(4),
+[data-reveal-group] > :nth-child(4) [data-reveal] { animation-delay: 0.28s; }
+[data-reveal-group] > [data-reveal]:nth-child(5),
+[data-reveal-group] > :nth-child(5) [data-reveal] { animation-delay: 0.36s; }
+[data-reveal-group] > [data-reveal]:nth-child(6),
+[data-reveal-group] > :nth-child(6) [data-reveal] { animation-delay: 0.44s; }
+[data-reveal-group] > [data-reveal]:nth-child(7),
+[data-reveal-group] > :nth-child(7) [data-reveal] { animation-delay: 0.52s; }
+[data-reveal-group] > [data-reveal]:nth-child(n + 8),
+[data-reveal-group] > :nth-child(n + 8) [data-reveal] { animation-delay: 0.6s; }
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1 !important; animation: none !important; }
 }

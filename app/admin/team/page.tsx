@@ -127,7 +127,7 @@ export default function TeamPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex flex-wrap items-center gap-3">
+      <header className="flex flex-wrap items-center gap-3" data-reveal="down" data-reveal-duration="fast">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary">
           <IconShield className="size-5" />
         </span>
@@ -151,7 +151,7 @@ export default function TeamPage() {
       )}
 
       {showForm && (
-        <section className="glass space-y-4 rounded-3xl p-4 sm:p-5">
+        <section className="glass space-y-4 rounded-3xl p-4 sm:p-5" data-reveal="stretch" data-reveal-duration="fast">
           <div className="grid gap-3 sm:grid-cols-3">
             <Field label="الاسم" value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="اسم المشرف" />
             <Field label="البريد الإلكتروني" value={form.username} onChange={(v) => setForm({ ...form, username: v })} placeholder="name@example.com" type="email" />
@@ -204,9 +204,9 @@ export default function TeamPage() {
       {loading ? (
         <p className="text-sm text-muted-foreground">جارٍ التحميل…</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-reveal-group>
           {admins.map((a) => (
-            <section key={a.id} className="glass rounded-3xl p-4 sm:p-5">
+            <section key={a.id} className="glass rounded-3xl p-4 sm:p-5" data-reveal="up">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="grid size-11 shrink-0 place-items-center rounded-2xl btn-glow text-sm font-bold text-white">
                   {a.name.charAt(0)}

@@ -49,13 +49,12 @@ export default async function HubOverview() {
         <p className="mt-1 text-[13px] text-muted-foreground">حالةُ المنصّات وآخرُ ما جرى عليها.</p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((c, i) => (
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+        {cards.map((c) => (
           <Link
             key={c.label}
             href={c.href}
             data-reveal="scale-up"
-            data-reveal-delay={i + 1}
             className="rounded-2xl border border-black/[0.07] bg-white p-4 transition hover:border-black/15"
           >
             <span className={`font-kufi inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${tone[c.tone]}`}>
@@ -67,12 +66,11 @@ export default async function HubOverview() {
       </div>
 
       {agg.students > 0 && (
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {statsCards.map((c, i) => (
+        <div className="mt-4 grid gap-3 sm:grid-cols-3" data-reveal-group>
+          {statsCards.map((c) => (
             <div
               key={c.label}
               data-reveal="flip"
-              data-reveal-delay={i + 1}
               className="rounded-2xl border border-black/[0.07] bg-white p-4"
             >
               <span className="font-kufi text-[10px] text-muted-foreground">{c.label}</span>

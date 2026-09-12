@@ -114,15 +114,44 @@ function FloatingGlyph({ d, size = 24, color = "#8B5CF6", delay = 0, duration = 
 }
 
 /* ── مكوّن ظهور عند الدخول في نطاق الرؤية ── */
-function Reveal({ children, delay = 0, className = "", direction = "up" }: { children: React.ReactNode; delay?: number; className?: string; direction?: "up" | "left" | "right" }) {
+type RevealDir = "up" | "down" | "left" | "right" | "scale" | "blur" | "flip" | "zoom";
+
+const REVEAL_FROM: Record<RevealDir, Record<string, number>> = {
+  up: { opacity: 0, y: 32 },
+  down: { opacity: 0, y: -28 },
+  left: { opacity: 0, x: -32 },
+  right: { opacity: 0, x: 32 },
+  scale: { opacity: 0, scale: 0.9 },
+  blur: { opacity: 0, y: 14, filter: "blur(8px)" } as never,
+  flip: { opacity: 0, rotateY: -14, x: 24 },
+  zoom: { opacity: 0, scale: 1.1 },
+};
+
+const REVEAL_TO = { opacity: 1, y: 0, x: 0, scale: 1, rotateY: 0, filter: "blur(0px)" };
+
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+  direction = "up",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  direction?: RevealDir;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const initial = direction === "up" ? { opacity: 0, y: 32 } : direction === "left" ? { opacity: 0, x: -32 } : { opacity: 0, x: 32 };
-  const animate = inView ? { opacity: 1, y: 0, x: 0 } : initial;
+  const initial = REVEAL_FROM[direction];
 
   return (
     <div ref={ref} className={className}>
-      <motion.div initial={initial} animate={animate} transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div
+        initial={initial}
+        animate={inView ? REVEAL_TO : initial}
+        transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+        style={direction === "flip" ? { perspective: 800 } : undefined}
+      >
         {children}
       </motion.div>
     </div>
@@ -380,7 +409,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
       {/* ════════════════ المميزات ════════════════ */}
       <section id="features" className="mkt-features-section">
-        <Reveal>
+        <Reveal direction="blur">
           <div className="mkt-section-header">
             <span className="mkt-section-tag mkt-section-tag--amber">كل ما تحتاجه</span>
             <h2 className="mkt-h2">أدوات متطورة<br/><span className="mkt-h2-em">مصمّمة خصيصاً للمدرسين</span></h2>
@@ -394,7 +423,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           {FEATURES.map((f, i) => {
             const isWide = i === 0 || i === 3;
             return (
-              <Reveal key={f.t} delay={i * 0.07} className={isWide ? "mkt-bento-wide" : ""}>
+              <Reveal key={f.t} delay={i * 0.07} direction="scale" className={isWide ? "mkt-bento-wide" : ""}>
                 <div className="mkt-bento-card group">
                   <div className="mkt-bento-card-glow" style={{ background: `radial-gradient(circle at 30% 30%, ${f.accent}12, transparent 70%)` }} />
                   <div className="mkt-bento-card-inner">
@@ -417,7 +446,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
       {/* ════════════════ الأسعار ════════════════ */}
       <section id="plans" className="mkt-pricing-section">
-        <Reveal>
+        <Reveal direction="down">
           <div className="mkt-section-header">
             <span className="mkt-section-tag mkt-section-tag--purple">أسعار شفافة</span>
             <h2 className="mkt-h2">خطط مرنة<br/><span className="mkt-h2-em">تنمو مع تزايد طلابك</span></h2>
@@ -432,7 +461,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             const price = planPrice({ price: p.priceEGP, discount: p.discount });
             const isHot = Boolean(p.highlight);
             return (
-              <Reveal key={p.id} delay={i * 0.08}>
+              <Reveal key={p.id} delay={i * 0.08} direction="flip">
                 <div className={`mkt-plan ${isHot ? "is-hot" : ""}`}>
                   {isHot && <div className="mkt-plan-glow" />}
                   {p.badge && (
@@ -475,7 +504,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
       {/* ════════════════ الأسئلة الشائعة ════════════════ */}
       <section id="faq" className="mkt-faq-section">
-        <Reveal>
+        <Reveal direction="blur">
           <div className="mkt-section-header">
             <span className="mkt-section-tag mkt-section-tag--dim">إجابات واضحة</span>
             <h2 className="mkt-h2">الأسئلة<br/><span className="mkt-h2-em">الأكثر شيوعاً</span></h2>
@@ -486,7 +515,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           {FAQS.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
-              <Reveal key={idx} delay={idx * 0.04}>
+              <Reveal key={idx} delay={idx * 0.04} direction={idx % 2 === 0 ? "left" : "right"}>
                 <div className={`mkt-faq-item ${isOpen ? "is-open" : ""}`}>
                   <button type="button" onClick={() => setOpenFaq(isOpen ? null : idx)} className="mkt-faq-q">
                     <span>{faq.q}</span>
@@ -508,7 +537,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
 
       {/* ════════════════ الدعوة الختامية ════════════════ */}
       <section className="mkt-final-section">
-        <Reveal>
+        <Reveal direction="zoom">
           <div className="mkt-final-card">
             <div className="mkt-final-glow mkt-final-glow--1" />
             <div className="mkt-final-glow mkt-final-glow--2" />
