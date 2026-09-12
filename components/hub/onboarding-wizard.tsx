@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { BrandPreset, SubjectCategory, StageCategory, PersonalityCategory, IdentityAnswers } from "@/lib/hub/presets";
 import { matchPresets } from "@/lib/hub/presets";
 import type { SaasPlan, Tenant } from "@/lib/hub/types";
-import { PresetPreview } from "@/components/hub/preset-preview";
+import { PresetPreview, PresetMiniPreview } from "@/components/hub/preset-preview";
 
 type ManualMethod = { kind: "instapay" | "wallet" | "bank"; label: string; number: string; active: boolean };
 type Payment = {
@@ -518,7 +518,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
                   className={`ob-preset ${presetId === pr.id ? "is-on" : ""}`}
                 >
                   {i < 3 && identityComplete && <span className="ob-preset-badge">مقترح</span>}
-                  <span className="ob-preset-swatch" style={{ background: `linear-gradient(135deg, ${pr.colors.primary}, ${pr.colors.gold})` }} />
+                  <PresetMiniPreview preset={pr} colors={pr.colors} />
                   <b>{pr.name}</b>
                   <span className="ob-preset-hint">{pr.hint}</span>
                 </button>

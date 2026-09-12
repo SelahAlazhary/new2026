@@ -2,9 +2,35 @@
 
 import type { BrandColors, BrandPreset } from "@/lib/hub/presets";
 
-export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors: BrandColors }) {
+/** شاشةُ الهبوط وحدَها — تُبنى مرّةً، وتُستعمل معاينةً كاملةً أو مصغَّرةً في القائمة. */
+function LandingScreen() {
+  return (
+    <div className="pv-pro-screen pv-pro-landing">
+      <div className="pv-pro-topbar">
+        <span className="pv-pro-logo-pill" />
+        <span className="pv-pro-nav-dots"><i /><i /><i /></span>
+      </div>
+      <div className="pv-pro-hero-block">
+        <span className="pv-pro-badge-line" />
+        <span className="pv-pro-h1" />
+        <span className="pv-pro-h2" />
+        <div className="pv-pro-hero-btns">
+          <span className="pv-pro-cta">ابدأ الآن</span>
+          <span className="pv-pro-cta-ghost">تعرّف أكثر</span>
+        </div>
+      </div>
+      <div className="pv-pro-features">
+        <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+        <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+        <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
+      </div>
+    </div>
+  );
+}
+
+function presetVars(preset: BrandPreset, colors: BrandColors): React.CSSProperties {
   const dark = preset.dark;
-  const vars = {
+  return {
     "--pv-primary": colors.primary,
     "--pv-gold": colors.gold,
     "--pv-paper": colors.paper,
@@ -14,35 +40,18 @@ export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors:
     "--pv-line": dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)",
     "--pv-glow": dark ? `${colors.primary}18` : `${colors.primary}0a`,
   } as React.CSSProperties;
+}
 
+export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors: BrandColors }) {
+  const dark = preset.dark;
   return (
-    <div className="pv-pro" style={vars} data-dark={dark ? "1" : undefined}>
+    <div className="pv-pro" style={presetVars(preset, colors)} data-dark={dark ? "1" : undefined}>
       <div className="pv-pro-header">
         <span className="pv-pro-name">{preset.name}</span>
         <span className="pv-pro-hint">{preset.hint}</span>
       </div>
       <div className="pv-pro-screens">
-        {/* شاشة الهبوط */}
-        <div className="pv-pro-screen pv-pro-landing">
-          <div className="pv-pro-topbar">
-            <span className="pv-pro-logo-pill" />
-            <span className="pv-pro-nav-dots"><i /><i /><i /></span>
-          </div>
-          <div className="pv-pro-hero-block">
-            <span className="pv-pro-badge-line" />
-            <span className="pv-pro-h1" />
-            <span className="pv-pro-h2" />
-            <div className="pv-pro-hero-btns">
-              <span className="pv-pro-cta">ابدأ الآن</span>
-              <span className="pv-pro-cta-ghost">تعرّف أكثر</span>
-            </div>
-          </div>
-          <div className="pv-pro-features">
-            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
-            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
-            <div className="pv-pro-feat"><span className="pv-pro-feat-icon" /><span className="pv-pro-feat-text" /></div>
-          </div>
-        </div>
+        <LandingScreen />
 
         {/* بطاقة كورس */}
         <div className="pv-pro-screen pv-pro-course">
@@ -77,6 +86,19 @@ export function PresetPreview({ preset, colors }: { preset: BrandPreset; colors:
           <span className="pv-pro-dash-cta">تابع الدرس</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * معاينةٌ مصغّرة — شاشةُ الهبوط وحدَها بألوان القالب، تحلّ محلّ المربّع
+ * اللونيّ المجرّد في قائمة الاختيار. فمن يمرّ بالقوالب يرى شكلَ موقعه
+ * فعلاً، لا تدرّجاً لونياً لا يمثّل شيئاً.
+ */
+export function PresetMiniPreview({ preset, colors }: { preset: BrandPreset; colors: BrandColors }) {
+  return (
+    <div className="pv-mini" style={presetVars(preset, colors)} data-dark={preset.dark ? "1" : undefined}>
+      <LandingScreen />
     </div>
   );
 }
