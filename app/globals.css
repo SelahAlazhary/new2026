@@ -6258,28 +6258,34 @@ select.inp {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
-/* ── الهيرو ── */
+/* ── الهيرو ──
+   غيرُ متناظر: عمودُ النصّ أعرضُ من لوح التوقيع، واللوحُ ينزل قليلاً
+   فلا يصطفّ الرأسان في خطٍّ واحد. والتناظرُ التامُّ هو ما يجعل الصفحةَ
+   تبدو مولَّدةً لا مصمَّمة. */
 .mkt-hero {
   position: relative;
   display: grid;
-  gap: clamp(2rem, 5vw, 3.5rem);
-  align-items: center;
-  padding: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 5vw, 4rem) clamp(2rem, 5vw, 3.5rem);
+  gap: clamp(2rem, 5vw, 3.25rem);
+  align-items: start;
+  padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1rem, 5vw, 4rem) clamp(2rem, 5vw, 3.5rem);
   max-width: 78rem;
   margin-inline: auto;
 }
 @media (min-width: 62rem) {
-  .mkt-hero { grid-template-columns: 1fr 1fr; }
-  .mkt-trust { grid-column: 1 / -1; }
+  .mkt-hero { grid-template-columns: 1.15fr 0.85fr; }
+  .mkt-hero-text { padding-top: clamp(1rem, 3vw, 2.25rem); }
+  .mkt-sig { margin-top: clamp(1.5rem, 4vw, 3rem); }
+  .mkt-trust { grid-column: 1; }
 }
+/* ضوءٌ موجَّهٌ من أعلى البداية — لا بقعتان مموّهتان في الوسط */
 .mkt-hero-wash {
   position: absolute;
-  inset: -10% -20% auto;
-  height: 70%;
+  inset: -12% 0 auto 0;
+  height: 62%;
   pointer-events: none;
   background:
-    radial-gradient(60% 55% at 30% 0%, rgba(139, 92, 246, 0.09), transparent 70%),
-    radial-gradient(50% 50% at 85% 30%, rgba(59, 130, 246, 0.30), transparent 70%);
+    linear-gradient(205deg, rgba(139, 92, 246, 0.16) 0%, transparent 46%),
+    linear-gradient(155deg, rgba(59, 130, 246, 0.12) 0%, transparent 42%);
 }
 .mkt-hero-text { position: relative; }
 
@@ -6453,23 +6459,33 @@ select.inp {
   color: var(--mk-dim);
 }
 
-/* ── شريطُ الثقة ── */
+/* ── شريطُ الثقة ──
+   سطرٌ يبدأ من البداية وتفصله شعرةٌ رأسيّة، لا ثلاثةُ أرقامٍ ضخمةٍ
+   موسَّطةٍ — وهي أكثرُ ما يُرى في الصفحات المولَّدة. */
 .mkt-trust {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: clamp(1.5rem, 6vw, 4rem);
-  padding-top: clamp(1.2rem, 3vw, 2rem);
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: clamp(1.1rem, 4vw, 2.5rem);
+  padding-top: clamp(1.1rem, 3vw, 1.6rem);
   border-top: 1px solid var(--mk-line-2);
 }
-.mkt-trust-item { display: grid; justify-items: center; gap: 0.2rem; }
+.mkt-trust-item {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+  padding-inline-start: clamp(1.1rem, 4vw, 2.5rem);
+  border-inline-start: 1px solid var(--mk-line-2);
+}
+.mkt-trust-item:first-child { padding-inline-start: 0; border-inline-start: 0; }
 .mkt-trust-v {
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(1.25rem, 3.4vw, 1.7rem);
-  color: var(--mk-gold-2);
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  color: var(--mk-parch);
   font-variant-numeric: tabular-nums;
 }
-.mkt-trust-l { font-size: 0.7rem; color: var(--mk-dim); }
+.mkt-trust-l { font-size: 0.7rem; color: var(--mk-dim-2); }
 
 /* ── أقسامٌ عامّة ── */
 .mkt-section {
@@ -6477,56 +6493,115 @@ select.inp {
   margin-inline: auto;
   padding: clamp(3rem, 8vw, 5.5rem) clamp(1rem, 5vw, 4rem);
 }
-.mkt-head { display: grid; justify-items: center; gap: 0.55rem; text-align: center; margin-bottom: clamp(1.8rem, 4vw, 2.8rem); }
-.mkt-head-rule { max-width: 9rem; }
+/* الرأسُ يبدأ من حيث يبدأ السطر، لا من وسط الشاشة: التوسيطُ الشاملُ
+   يُفقد الصفحةَ اتّجاهَها ويجعلها تشبه كلَّ صفحةٍ مولَّدة. */
+.mkt-head {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  text-align: start;
+  margin-bottom: clamp(1.8rem, 4vw, 2.8rem);
+  max-width: 40rem;
+}
+/* الفاصلُ صار علامةً قصيرةً قبل العنوان لا زخرفةً فوقه */
+.mkt-head-rule { width: 4.5rem; opacity: 0.85; }
 .mkt-h2 {
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(1.5rem, 4.2vw, 2.3rem);
-  line-height: 1.25;
+  font-size: clamp(1.7rem, 5vw, 2.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
-.mkt-head-sub { font-size: 0.85rem; color: var(--mk-dim); max-width: 32rem; line-height: 1.9; }
+.mkt-head-sub { font-size: 0.88rem; color: var(--mk-dim); max-width: 34rem; line-height: 1.95; }
 
-/* ── الخطوات ── */
-.mkt-steps { display: grid; gap: 0.85rem; list-style: none; padding: 0; margin: 0; }
-@media (min-width: 48rem) { .mkt-steps { grid-template-columns: repeat(2, 1fr); } }
+/* ── الخطوات ──
+   إجراءٌ يُقرأ على قضيبٍ واحدٍ من أعلى لأسفل، لا أربعُ بطاقاتٍ متطابقةٍ
+   في مربّع. والترتيبُ هنا معلومةٌ حقيقيّةٌ — الخطوةُ الثالثةُ بعد الثانية
+   فعلاً — فيستحقُّ خطّاً يصلها. */
+.mkt-steps {
+  position: relative;
+  display: grid;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding-inline-start: 0;
+  max-width: 46rem;
+}
+/* القضيب — يمرّ خلف الأختام */
+.mkt-steps::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 1.55rem;
+  top: 1.6rem;
+  bottom: 1.6rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(139, 92, 246, 0.5) 12%,
+    rgba(59, 130, 246, 0.5) 88%,
+    transparent
+  );
+}
 .mkt-step {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 0.9rem;
-  padding: 1.1rem 1.2rem;
-  border: 1px solid var(--mk-line-2);
-  border-radius: 1.1rem;
-  background: var(--mk-ink-2);
-  transition: border-color 0.2s, transform 0.2s var(--mk-ease);
-  height: 100%;
+  gap: 1.1rem;
+  padding: 1rem 0 1.5rem;
+  background: none;
+  border: 0;
 }
-.mkt-step { box-shadow: var(--mk-glow); }
-.mkt-step:hover { border-color: var(--mk-gold-2); transform: translateY(-2px); box-shadow: var(--mk-glow), 0 0 34px -8px rgba(139, 92, 246, 0.6); }
+.mkt-step .mkt-seal {
+  background: var(--mk-ink);
+  border-radius: 999px;
+}
 .mkt-step-n { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
-.mkt-step-body { display: grid; gap: 0.25rem; }
-.mkt-step-t { font-family: var(--font-display), sans-serif; font-size: 1rem; }
-.mkt-step-d { font-size: 0.78rem; color: var(--mk-dim); line-height: 1.85; }
+.mkt-step-body { display: grid; gap: 0.3rem; padding-top: 0.35rem; }
+.mkt-step-t { font-family: var(--font-display), sans-serif; font-size: 1.12rem; }
+.mkt-step-d { font-size: 0.82rem; color: var(--mk-dim); line-height: 1.9; max-width: 32rem; }
 
-/* ── ما تملكه ── */
-.mkt-feats { display: grid; gap: 0.85rem; }
+/* ── ما تملكه ──
+   الأوّلُ يتصدّر ويأخذ عمودين، وما بعده أهدأ: حدٌّ علويٌّ لا إطارٌ كامل.
+   والشبكةُ المتساويةُ التي تُعامل كلَّ بندٍ كالآخر تُسطّح الهرميّة. */
+.mkt-feats { display: grid; gap: 0.7rem; }
 @media (min-width: 44rem) { .mkt-feats { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 68rem) { .mkt-feats { grid-template-columns: repeat(3, 1fr); } }
+
 .mkt-feat {
   position: relative;
-  padding: 1.6rem 1.2rem 1.3rem;
-  border: 1px solid var(--mk-line-2);
-  border-radius: 1.1rem;
-  background: var(--mk-ink-2);
+  padding: 1.5rem 1.15rem 1.2rem;
+  border: 0;
+  border-top: 2px solid rgba(59, 130, 246, 0.55);
+  border-radius: 0 0 0.9rem 0.9rem;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.07), transparent 60%);
   height: 100%;
-  transition: border-color 0.2s, transform 0.2s var(--mk-ease), box-shadow 0.2s;
+  box-shadow: 0 -1px 18px -10px rgba(59, 130, 246, 0.75);
+  transition: border-color 0.2s, transform 0.2s var(--mk-ease), box-shadow 0.2s, background 0.2s;
 }
-.mkt-feat { box-shadow: var(--mk-glow-blue); }
 .mkt-feat:hover {
-  border-color: var(--mk-blue-2);
+  border-top-color: var(--mk-blue-2);
   transform: translateY(-3px);
-  box-shadow: var(--mk-glow-blue), 0 0 34px -8px rgba(59, 130, 246, 0.6);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.13), transparent 65%);
+  box-shadow: 0 -1px 26px -8px rgba(59, 130, 246, 0.95);
 }
+/* البندُ الأوّلُ يتصدّر — إطارٌ كاملٌ وتوهّجٌ ونصٌّ أكبر */
+@media (min-width: 68rem) {
+  .mkt-feats > *:first-child { grid-column: span 2; }
+}
+.mkt-feats > *:first-child .mkt-feat {
+  border: 1px solid var(--mk-line);
+  border-radius: 1.35rem;
+  padding: 1.9rem 1.6rem 1.6rem;
+  background: linear-gradient(150deg, rgba(139, 92, 246, 0.13), var(--mk-ink-2) 60%);
+  box-shadow: var(--mk-glow);
+}
+.mkt-feats > *:first-child .mkt-feat:hover {
+  border-color: var(--mk-gold-2);
+  box-shadow: var(--mk-glow), 0 0 36px -8px rgba(139, 92, 246, 0.7);
+}
+.mkt-feats > *:first-child .mkt-feat-t { font-size: 1.35rem; }
+.mkt-feats > *:first-child .mkt-feat-d { font-size: 0.88rem; max-width: 34rem; }
 .mkt-feat-corner { inset-inline-start: 0.55rem; top: 0.55rem; width: 2.4rem; height: 2.4rem; }
 .mkt-feat-t { display: block; font-family: var(--font-display), sans-serif; font-size: 1.02rem; margin-bottom: 0.45rem; }
 .mkt-feat-d { font-size: 0.79rem; color: var(--mk-dim); line-height: 1.95; }
@@ -6547,13 +6622,26 @@ select.inp {
   background: var(--mk-ink-2);
   transition: border-color 0.2s, transform 0.2s var(--mk-ease);
 }
-.mkt-plan { box-shadow: var(--mk-glow); }
-.mkt-plan:hover { transform: translateY(-3px); border-color: var(--mk-gold-2); box-shadow: var(--mk-glow), 0 0 34px -8px rgba(139, 92, 246, 0.6); }
+/* الخطّةُ العاديّةُ هادئة: توهّجٌ خافتٌ لا كاملٌ — وإلّا تساوت بالمختارة */
+.mkt-plan { box-shadow: 0 0 20px -12px rgba(139, 92, 246, 0.55); }
+.mkt-plan:hover { transform: translateY(-3px); border-color: var(--mk-line); box-shadow: var(--mk-glow); }
+/*
+  والمختارةُ تكبر فعلاً لا بشريطٍ فوقها وحده: ترتفع وتتّسع ويكبر رقمُها.
+  وثلاثُ بطاقاتٍ متطابقةٍ إحداها بشارةٍ هي الهيئةُ المولَّدةُ المعتادة.
+*/
 .mkt-plan.is-hot {
   border-color: var(--mk-gold);
-  background: linear-gradient(165deg, rgba(139, 92, 246, 0.08), var(--mk-ink-2) 55%);
-  box-shadow: 0 24px 56px -28px rgba(139, 92, 246, 0.45);
+  background: linear-gradient(165deg, rgba(139, 92, 246, 0.16), var(--mk-ink-2) 58%);
+  box-shadow: var(--mk-glow), 0 30px 66px -30px rgba(139, 92, 246, 0.7);
+  padding: 2rem 1.5rem 1.6rem;
+  border-radius: 1.6rem;
 }
+@media (min-width: 70rem) {
+  .mkt-plan.is-hot { transform: scale(1.045); z-index: 1; }
+  .mkt-plan.is-hot:hover { transform: scale(1.045) translateY(-3px); }
+}
+.mkt-plan.is-hot .mkt-plan-name { font-size: 1.35rem; }
+.mkt-plan.is-hot .mkt-plan-num { font-size: 2.6rem; }
 .mkt-plan-ribbon {
   position: absolute;
   top: -0.65rem;
@@ -6602,27 +6690,34 @@ select.inp {
 }
 .mkt-plan-cta.is-hot:hover { filter: brightness(1.06); }
 
-/* ── الأسئلة ── */
-.mkt-faqs { display: grid; gap: 0.55rem; max-width: 46rem; margin-inline: auto; }
+/* ── الأسئلة ──
+   صفوفٌ يفصلها شعرةٌ واحدة، لا بطاقةٌ مستقلّةٌ لكلّ سؤال. والسؤالُ نصٌّ
+   يُقرأ لا صندوقٌ يُنظر، والمفتوحُ وحدَه يُضاء. */
+.mkt-faqs { display: grid; max-width: 48rem; }
 .mkt-faq {
-  border: 1px solid var(--mk-line-2);
-  border-radius: 1rem;
-  background: var(--mk-ink-2);
+  border: 0;
+  border-bottom: 1px solid var(--mk-line-2);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
   overflow: hidden;
-  transition: border-color 0.2s;
+  transition: background 0.2s;
 }
-.mkt-faq { box-shadow: var(--mk-glow-blue); }
-.mkt-faq.is-open { border-color: var(--mk-blue-2); box-shadow: var(--mk-glow-blue), 0 0 30px -8px rgba(59, 130, 246, 0.55); }
+.mkt-faq:first-child { border-top: 1px solid var(--mk-line-2); }
+.mkt-faq.is-open {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.09), transparent 65%);
+  box-shadow: inset 2px 0 0 var(--mk-gold);
+}
 .mkt-faq-q {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
-  padding: 1rem 1.15rem;
+  padding: 1.15rem 1.1rem;
   text-align: start;
   font-family: var(--font-display), sans-serif;
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: inherit;
   background: none;
   border: 0;
@@ -6643,26 +6738,39 @@ select.inp {
   color: var(--mk-dim);
 }
 
-/* ── الدعوة الختاميّة ── */
+/* ── الدعوة الختاميّة ──
+   لوحٌ عريضٌ يبدأ من السطر لا صندوقٌ موسَّطٌ يطفو: الختمُ والعنوانُ في
+   عمود، والزرُّ يقابلهما — فيُقرأ سطراً واحداً لا هرماً متناظراً. */
 .mkt-final {
   position: relative;
   display: grid;
-  justify-items: center;
-  gap: 0.75rem;
-  text-align: center;
-  padding: clamp(2.2rem, 6vw, 3.5rem) clamp(1.2rem, 5vw, 3rem);
+  gap: 1.25rem;
+  align-items: center;
+  text-align: start;
+  padding: clamp(2rem, 5.5vw, 3.25rem) clamp(1.3rem, 5vw, 3rem);
   border: 1px solid var(--mk-gold);
-  border-radius: 1.75rem;
+  border-radius: 1.5rem;
   background:
-    radial-gradient(70% 90% at 50% 0%, rgba(139, 92, 246, 0.12), transparent 70%),
-    linear-gradient(165deg, var(--mk-ink-3), var(--mk-ink-2));
-  box-shadow: 0 34px 80px -40px rgba(139, 92, 246, 0.5);
+    linear-gradient(115deg, rgba(139, 92, 246, 0.16) 0%, transparent 52%),
+    linear-gradient(295deg, rgba(59, 130, 246, 0.14) 0%, transparent 48%),
+    var(--mk-ink-2);
+  box-shadow: var(--mk-glow), 0 34px 80px -44px rgba(139, 92, 246, 0.6);
+}
+@media (min-width: 52rem) {
+  .mkt-final { grid-template-columns: 1fr auto; column-gap: 2.5rem; }
+  .mkt-final .mkt-cta { justify-self: end; }
 }
 .mkt-final-corner { inset-inline-start: 1rem; top: 1rem; width: 3rem; height: 3rem; }
 .mkt-final-initial { font-size: 1.3rem; }
-.mkt-final-h { font-family: var(--font-display), sans-serif; font-size: clamp(1.5rem, 4.5vw, 2.2rem); }
-.mkt-final-p { max-width: 34rem; font-size: 0.86rem; line-height: 2; color: var(--mk-dim); }
-.mkt-final .mkt-cta { margin-top: 0.6rem; }
+.mkt-final .mkt-seal { grid-row: 1; margin-bottom: 0.15rem; }
+.mkt-final-h {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.6rem, 4.8vw, 2.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.mkt-final-p { max-width: 36rem; font-size: 0.88rem; line-height: 2; color: var(--mk-dim); }
+.mkt-final .mkt-cta { margin-top: 0.3rem; }
 
 /* ── الفوتر ── */
 .mkt-foot {
