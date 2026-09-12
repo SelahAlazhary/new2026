@@ -8155,3 +8155,53 @@ section.glass:hover {
 .mkt-faqs { max-width: 40rem !important; }
 .mkt-faq-q { justify-content: flex-start !important; }
 .mkt-faq-chev { margin-inline-start: auto !important; }
+
+/* ============================================================
+   نصوصٌ داكنةٌ فاتت التحويلَ إلى الدارك مود
+   ------------------------------------------------------------
+   حين حُذف نقضُ الدارك مود، ظهرت عناصرُ أخرى كانت ألوانُها الداكنةُ
+   (٣172554#) مكتوبةً في صلب قاعدتها البنيويّة لا في طبقةٍ منفصلة —
+   فلم يكن نقضُ الوضع الفاتح وحدَه يغطّيها، أو كانت أخصَّ من قاعدة
+   الدارك مود فتغلبها رغم تأخّرها. فُرض هنا نهائياً بلا مجالٍ لالتباس.
+   ============================================================ */
+.mkt-h1,
+.mkt-h2,
+.mkt-step-t,
+.mkt-feat-t,
+.mkt-feats > *:first-child .mkt-feat-t,
+.mkt-plan-name,
+.mkt-faq-q,
+.mkt-final-h,
+.mkt-diagram-center,
+.mkt-diagram-node,
+.mkt-step .mkt-seal,
+.mkt-trust-v {
+  color: #f5f3ff !important;
+}
+.mkt-diagram-center,
+.mkt-diagram-node,
+.mkt-step .mkt-seal,
+.mkt-trust-v {
+  background: #111936 !important;
+}
+.mkt-step-n { color: #f5f3ff !important; }
+.mkt-diagram-node.tone-blue,
+.tone-blue   { color: #60a5fa !important; }
+.mkt-diagram-node.tone-green,
+.tone-green  { color: #4ade80 !important; }
+.mkt-diagram-node.tone-cyan,
+.tone-cyan   { color: #22d3ee !important; }
+.mkt-diagram-node.tone-navy,
+.tone-navy   { color: #cbd5e1 !important; }
+.mkt-diagram-node.tone-orange,
+.tone-orange { color: #fb923c !important; }
+/* شارةُ الميزة نفسُها بيضاءٌ دائماً بصرف النظر عن نبرتها — النبرةُ في
+   خلفيّتها الملوّنة لا في لون الأيقونة فوقها */
+.mkt-feat-icon,
+.mkt-feat-icon.tone-blue,
+.mkt-feat-icon.tone-green,
+.mkt-feat-icon.tone-cyan,
+.mkt-feat-icon.tone-navy,
+.mkt-feat-icon.tone-orange {
+  color: #fff !important;
+}
