@@ -5342,7 +5342,7 @@ select.inp {
 .auth-promo-stat-l {
   display: block;
   font-size: 0.65rem;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.85);
   margin-top: 0.15rem;
 }
 .auth-promo-stat-sep {
@@ -5392,10 +5392,10 @@ select.inp {
   gap: 0.375rem;
   margin-bottom: 1.5rem;
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.85);
   transition: color 0.2s;
 }
-.auth-back:hover { color: rgba(255,255,255,0.6); }
+.auth-back:hover { color: #fff; }
 .auth-title {
   font-family: var(--font-display, 'Lalezar', serif);
   font-size: 1.5rem;
@@ -5405,14 +5405,14 @@ select.inp {
 .auth-subtitle {
   margin-top: 0.25rem;
   font-size: 0.825rem;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.92);
 }
 .auth-form-body { margin-top: 1.5rem; }
 .auth-footer {
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.85);
 }
 .auth-footer a {
   color: #a78bfa;
