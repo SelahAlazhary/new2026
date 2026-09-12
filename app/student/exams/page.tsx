@@ -113,7 +113,7 @@ export default function StudentExamsPage() {
           const tries = (me?.examAttempts ?? []).filter((a) => a.examId === e.id).length;
           const exhausted = (e.attempts ?? 0) > 0 && tries >= (e.attempts ?? 0);
           return (
-            <motion.div key={e.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+            <motion.div key={e.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
               <Card className="!p-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary">

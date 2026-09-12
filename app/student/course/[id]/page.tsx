@@ -231,9 +231,10 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
               }}
               className="cu"
               data-locked={!mine ? "1" : "0"}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+              transition={{ delay: (i % 8) * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               <summary className="cu-head">
                 <span className="cu-n">{(i + 1).toLocaleString("ar-EG")}</span>

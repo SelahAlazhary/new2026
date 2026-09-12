@@ -51,7 +51,7 @@ export default function StudentAccount() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ---------- بيانات الحساب ---------- */}
-        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }}>
           <Card>
             <div className="mb-3 flex items-center gap-3">
               <Medallion size={44} className="text-primary">
@@ -82,7 +82,7 @@ export default function StudentAccount() {
 
         <div className="grid content-start gap-4">
           {/* ---------- بيانات الدخول ---------- */}
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}>
+          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: 0.06 }}>
             <Card>
               <div className="flex items-start gap-3">
                 <Medallion size={44} className="text-accent">
@@ -114,7 +114,7 @@ export default function StudentAccount() {
           </motion.div>
 
           {/* ---------- الجهاز المربوط ---------- */}
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
+          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: 0.12 }}>
             <Card className="flex items-start gap-3">
               <Medallion size={44} className="text-primary">
                 <IconShield className="size-5" />

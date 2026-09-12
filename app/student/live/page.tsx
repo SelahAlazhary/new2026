@@ -178,7 +178,7 @@ export default function StudentLivePage() {
               const isAllowed = allowed(l);
               const joinable = canJoin(l);
               return (
-                <motion.div key={l.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 8) * 0.05 }}>
+                <motion.div key={l.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: Math.min(i, 8) * 0.05 }}>
                   <Card className="!p-4">
                     <div className="flex flex-wrap items-center gap-3">
                       <span className={`grid size-11 shrink-0 place-items-center rounded-2xl ${l.status === "مباشر" ? "bg-rose-500/12 text-rose-500" : "bg-primary/12 text-primary"}`}>

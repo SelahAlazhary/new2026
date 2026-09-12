@@ -322,7 +322,7 @@ export function UnitView({
         `min-height` كذلك — انظر `.lesson-stick` في `globals.css`.
       */}
       <div className="lesson-pane">
-        <div className="lesson-video relative -mx-4 aspect-video overflow-hidden border-y border-border bg-black shadow-bento sm:mx-0 sm:rounded-3xl sm:border">
+        <div className="lesson-video relative -mx-4 aspect-video overflow-hidden border-y border-border bg-black shadow-bento sm:mx-0 sm:rounded-3xl sm:border" data-reveal="scale" data-reveal-duration="fast">
           {!current ? null : !canPlay(current.isFree) ? (
             <div className="grid size-full place-items-center bg-slate-900 p-6 text-center">
               <div className="flex flex-col items-center gap-3">

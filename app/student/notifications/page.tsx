@@ -52,7 +52,7 @@ export default function StudentNotifications() {
           {items.map((n, i) => {
             const isNew = !read.has(n.id);
             return (
-              <motion.div key={n.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <motion.div key={n.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -40px 0px" }} transition={{ delay: (i % 8) * 0.05 }}>
                 <Card className={`!p-4 ${isNew ? "ring-1 ring-primary/30" : ""}`}>
                   <div className="flex items-start gap-3">
                     <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/12 text-primary"><IconBell anim={isNew ? "swing" : undefined} className="size-5" /></span>
