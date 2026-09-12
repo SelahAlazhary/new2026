@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
 import { planPrice } from "@/lib/business/plans";
-import { ArrowLeft, ChevronDown, Check, Video, ShieldCheck, Wallet, Globe2, Smartphone, BarChart3 } from "lucide-react";
+import { ArrowLeft, ChevronDown, Check, Video, ShieldCheck, Wallet, Globe2, Smartphone, BarChart3, Compass, Sparkles, Tag, HelpCircle, Rocket } from "lucide-react";
 import { withoutHarakat } from "@/lib/utils/text";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -252,24 +252,36 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
   return (
     <div className="mkt font-sans">
       {/* ════════ شريط التنقل ════════ */}
-      <header className="mkt-bar">
-        <Link href="/" className="mkt-brand">
+      {/*
+        تولبارٌ عموديٌّ على يمين الشاشة — لا شريطٌ أفقيٌّ أعلاها. أيقونةٌ
+        لكلّ وجهة، وتسميتُها تظهر عند التمرير عليها (title) كما في تولبار
+        لوحة الإدارة نفسِه — لغةٌ بصريّةٌ واحدة تسري على الموقع كلِّه.
+      */}
+      <header className="mkt-rail">
+        <Link href="/" className="mkt-rail-mark" title={brand}>
           <Seal size={34}>
             <Image src="/logo.jpg" alt={brand} width={34} height={34} className="mkt-logo-img" />
           </Seal>
-          <span className="mkt-brand-name">{brand}</span>
         </Link>
 
-        <nav className="mkt-nav">
-          <a href="#how" className="hidden sm:block">الطريق</a>
-          <a href="#features" className="hidden sm:block">ما تملكه</a>
-          <a href="#plans">الأسعار</a>
-          <a href="#faq" className="hidden md:block">أسئلة</a>
-          <Link href="/start" className="mkt-nav-cta">
-            ابدأ <ArrowLeft className="size-3.5" />
-          </Link>
+        <nav className="mkt-rail-nav">
+          <a href="#how" title="الطريق" className="mkt-rail-btn"><Compass className="size-5" /></a>
+          <a href="#features" title="ما تملكه" className="mkt-rail-btn"><Sparkles className="size-5" /></a>
+          <a href="#plans" title="الأسعار" className="mkt-rail-btn"><Tag className="size-5" /></a>
+          <a href="#faq" title="أسئلة" className="mkt-rail-btn"><HelpCircle className="size-5" /></a>
         </nav>
+
+        <Link href="/start" title="ابدأ الآن" className="mkt-rail-cta">
+          <Rocket className="size-5" />
+        </Link>
       </header>
+
+      {/*
+        محتوى الصفحة كلُّه في عمودٍ ثانٍ بجانب التولبار — لا تحته: `.mkt`
+        صار صفّاً أفقياً (rail + هذا العمود)، فالتمريرُ الرأسيُّ يبقى
+        داخل هذا العمود وحدَه ويثبت التولبارُ بجانبه (`position: sticky`).
+      */}
+      <div className="mkt-body">
 
       {/*
         ════════ الهيرو ════════
@@ -502,6 +514,8 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           {withoutHarakat(`${brand} — منصّةٌ لإطلاق الأكاديميّات التعليميّة. جميع الحقوق محفوظة.`)}
         </p>
       </footer>
+
+      </div>
     </div>
   );
 }

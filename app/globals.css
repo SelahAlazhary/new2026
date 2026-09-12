@@ -6210,7 +6210,12 @@ select.inp {
   color: var(--mk-parch);
   overflow-x: hidden;
   font-feature-settings: "kern" 1, "liga" 1;
+  /* صفٌّ أفقيّ: التولبار وعمودُ المحتوى جنباً إلى جنب — لا التولبارُ
+     فوق المحتوى في تدفّقٍ رأسيٍّ واحد. */
+  display: flex;
+  align-items: stretch;
 }
+.mkt-body { flex: 1 1 0; min-width: 0; }
 
 .mkt a { color: inherit; text-decoration: none; }
 .mkt ::selection { background: rgba(139, 92, 246, 0.26); color: #fff; }
@@ -6244,44 +6249,84 @@ select.inp {
 }
 
 /* ── شريط التنقّل ── */
-.mkt-bar {
+/*
+  تولبارٌ عموديٌّ على يمين الشاشة — لا شريطٌ أفقيٌّ أعلاها، على غرار
+  تولبار لوحة الإدارة (`.ad-rail`) نفسِه: أيقونةٌ لكلّ وجهة، وتسميتُها
+  تظهر عند التمرير. ولغةُ الموقع كلِّها معه واحدة.
+
+  و`sticky` لا `fixed`: صفحاتُ الموقع تُرسم داخل `RouteTransition`
+  الذي يُحرِّك محتواه بـ`transform` بين الانتقالات — وأيُّ عنصرِ
+  `position: fixed` تحت سلفٍ عليه `transform` يتصرّف تصرّفَ `absolute`
+  نسبةً إلى ذلك السلف لا إلى الشاشة (وهو قيدٌ موثَّقٌ في هذا الملفّ
+  نفسِه من قبل — انظر لماذا خرج زرُّ العودة ولافتةُ الكوكيز من هذا
+  الانتقال). و`sticky` يبقى في تدفّق المستند فلا يقع في هذا الفخّ،
+  ويؤدّي الغرضَ نفسَه مع ارتفاعٍ صريحٍ يملأ الشاشة.
+*/
+.mkt-rail {
   position: sticky;
   top: 0;
+  height: 100dvh;
   z-index: 50;
+  width: 4.6rem;
+  flex-shrink: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.85rem clamp(1rem, 4vw, 3rem);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px) saturate(1.3);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
-  border-bottom: 1px solid var(--mk-line);
+  gap: 0.5rem;
+  padding-block: 1rem;
+  background: linear-gradient(180deg, #0e1130, #080a1e 60%, #0b0d24);
+  border-inline-end: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow:
+    1px 0 0 rgba(139, 92, 246, 0.3),
+    0 0 40px 4px rgba(139, 92, 246, 0.22);
 }
-.mkt-brand { display: flex; align-items: center; gap: 0.6rem; }
-.mkt-brand-initial { font-size: 0.9rem; }
-.mkt-brand-name {
-  font-family: var(--font-display), sans-serif;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
+.mkt-rail-mark { display: grid; place-items: center; margin-bottom: 0.4rem; transition: transform 0.2s; }
+.mkt-rail-mark:hover { transform: scale(1.08); }
+.mkt-rail-nav { display: flex; flex-direction: column; gap: 0.4rem; flex: 1 1 auto; }
+.mkt-rail-btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
+  color: #f0eefc;
+  background: rgba(139, 92, 246, 0.06);
+  border: 1px solid transparent;
+  transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
-.mkt-nav { display: flex; align-items: center; gap: clamp(0.6rem, 2vw, 1.5rem); font-size: 0.87rem; }
-.mkt-nav a:not(.mkt-nav-cta) { color: var(--mk-dim); transition: color 0.18s; }
-.mkt-nav a:not(.mkt-nav-cta):hover { color: var(--mk-gold-2); }
-.mkt-nav-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 1.05rem;
-  border: 1px solid var(--mk-gold);
+.mkt-rail-btn:hover {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(167, 139, 250, 0.55);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.35), 0 0 22px 4px rgba(139, 92, 246, 0.55);
+  transform: translateY(-2px);
+}
+.mkt-rail-cta {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
   border-radius: 999px;
-  font-weight: 700;
-  color: var(--mk-gold-2) !important;
-  transition: background 0.2s, box-shadow 0.2s;
+  color: #fff;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed 55%, #6d28d9);
+  box-shadow:
+    0 0 0 1px rgba(196, 181, 253, 0.6),
+    0 0 26px 4px rgba(139, 92, 246, 0.7),
+    0 0 50px 10px rgba(139, 92, 246, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
 }
-.mkt-nav-cta:hover {
-  background: rgba(139, 92, 246, 0.12);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+.mkt-rail-cta:hover {
+  transform: scale(1.08);
+  filter: brightness(1.12);
+  box-shadow:
+    0 0 0 1.5px rgba(196, 181, 253, 0.8),
+    0 0 34px 6px rgba(139, 92, 246, 0.85),
+    0 0 70px 14px rgba(139, 92, 246, 0.45);
+}
+@media (max-width: 30rem) {
+  /* شاشةٌ ضيّقةٌ جدّاً: عرضٌ أقلّ يكفي أربعَ أيقوناتٍ وختماً وزرّاً */
+  .mkt-rail { width: 3.8rem; }
+  .mkt-rail-btn { width: 2.4rem; height: 2.4rem; }
 }
 
 /* ── الهيرو ──
@@ -6368,8 +6413,8 @@ select.inp {
   --mk-blue: #3b82f6;
   --mk-blue-2: #60a5fa;
   --mk-parch: #f5f3ff;
-  --mk-dim: #b8c1dc;
-  --mk-dim-2: #8994b5;
+  --mk-dim: #f0eefc;
+  --mk-dim-2: #ddd6fe;
   --mk-line: rgba(139, 92, 246, 0.42);
   --mk-line-2: rgba(96, 165, 250, 0.22);
   background: #080b1a;
@@ -6411,7 +6456,7 @@ select.inp {
 }
 .mkt-diagram-center-mark { background: #312e81; color: #ffffff; }
 .mkt-diagram-center small,
-.mkt-diagram-node-copy small { color: #a5b4fc; }
+.mkt-diagram-node-copy small { color: #ddd6fe; }
 .mkt-diagram-node {
   border-color: rgba(96, 165, 250, 0.34);
   background: #111936;
@@ -6421,7 +6466,7 @@ select.inp {
 .mkt-diagram-node-icon { background: #0b1024; }
 .mkt-trust { border-top-color: rgba(139, 92, 246, 0.28); }
 .mkt-trust-v { background: #0e1429; color: #f5f3ff; }
-.mkt-trust-l { color: #a5b4fc; }
+.mkt-trust-l { color: #ddd6fe; }
 .mkt-section:nth-of-type(even) { background: #0b1024; }
 .mkt-h2 { color: #f5f3ff; }
 .mkt-head-sub,
@@ -6429,7 +6474,7 @@ select.inp {
 .mkt-feat-d,
 .mkt-plan-desc,
 .mkt-plan-cur,
-.mkt-plan-feats li { color: #b8c1dc; }
+.mkt-plan-feats li { color: #f0eefc; }
 .mkt-step .mkt-seal-in { background: #111936; color: #e0e7ff; }
 .mkt-feat,
 .mkt-feats > *:first-child .mkt-feat,
@@ -6444,7 +6489,7 @@ select.inp {
 .mkt-plan-name { color: #f5f3ff; }
 .mkt-faq { border-color: rgba(96, 165, 250, 0.24); }
 .mkt-faq-q { color: #f5f3ff; }
-.mkt-faq-a { color: #b8c1dc; }
+.mkt-faq-a { color: #f0eefc; }
 .mkt-faq.is-open { background: rgba(139, 92, 246, 0.12); }
 .mkt-final {
   border-color: rgba(139, 92, 246, 0.4);
@@ -7469,17 +7514,17 @@ select.inp {
   background: #080b1a;
   color: #f5f3ff;
   --mk-parch: #f5f3ff;
-  --mk-dim: #b8c1dc;
-  --mk-dim-2: #8994b5;
+  --mk-dim: #f0eefc;
+  --mk-dim-2: #ddd6fe;
 }
 .mkt-bar { background: rgba(8, 11, 26, 0.92); border-bottom-color: rgba(139, 92, 246, 0.3); }
 .mkt-hero-text { border-color: rgba(139, 92, 246, 0.34); background: rgba(14, 20, 41, 0.9); }
 .mkt-h1, .mkt-h2, .mkt-feat-t, .mkt-plan-name, .mkt-faq-q, .mkt-final-h { color: #f5f3ff; }
 .mkt-h1-em { color: #93c5fd; }
-.mkt-lede, .mkt-head-sub, .mkt-step-d, .mkt-feat-d, .mkt-plan-desc, .mkt-plan-cur, .mkt-plan-feats li, .mkt-faq-a { color: #b8c1dc; }
+.mkt-lede, .mkt-head-sub, .mkt-step-d, .mkt-feat-d, .mkt-plan-desc, .mkt-plan-cur, .mkt-plan-feats li, .mkt-faq-a { color: #f0eefc; }
 .mkt-diagram { border-color: rgba(139, 92, 246, 0.32); background: linear-gradient(rgba(139, 92, 246, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.06) 1px, transparent 1px), #0b1024; }
 .mkt-diagram-center { background: #0e1429; border-color: #8b5cf6; color: #f5f3ff; }
-.mkt-diagram-center small, .mkt-diagram-node-copy small, .mkt-trust-l { color: #a5b4fc; }
+.mkt-diagram-center small, .mkt-diagram-node-copy small, .mkt-trust-l { color: #ddd6fe; }
 .mkt-diagram-node { border-color: rgba(96, 165, 250, 0.34); background: #111936; color: #f5f3ff; }
 .mkt-diagram-node.tone-blue   { color: #60a5fa; }
 .mkt-diagram-node.tone-green  { color: #4ade80; }
@@ -8204,4 +8249,18 @@ section.glass:hover {
 .mkt-feat-icon.tone-navy,
 .mkt-feat-icon.tone-orange {
   color: #fff !important;
+}
+/* نصوصٌ ثانويّةٌ بيضاءُ عالية التباين — لا رماديّةٌ خافتة */
+.mkt-lede,
+.mkt-head-sub,
+.mkt-step-d,
+.mkt-feat-d,
+.mkt-plan-desc,
+.mkt-plan-cur,
+.mkt-plan-feats li,
+.mkt-faq-a,
+.mkt-diagram-center small,
+.mkt-diagram-node-copy small,
+.mkt-trust-l {
+  color: #f0eefc !important;
 }
