@@ -5,6 +5,7 @@ import type { BrandPreset, SubjectCategory, StageCategory, PersonalityCategory, 
 import { matchPresets } from "@/lib/hub/presets";
 import type { SaasPlan, Tenant } from "@/lib/hub/types";
 import { PresetPreview, PresetMiniPreview } from "@/components/hub/preset-preview";
+import { withoutHarakat as noHarakat } from "@/lib/utils/text";
 
 type ManualMethod = { kind: "instapay" | "wallet" | "bank"; label: string; number: string; active: boolean };
 type Payment = {
@@ -152,13 +153,35 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
     await load();
   };
 
-  const checkSlug = async (value: string) => {
-    setSlug(value);
-    setSlugMsg(null);
-    if (value.length < 3) return;
-    const d = await call({ action: "slug-check", slug: value });
-    if (d) setSlugMsg({ ok: d.ok, text: d.ok ? "الرابط متاح ✓" : d.reason });
-  };
+  /*
+    التحقّقُ كان يُرسَل مع كلّ ضغطة مفتاحٍ عبر `call()` المشتركة — فتتسابق
+    عشرُ طلباتٍ لعشرةِ أحرفٍ، وأبطأُها قد يصل آخراً فيَكتب رسالةَ حرفٍ
+    ناقصٍ فوق نتيجة الكلمة الكاملة؛ ومرّت هذه الطلباتُ على `busy` نفسِها
+    التي يُقفَل بها زرُّ «التالي»، فيرمش قفلاً وفتحاً مع كلّ حرف.
+    فصار التحقّقُ يهدأ ٤٠٠ملّي بعد آخر حرفٍ لا معه، وطلبُ سلاسل السباق
+    يُسقَط بمقارنة القيمة عند العودة لا عند الإرسال — ولا يمسّ `busy`
+    المشتركة إطلاقاً.
+  */
+  const slugSeq = useRef(0);
+  useEffect(() => {
+    if (slug.length < 3) { setSlugMsg(null); return; }
+    const seq = ++slugSeq.current;
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/start", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "slug-check", slug }),
+        });
+        const d = await res.json().catch(() => null);
+        /* رَدٌّ متأخّرٌ لسؤالٍ سابق — أُسقِط، فالأحدثُ وحدَه يُعرَض */
+        if (seq !== slugSeq.current) return;
+        if (d) setSlugMsg({ ok: d.ok, text: d.ok ? "الرابط متاح ✓" : d.reason });
+      } catch {
+        if (seq === slugSeq.current) setSlugMsg(null);
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [slug]);
 
   const pickPlan = async (planId: string) => {
     const d = await call({ action: "plan", planId });
@@ -296,10 +319,9 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
       <Shell>
         <Panel>
           <span className="ob-wait-spin" />
-          <h1 className="ob-title">منصّتك قيد المراجعة</h1>
+          <h1 className="ob-title">{noHarakat("منصّتك قيد المراجعة")}</h1>
           <p className="ob-sub">
-            راجعنا طلبك وسنفعّل منصّتك قريباً. تُحدَّث هذه الصفحة تلقائياً فور التفعيل،
-            وستظهر بيانات الدخول هنا.
+            {noHarakat("راجعنا طلبك وسنفعّل منصّتك قريباً. تُحدَّث هذه الصفحة تلقائياً فور التفعيل، وستظهر بيانات الدخول هنا.")}
           </p>
           <OwnerBar owner={state.owner} />
         </Panel>
@@ -324,7 +346,11 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
                 <MyTenant key={t.id} t={t} onReveal={() => reveal(t.id)} />
               ))}
             </ul>
-            <PlanGrid plans={state.plans} onPick={pickPlan} busy={busy} title="أنشئ منصّة جديدة" />
+            {/*
+              لا «أنشئ منصّة جديدة» هنا: كلُّ حسابٍ يملك منصّةً واحدة — فمن
+              رأى منصّتَه أعلاه لا يُعرَض عليه فتحُ ثانية، فيُصادف رفضاً من
+              الخادم على زرٍّ كان يبدو مُتاحاً.
+            */}
           </Panel>
         </Shell>
       );
@@ -355,7 +381,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         {error && <p className="ob-error">{error}</p>}
 
         {step === "name" && (
-          <StepBox title="اسم المنصّة" desc="ما يراه طلابك في كل مكان — اختره بعناية.">
+          <StepBox title={noHarakat("اسم المنصّة")} desc={noHarakat("ما يراه طلابك في كل مكان — اختره بعناية.")}>
             <label className="lbl">اسم المنصّة</label>
             <input className="inp w-full" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} placeholder="مثال: أكاديمية النور" />
             <label className="lbl mt-3">وصف مختصر</label>
@@ -363,7 +389,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
             <label className="lbl mt-3">معرّف المنصّة</label>
             <div className="ob-slug">
               <span className="ob-slug-prefix" dir="ltr">/t/</span>
-              <input className="inp flex-1" dir="ltr" value={slug} onChange={(e) => checkSlug(e.target.value.toLowerCase())} placeholder="al-noor" />
+              <input className="inp flex-1" dir="ltr" value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase())} placeholder="al-noor" />
             </div>
             {urlBase && slug.length >= 3 && (
               <p className="ob-url-preview" dir="ltr">{urlBase}/t/{slug}</p>
@@ -378,7 +404,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         )}
 
         {step === "logo" && (
-          <StepBox title="شعار المنصّة" desc="صورةٌ أو شعارٌ يمثّل منصّتك (اختياري — يمكنك إضافته لاحقاً).">
+          <StepBox title={noHarakat("شعار المنصّة")} desc={noHarakat("صورةٌ أو شعارٌ يمثّل منصّتك (اختياري — يمكنك إضافته لاحقاً).")}>
             <div className="ob-logo-row">
               <div className="ob-logo-preview">
                 {logo ? <img src={logo} alt="" /> : <span>لا صورة</span>}
@@ -397,7 +423,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         )}
 
         {step === "identity" && (
-          <StepBox title="هويّة منصّتك" desc="أجب عن أسئلة سريعة ونختار لك التصميم الأمثل تلقائياً.">
+          <StepBox title={noHarakat("هويّة منصّتك")} desc={noHarakat("أجب عن أسئلة سريعة ونختار لك التصميم الأمثل تلقائياً.")}>
 
             {/* نقاطُ التقدّم داخل الاختبار نفسِه — أربعةٌ لا أكثر، فتبقى مقروءةً بنظرة */}
             <div className="ob-quiz-dots" role="progressbar" aria-valuenow={quizQ + 1} aria-valuemin={1} aria-valuemax={QUIZ_STEPS}>
@@ -507,7 +533,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         )}
 
         {step === "design" && (
-          <StepBox title="هويّة المنصّة" desc="اخترنا لك الأنسب — غيّر إن أحببت، يمكنك تعديله لاحقاً.">
+          <StepBox title={noHarakat("هويّة المنصّة")} desc={noHarakat("اخترنا لك الأنسب — غيّر إن أحببت، يمكنك تعديله لاحقاً.")}>
             <PresetPreview preset={presets.find((p) => p.id === presetId) ?? presets[0]} colors={colors} />
             <div className="ob-preset-grid">
               {sortedPresets.map((pr, i) => (
@@ -541,7 +567,7 @@ export function OnboardingWizard({ devSignin, presets }: { devSignin: boolean; p
         )}
 
         {step === "review" && (
-          <StepBox title="مراجعة وإنشاء" desc="تأكّد من البيانات، ثم أنشئ منصّتك.">
+          <StepBox title={noHarakat("مراجعة وإنشاء")} desc={noHarakat("تأكّد من البيانات، ثم أنشئ منصّتك.")}>
             <ul className="ob-review">
               <li><span>الاسم</span><b>{name || draft.name}</b></li>
               <li><span>الرابط</span><b dir="ltr">{urlBase}/t/{slug || draft.slug}</b></li>

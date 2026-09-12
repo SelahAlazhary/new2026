@@ -7,8 +7,7 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { SaasPlan } from "@/lib/hub/types";
 import { planPrice } from "@/lib/business/plans";
 import { ArrowLeft, ChevronDown, Check, Video, ShieldCheck, Wallet, Globe2, Smartphone, BarChart3 } from "lucide-react";
-
-const withoutHarakat = (text: string) => text.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "");
+import { withoutHarakat } from "@/lib/utils/text";
 
 /* ═══════════════════════════════════════════════════════════════
    SpotLight Studio — صفحة الموقع الأمّ · «الديوان»

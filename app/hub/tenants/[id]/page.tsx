@@ -52,7 +52,15 @@ export default async function TenantPage({ params }: { params: Promise<{ id: str
           <p className="truncate text-[12px] text-muted-foreground" dir="ltr">{base}</p>
         </div>
         <StatusPill status={tenant.status} />
-        {tenant.status === "active" && <ImpersonateBtn tenantId={tenant.id} />}
+        {/*
+          الشرطُ كان `status === "active"` وحدَها — فمنصّةٌ أُوقفت أو
+          انتهى اشتراكُها تفقد زرَّ الدخول رغم أنّ حسابَ مديرها قائمٌ فعلاً
+          (التجهيزُ وقع وقتَ أوّل تفعيلٍ ولا يُمحى بعده). و`activatedAt`
+          هو العلامةُ الصحيحة: «هل جُهِّزت هذه المنصّةُ يوماً؟» — لا حالتُها
+          الآن. أمّا التي لم تُفعَّل بعد (`onboarding`/`pending_approval`)
+          فلا حسابَ مديرٍ فيها أصلاً، والدخولُ إليها سيفشل محقّاً.
+        */}
+        {tenant.activatedAt && <ImpersonateBtn tenantId={tenant.id} />}
       </header>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">

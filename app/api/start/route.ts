@@ -35,6 +35,20 @@ async function currentDraft(ownerId: string): Promise<Tenant | null> {
   return mine.find((t) => t.status === "onboarding" || t.status === "pending_approval") ?? null;
 }
 
+/**
+ * منصّةٌ فُعِّلت بالفعل لهذا المالك — إن وُجدت فلا مسوَّدةَ ثانية.
+ * ------------------------------------------------------------------
+ * `currentDraft` تتعمّد تجاهل `active`: فمن أكمل رحلتَه لا يُحسب صاحبَ
+ * مسوَّدةٍ معلَّقة. وهذا صوابٌ لغرضه هو — لكنّه ترك ثغرةً: من فُعِّلت
+ * منصّتُه ثمّ عاد لخطوة «اختيار الخطّة» يجد `currentDraft` فارغةً،
+ * فيُنشئ الكودُ مسوَّدةً **ثانيةً** لصاحبٍ لديه بالفعل منصّةٌ عاملة —
+ * ومنه صار البريدُ الواحد يملك عدّةَ منصّات، لا واحدةً كما يُفترض.
+ */
+async function activeTenant(ownerId: string): Promise<Tenant | null> {
+  const mine = (await listTenants()).filter((t) => t.ownerId === ownerId);
+  return mine.find((t) => t.status === "active") ?? null;
+}
+
 export async function POST(req: Request) {
   if (!(await isHubHost())) return NextResponse.json({ error: "غير موجود" }, { status: 404 });
   if (!(await sameOrigin(req))) return NextResponse.json({ error: "طلب غير صالح" }, { status: 403 });
@@ -62,6 +76,13 @@ export async function POST(req: Request) {
 
       let draft = await currentDraft(owner.id);
       if (!draft) {
+        const already = await activeTenant(owner.id);
+        if (already) {
+          return NextResponse.json(
+            { error: "لديك منصّةٌ بالفعل — كلُّ حسابٍ يملك منصّةً واحدة", code: "already_has_tenant", tenantId: already.id },
+            { status: 409 }
+          );
+        }
         const id = hubId("t");
         const slug = await availableSlug(owner.name || owner.email.split("@")[0]);
         draft = {

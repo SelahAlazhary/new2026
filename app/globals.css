@@ -7481,6 +7481,11 @@ select.inp {
 .mkt-diagram-center { background: #0e1429; border-color: #8b5cf6; color: #f5f3ff; }
 .mkt-diagram-center small, .mkt-diagram-node-copy small, .mkt-trust-l { color: #a5b4fc; }
 .mkt-diagram-node { border-color: rgba(96, 165, 250, 0.34); background: #111936; color: #f5f3ff; }
+.mkt-diagram-node.tone-blue   { color: #60a5fa; }
+.mkt-diagram-node.tone-green  { color: #4ade80; }
+.mkt-diagram-node.tone-cyan   { color: #22d3ee; }
+.mkt-diagram-node.tone-navy   { color: #cbd5e1; }
+.mkt-diagram-node.tone-orange { color: #fb923c; }
 .mkt-diagram-node-icon, .mkt-step .mkt-seal-in, .mkt-trust-v { background: #0e1429; }
 .mkt-section:nth-of-type(even) { background: #0b1024; }
 .mkt-feat, .mkt-feats > *:first-child .mkt-feat, .mkt-plan, .mkt-plan.is-hot { border-color: rgba(96, 165, 250, 0.3); background: #0e1429; box-shadow: 0 14px 32px rgba(3, 7, 18, 0.42); }
@@ -7488,44 +7493,6 @@ select.inp {
 .mkt-faq.is-open { background: rgba(139, 92, 246, 0.12); }
 .mkt-final { border-color: rgba(139, 92, 246, 0.4); background: linear-gradient(135deg, #111936, #17104a); }
 .mkt-foot { background: #060816; border-top-color: rgba(139, 92, 246, 0.28); }
-
-/* إعادة الصفحة إلى الوضع الفاتح */
-.mkt {
-  --mk-ink: #ffffff;
-  --mk-ink-2: #f8fafc;
-  --mk-ink-3: #eef5f8;
-  --mk-gold: #0ea5a8;
-  --mk-gold-2: #075985;
-  --mk-blue: #2563eb;
-  --mk-blue-2: #38bdf8;
-  --mk-parch: #172554;
-  --mk-dim: #475569;
-  --mk-dim-2: #64748b;
-  background: #ffffff;
-  color: #172554;
-}
-.mkt-bar { background: rgba(255, 255, 255, 0.92); border-bottom-color: #dbeafe; }
-.mkt-brand-name, .mkt-nav a:not(.mkt-nav-cta) { color: #172554; }
-.mkt-hero-text { border-color: rgba(226, 232, 240, 0.72); background: rgba(255, 255, 255, 0.86); }
-.mkt-h1, .mkt-h2, .mkt-feat-t, .mkt-plan-name, .mkt-faq-q, .mkt-final-h { color: #172554; }
-.mkt-h1-em { color: #075985; }
-.mkt-lede, .mkt-head-sub, .mkt-step-d, .mkt-feat-d, .mkt-plan-desc, .mkt-plan-cur, .mkt-plan-feats li, .mkt-faq-a { color: #64748b; }
-.mkt-diagram { border-color: rgba(226, 232, 240, 0.7); background: linear-gradient(rgba(37, 99, 235, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px), #ffffff; }
-.mkt-diagram-center { background: #ffffff; border-color: #0ea5a8; color: #172554; }
-.mkt-diagram-center small, .mkt-diagram-node-copy small, .mkt-trust-l { color: #64748b; }
-.mkt-diagram-node { border-color: #dbe5ef; background: #ffffff; color: #172554; }
-.mkt-diagram-node.tone-blue { color: #2563eb; }
-.mkt-diagram-node.tone-green { color: #65a30d; }
-.mkt-diagram-node.tone-cyan { color: #0891b2; }
-.mkt-diagram-node.tone-navy { color: #172554; }
-.mkt-diagram-node.tone-orange { color: #ea580c; }
-.mkt-diagram-node-icon, .mkt-step .mkt-seal-in, .mkt-trust-v { background: #ffffff; }
-.mkt-section:nth-of-type(even) { background: #f8fbfd; }
-.mkt-feat, .mkt-feats > *:first-child .mkt-feat, .mkt-plan, .mkt-plan.is-hot { border-color: #dbeafe; background: #ffffff; box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07); }
-.mkt-faq { border-color: #dbeafe; }
-.mkt-faq.is-open { background: #effbfc; }
-.mkt-final { border-color: #bae6fd; background: linear-gradient(135deg, #f0fdfa, #eff6ff); }
-.mkt-foot { background: #ffffff; border-top-color: #dbeafe; }
 
 /* ============================================================
   رحلةُ إنشاء المنصّة (Onboarding)
@@ -7615,33 +7582,49 @@ select.inp {
   الحقولَ تحته؛ والعمودُ الجانبيُّ يبقى ظاهراً طَوال العمل على الخطوة.
   والخطُّ الواصل صار رأسياً بين النقاط بدل أفقيٍّ بينها.
 */
-.ob-layout { display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 2rem; }
+/*
+  ملاحظةٌ حاسمة: الصفحةُ عربيّةٌ (`dir="rtl"`) — و`flex-direction: row`
+  فيها يضع الابنَ الأوّلَ يميناً من تلقاء نفسه؛ فـ`row-reverse` هنا
+  عكسٌ زائدٌ يعيده يساراً، وهو ما وقع أوّلَ مرّة. فلا عكسَ في هذا القسم
+  كلِّه — الترتيبُ الطبيعيُّ هو المطلوب.
+*/
+.ob-layout { display: flex; align-items: flex-start; gap: 2rem; }
 .ob-main { flex: 1 1 0; min-width: 0; }
 .ob-progress {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 0;
-  flex-shrink: 0; width: 9.5rem; padding-inline-start: 1.5rem;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+  flex-shrink: 0; width: 10.5rem; padding-inline-start: 1.5rem;
   border-inline-start: 1px solid var(--ob-line);
 }
 .ob-progress-step {
-  display: flex; flex-direction: row-reverse; align-items: center; gap: .7rem;
-  position: relative; padding-block: .1rem;
+  display: flex; align-items: center; gap: .8rem;
+  position: relative; padding-block: .55rem;
 }
 .ob-progress-dot {
-  width: 2.2rem; height: 2.2rem; border-radius: 999px; display: grid; place-items: center;
-  background: var(--ob-bg); color: var(--ob-dim); font-size: 0.84rem; font-weight: 800;
+  width: 2.4rem; height: 2.4rem; border-radius: 999px; display: grid; place-items: center;
+  background: var(--ob-card); color: var(--ob-dim); font-size: 0.9rem; font-weight: 800;
   flex-shrink: 0; border: 2px solid var(--ob-line); transition: all .3s ease; position: relative; z-index: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
-.ob-progress-label { white-space: nowrap; font-size: 0.8rem; color: var(--ob-dim); transition: color .3s; text-align: end; }
+.ob-progress-label { white-space: nowrap; font-size: 0.85rem; font-weight: 600; color: var(--ob-dim); transition: color .3s; }
 .ob-progress-line {
-  position: absolute; inset-inline-end: 1.05rem; top: 2.2rem; bottom: -1.5rem;
-  width: 2px; background: var(--ob-line); transition: background .3s;
+  position: absolute; inset-inline-start: 1.2rem; top: 2.4rem; bottom: -.55rem;
+  width: 2px; background: var(--ob-line); transition: background .4s;
 }
 .ob-progress-step:last-child { padding-bottom: 0; }
-.ob-progress-step.done .ob-progress-dot { background: rgba(16,185,129,.15); color: #34d399; border-color: rgba(16,185,129,.4); }
+.ob-progress-step.done .ob-progress-dot {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 0 1px rgba(52,211,153,.5), 0 0 16px 2px rgba(16,185,129,.4);
+}
 .ob-progress-step.done .ob-progress-label { color: #34d399; font-weight: 700; }
-.ob-progress-step.done .ob-progress-line { background: rgba(16,185,129,.4); }
-.ob-progress-step.active .ob-progress-dot { background: var(--ob-primary); color: #fff; border-color: var(--ob-primary); box-shadow: 0 0 0 4px rgba(139,92,246,.2); }
-.ob-progress-step.active .ob-progress-label { color: var(--ob-primary); font-weight: 700; }
+.ob-progress-step.done .ob-progress-line { background: linear-gradient(180deg, #34d399, var(--ob-line)); }
+.ob-progress-step.active .ob-progress-dot {
+  background: linear-gradient(135deg, var(--ob-accent), var(--ob-primary));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 0 1px rgba(167,139,250,.6), 0 0 20px 4px rgba(139,92,246,.55), 0 0 40px 8px rgba(139,92,246,.25);
+  transform: scale(1.06);
+}
+.ob-progress-step.active .ob-progress-label { color: #fff; font-weight: 800; }
 
 @media (max-width: 40rem) {
   /* الجوّالُ ضيّق — يعود الشريطُ أفقياً في أعلى اللوح كما كان */
@@ -7650,9 +7633,9 @@ select.inp {
     flex-direction: row; align-items: flex-start; width: 100%;
     padding-inline-start: 0; border-inline-start: 0; gap: 0;
   }
-  .ob-progress-step { flex-direction: column; flex: 1; min-width: 0; gap: .4rem; }
-  .ob-progress-label { position: absolute; top: 2.6rem; white-space: nowrap; font-size: .7rem; }
-  .ob-progress-line { position: static; width: auto; height: 2px; flex: 1; top: auto; inset-inline-end: auto; margin-top: 1.1rem; }
+  .ob-progress-step { flex-direction: column; flex: 1; min-width: 0; gap: .4rem; padding-block: 0; }
+  .ob-progress-label { position: absolute; top: 2.8rem; white-space: nowrap; font-size: .68rem; }
+  .ob-progress-line { position: static; width: auto; height: 2px; flex: 1; top: auto; inset-inline-start: auto; margin-top: 1.2rem; }
 }
 
 .ob-step-title { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: 1.3rem; }

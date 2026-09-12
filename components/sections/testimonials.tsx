@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/ui/primitives";
 import { useContent } from "@/components/content/content-provider";
 import { IconStar, IconTrophy } from "@/components/brand/icons";
-import { CornerKnot } from "@/components/brand/pattern";
 import { mediaSrc } from "@/lib/utils/media";
 import { findSectionStyle, sectionClass, sxGridClass } from "@/lib/styles/section-styles";
 import type { Testimonial } from "@/lib/utils/types";
@@ -75,8 +74,6 @@ function FeaturedCard({ t, brand }: { t: Testimonial; brand?: boolean }) {
       transition={{ duration: 0.5 }}
       className={`sx-card relative overflow-hidden rounded-3xl p-5 sm:p-7 ${brand ? "glass border border-primary/30" : ""}`}
     >
-      <CornerKnot size={84} className="sx-knot pointer-events-none absolute bottom-0 left-0 hidden text-primary/25 sm:block" />
-
       <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         <Avatar t={t} size={88} className="size-16 sm:size-[5.5rem]" />
 
