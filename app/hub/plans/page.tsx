@@ -1,10 +1,12 @@
 import { listPlans } from "@/lib/hub/plans";
 import { PlansEditor } from "@/components/hub/plans-editor";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "خطط الاشتراك" };
 
 export default async function HubPlansPage() {
+  await requireSuperPage();
   const plans = await listPlans();
   return (
     <>

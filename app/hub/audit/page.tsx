@@ -1,10 +1,12 @@
 import { readAudit } from "@/lib/hub/audit";
 import { actionLabel } from "@/lib/hub/labels";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "سجلّ التدقيق" };
 
 export default async function AuditPage() {
+  await requireSuperPage();
   const events = await readAudit({ limit: 300 });
 
   return (

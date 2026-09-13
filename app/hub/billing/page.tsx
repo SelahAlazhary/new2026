@@ -2,6 +2,7 @@ import { listInvoices } from "@/lib/hub/invoices";
 import { listTenants } from "@/lib/hub/registry";
 import { getHubSettings } from "@/lib/hub/settings";
 import { InvoiceActions } from "@/components/hub/invoice-actions";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "الفواتير والإيراد" };
@@ -15,6 +16,7 @@ const STATUS_TONE: Record<string, string> = {
 };
 
 export default async function BillingPage() {
+  await requireSuperPage();
   const [invoices, tenants, settings] = await Promise.all([listInvoices(), listTenants(), getHubSettings()]);
   const name = (id: string) => tenants.find((t) => t.id === id)?.name || tenants.find((t) => t.id === id)?.slug || id;
   const paid = invoices.filter((i) => i.status === "paid");

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listTenants } from "@/lib/hub/registry";
 import { StatusPill } from "@/components/hub/status-pill";
 import { RequestActions } from "@/components/hub/request-actions";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "الطلبات" };
@@ -12,6 +13,7 @@ export const metadata = { title: "الطلبات" };
  * مراحلَ تالية الفواتيرُ اليدويّة والدوميناتُ التي تنتظر تحقّقاً.
  */
 export default async function RequestsPage() {
+  await requireSuperPage();
   const all = await listTenants();
   const waiting = all.filter((t) => t.status === "pending_approval");
   const building = all.filter((t) => t.status === "onboarding");

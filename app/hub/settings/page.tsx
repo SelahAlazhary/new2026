@@ -1,11 +1,12 @@
 import { getHubSettings } from "@/lib/hub/settings";
-import { listSupers } from "@/lib/hub/session";
+import { listSupers, requireSuperPage } from "@/lib/hub/session";
 import { HubSettingsForm } from "@/components/hub/settings-form";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "الإعدادات" };
 
 export default async function HubSettingsPage() {
+  await requireSuperPage();
   const [settings, supers] = await Promise.all([getHubSettings(), listSupers()]);
 
   return (

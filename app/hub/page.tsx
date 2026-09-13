@@ -3,12 +3,14 @@ import { listTenants } from "@/lib/hub/registry";
 import { readAudit } from "@/lib/hub/audit";
 import { StatusPill } from "@/components/hub/status-pill";
 import { actionLabel } from "@/lib/hub/labels";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "نظرة عامة" };
 
 /** أرقامٌ صمّاءُ لا تُعرض: كلُّ رقمٍ هنا يقود إلى شاشةٍ تُفعل فيها شيئاً. */
 export default async function HubOverview() {
+  await requireSuperPage();
   const tenants = await listTenants();
   const events = await readAudit({ limit: 8 });
 

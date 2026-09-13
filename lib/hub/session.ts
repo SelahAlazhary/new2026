@@ -1,6 +1,7 @@
 import "server-only";
 import crypto from "crypto";
 import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { AUTH_SECRET } from "@/lib/auth/secrets";
 import { hashPassword, verifyPassword } from "@/lib/db/db";
 import { ensureDeviceId, deviceLabel } from "@/lib/auth/device";
@@ -150,4 +151,20 @@ export async function requireSuper(): Promise<SuperAdmin | null> {
     if (device !== rec.deviceId) return null;
   }
   return rec;
+}
+
+/**
+ * حارسٌ ثانٍ مستقلٌّ يُستدعى في **أوّل سطرٍ من كل صفحة** Hub — لا في
+ * التخطيط وحده. تخطيط `/hub` يتحقّق أيضاً، لكنّ تحقّقه قد يتأخّر خلف
+ * جلبِ بيانات الصفحة (Next تبثّ حالة ٢٠٠ فور تعليق أي مكوّنٍ غير
+ * متزامن تحت حدّ Suspense، فيصل ردٌّ ناجحٌ ومعه حمولة RSC كاملة لزائرٍ
+ * لم توثَّق هويّته إن جاء تحويلُ التخطيط متأخّراً بجزءِ ثانية). فتُستدعى
+ * هذه الدالّة **قبل** أي قراءةٍ لبيانات المنصّات في الصفحة نفسها، فلا
+ * تُجلَب بياناتٌ حسّاسةٌ أصلاً إن لم يُوثَّق الحساب — بصرف النظر عن حالة
+ * الاستجابة النهائيّة.
+ */
+export async function requireSuperPage(): Promise<SuperAdmin> {
+  const me = await requireSuper();
+  if (!me) redirect("/hub/login");
+  return me;
 }

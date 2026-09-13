@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listTenants } from "@/lib/hub/registry";
 import { StatusPill, STATUS_LABEL } from "@/components/hub/status-pill";
 import type { TenantStatus } from "@/lib/hub/types";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "المنصّات" };
@@ -19,6 +20,7 @@ export default async function TenantsPage({
 }: {
   searchParams: Promise<{ status?: string; q?: string }>;
 }) {
+  await requireSuperPage();
   const { status = "all", q = "" } = await searchParams;
   const all = await listTenants();
   const needle = q.trim().toLowerCase();

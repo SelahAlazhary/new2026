@@ -11,10 +11,12 @@ import { DomainManager } from "@/components/hub/domain-manager";
 import { ImpersonateBtn } from "@/components/hub/impersonate-btn";
 import { StatusPill } from "@/components/hub/status-pill";
 import { actionLabel } from "@/lib/hub/labels";
+import { requireSuperPage } from "@/lib/hub/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function TenantPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireSuperPage();
   const { id } = await params;
   const tenant = await tenantById(id);
   if (!tenant) notFound();

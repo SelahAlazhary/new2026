@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { HubShell } from "@/components/hub/hub-shell";
 import { requireSuper } from "@/lib/hub/session";
-import { isHubHost } from "@/lib/hub/guard-host";
 import { listTenants } from "@/lib/hub/registry";
 import { notFound } from "next/navigation";
 
@@ -21,9 +20,10 @@ export const metadata = { title: "لوحة المنصّات", robots: { index: f
  *   ٣) **صفحةُ الدخول** مستثناةٌ من الثانية وحدَها — وإلّا دارت الإحالة.
  */
 export default async function HubLayout({ children }: { children: ReactNode }) {
-  if (!(await isHubHost())) notFound();
+  const h = await headers();
+  if ((h.get("x-host-kind") ?? "root") !== "root") notFound();
 
-  const path = (await headers()).get("x-pathname") ?? "";
+  const path = h.get("x-pathname") ?? "";
   if (path.startsWith("/hub/login")) return <>{children}</>;
 
   const me = await requireSuper();

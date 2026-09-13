@@ -150,7 +150,7 @@ function stampTenant(h: Headers, kind: HostKind) {
   );
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // فحص آلي معروف → يُسجَّل ثم يُردّ ٤٠٤ بلا أي تفاصيل
