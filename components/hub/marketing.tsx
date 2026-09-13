@@ -36,7 +36,7 @@ const FEATURES = [
   { t: "بوّاباتُ دفعٍ محليّة", d: "فودافون كاش وإنستاباي والفيزا، وأكوادُ شحنٍ تُفعَّل في ثانية.", tone: "green", Icon: Wallet },
   { t: "نطاقُك واسمُك", d: "اربط نطاقَك المملوكَ لك فتظهر أكاديميّةً مستقلّةً لا صفحةً على موقعِ غيرك.", tone: "cyan", Icon: Globe2 },
   { t: "تطبيقٌ بلا متجر", d: "يُثبَّت على الهاتف كتطبيقٍ خفيفٍ بلا تحميلٍ من متجر.", tone: "orange", Icon: Smartphone },
-  { t: "تقاريرُ تُقرأ", d: "درجاتٌ ونسبُ مشاهدةٍ وإيرادٌ وحضور — أرقامٌ تُبنى عليها قرارات.", tone: "blue", Icon: BarChart3 },
+  { t: "تقاريرُ تُقرأ فعلاً", d: "درجاتٌ ونسبُ مشاهدةٍ وإيرادٌ وحضور — أرقامٌ تُبنى عليها قرارات.", tone: "blue", Icon: BarChart3 },
 ].map((item) => ({ ...item, t: withoutHarakat(item.t), d: withoutHarakat(item.d) }));
 
 /** أربعُ هيئاتِ دخولٍ متتابعةٌ — لا تكرارَ الشكل نفسِه على بطاقاتٍ متجاورة. */
@@ -265,7 +265,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         </Link>
 
         <nav className="mkt-rail-nav">
-          <a href="#how" title="الطريق" className="mkt-rail-btn"><Compass className="size-5" /></a>
+          <a href="#how" title="الخطوات" className="mkt-rail-btn"><Compass className="size-5" /></a>
           <a href="#features" title="ما تملكه" className="mkt-rail-btn"><Sparkles className="size-5" /></a>
           <a href="#plans" title="الأسعار" className="mkt-rail-btn"><Tag className="size-5" /></a>
           <a href="#faq" title="أسئلة" className="mkt-rail-btn"><HelpCircle className="size-5" /></a>
@@ -312,7 +312,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
             <Link href="/start" className="mkt-cta">
               {withoutHarakat("أنشئ منصّتك الآن")} <ArrowLeft className="size-4" />
             </Link>
-            <a href="#how" className="mkt-cta-ghost">كيف تسير؟</a>
+            <a href="#how" className="mkt-cta-ghost">كيف تعمل؟</a>
           </div>
         </div>
         </Reveal>
@@ -374,7 +374,6 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
           {FEATURES.map((f, i) => (
             <Reveal key={f.t} delay={(i % 3) * 0.07} from={FEATURE_FROM[i % FEATURE_FROM.length]}>
               <article className="mkt-feat">
-                <Corner className="mkt-feat-corner" />
                 <span className={`mkt-feat-icon tone-${f.tone}`}>
                   <f.Icon className="size-5" />
                 </span>
@@ -457,6 +456,7 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
               <Reveal key={f.q} delay={i * 0.04} from={i % 2 ? "left" : "right"}>
                 <div className={`mkt-faq ${open ? "is-open" : ""}`}>
                   <button type="button" onClick={() => setOpenFaq(open ? null : i)} className="mkt-faq-q">
+                    <span className="mkt-faq-n">{(i + 1).toLocaleString("ar-EG")}</span>
                     <span>{f.q}</span>
                     <ChevronDown className={`mkt-faq-chev ${open ? "is-open" : ""}`} />
                   </button>
@@ -485,13 +485,15 @@ export function Marketing({ plans, brand }: { plans: SaasPlan[]; brand: string }
         <Reveal from="scale">
           <div className="mkt-final">
             <Corner className="mkt-final-corner" />
-            <Seal size={56}>
-              <Image src="/logo.jpg" alt={brand} width={56} height={56} className="mkt-logo-img" />
-            </Seal>
-            <h2 className="mkt-final-h">الباب مفتوح</h2>
-            <p className="mkt-final-p">
-              {withoutHarakat("أنشئ منصّتك الآن — تكتب اسمك، وتختار خطّتك، وتفتح. ولا شيءَ يُدفع قبل أن ترى ما بنيته.")}
-            </p>
+            <div className="mkt-final-copy">
+              <Seal size={56}>
+                <Image src="/logo.jpg" alt={brand} width={56} height={56} className="mkt-logo-img" />
+              </Seal>
+              <h2 className="mkt-final-h">الباب مفتوح</h2>
+              <p className="mkt-final-p">
+                {withoutHarakat("أنشئ منصّتك الآن — تكتب اسمك، وتختار خطّتك، وتفتح. ولا شيءَ يُدفع قبل أن ترى ما بنيته.")}
+              </p>
+            </div>
             <Link href="/start" className="mkt-cta">
               {withoutHarakat("أنشئ منصّتك")} <ArrowLeft className="size-4" />
             </Link>

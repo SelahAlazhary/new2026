@@ -6993,7 +6993,6 @@ select.inp {
 }
 .mkt-feats > *:first-child .mkt-feat-t { font-size: 1.35rem; }
 .mkt-feats > *:first-child .mkt-feat-d { font-size: 0.92rem; max-width: 34rem; }
-.mkt-feat-corner { inset-inline-start: 0.55rem; top: 0.55rem; width: 2.4rem; height: 2.4rem; }
 .mkt-feat-t { display: block; font-family: var(--font-display), sans-serif; font-size: 1.02rem; margin-bottom: 0.45rem; }
 .mkt-feat-d { font-size: 0.85rem; color: var(--mk-dim); line-height: 1.95; }
 
@@ -7122,6 +7121,28 @@ select.inp {
   transition: transform 0.28s var(--mk-ease), color 0.2s;
 }
 .mkt-faq-chev.is-open { transform: rotate(180deg); color: var(--mk-gold); }
+/* رقمُ السؤال — يربط الأسئلةَ بلغة الأختام المرقَّمة نفسِها في «أربعُ
+   خطواتٍ ثمّ تفتح»، فلا يبقى الأكورديون هيئةً معزولةً بلا هويّة. */
+.mkt-faq-n {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid var(--mk-line);
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--mk-gold-2);
+  background: var(--mk-ink-2);
+  transition: background 0.22s, color 0.22s, border-color 0.22s;
+}
+.mkt-faq.is-open .mkt-faq-n {
+  background: var(--mk-gold);
+  border-color: var(--mk-gold);
+  color: var(--mk-ink);
+}
 .mkt-faq-a {
   padding: 0 1.15rem 1.1rem;
   font-size: 0.86rem;
@@ -7149,11 +7170,14 @@ select.inp {
 }
 @media (min-width: 52rem) {
   .mkt-final { grid-template-columns: 1fr auto; column-gap: 2.5rem; }
-  .mkt-final .mkt-cta { justify-self: end; }
+  .mkt-final .mkt-cta { justify-self: end; align-self: center; }
 }
 .mkt-final-corner { inset-inline-start: 1rem; top: 1rem; width: 3rem; height: 3rem; }
-.mkt-final-initial { font-size: 1.3rem; }
-.mkt-final .mkt-seal { grid-row: 1; margin-bottom: 0.15rem; }
+/* الختمُ والعنوانُ والوصفُ في عمودٍ واحدٍ فعلاً — لا ثلاثةُ عناصرَ
+   مبعثرةٍ يوزّعها التخطيطُ الشبكيُّ كلٌّ في خانةٍ: الختمُ كان يطفو
+   في عمودِه الخاصّ منفرداً بينما يتجاور العنوانُ والزرُّ في الآخر. */
+.mkt-final-copy { display: grid; gap: 0.85rem; justify-items: start; }
+.mkt-final-copy .mkt-seal { margin-bottom: 0.1rem; }
 .mkt-final-h {
   font-family: var(--font-display), sans-serif;
   font-size: clamp(1.6rem, 4.8vw, 2.5rem);
@@ -7180,67 +7204,11 @@ select.inp {
 .mkt-foot-start { font-weight: 700; color: var(--mk-gold-2) !important; }
 .mkt-foot-copy { font-size: 0.78rem; color: var(--mk-dim-2); }
 
-/* ── لوحة الإنفوجرافيك الموحدة ── */
-.mkt-section {
-  max-width: 78rem;
-  padding-block: clamp(4rem, 9vw, 7rem);
-}
-.mkt-section:nth-of-type(even) { background: #f8fbfd; }
-.mkt-head {
-  justify-items: center;
-  max-width: 44rem;
-  margin-inline: auto;
-  text-align: center;
-}
-.mkt-head-rule { width: 6rem; }
-.mkt-h2 { color: #172554; }
-.mkt-head-sub { color: #64748b; }
-
-.mkt-steps {
-  width: 100%;
-  max-width: 70rem;
-  margin-inline: auto;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-.mkt-steps::before {
-  inset: 2.55rem 8% auto;
-  width: auto;
-  height: 2px;
-  background: linear-gradient(90deg, #2563eb, #0ea5a8, #65a30d, #ea580c);
-}
-.mkt-step {
-  display: grid;
-  justify-items: center;
-  gap: 0.7rem;
-  padding: 0;
-  text-align: center;
-}
-.mkt-step .mkt-seal {
-  width: 5.25rem !important;
-  height: 5.25rem !important;
-  border: 0.35rem solid #2563eb;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 0.55rem rgba(37, 99, 235, 0.08), 0 10px 22px rgba(15, 23, 42, 0.09);
-}
-.mkt-step .mkt-seal > svg { display: none; }
-.mkt-step .mkt-seal-in {
-  width: 2.45rem;
-  height: 2.45rem;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  background: #f8fbfd;
-  color: #172554;
-  font-family: var(--font-sans), sans-serif;
-}
-.mkt-step:nth-child(2) .mkt-seal { border-color: #0ea5a8; }
-.mkt-step:nth-child(3) .mkt-seal { border-color: #65a30d; }
-.mkt-step:nth-child(4) .mkt-seal { border-color: #ea580c; }
-.mkt-step-n { color: #172554; }
-.mkt-step-body { justify-items: center; padding-top: 0; }
-.mkt-step-t { color: #172554; }
-.mkt-step-d { color: #64748b; }
+/* ── لوحة الإنفوجرافيك الموحدة ──
+   كان هذا القسمُ يعيد صفَّ الرأس والخطوات إلى التوسيط والدائرة
+   المولَّدَين اللذين حُذرَ منهما أعلاه («التوسيطُ الشاملُ يجعلها تشبه
+   كلَّ صفحةٍ مولَّدة») وإلى خطٍّ قزحيِّ الألوان بين الأختام — فأُزيل
+   كتلةً واحدة، وبقيت التعريفاتُ الأصليةُ الموثَّقةُ أعلاه هي السارية. */
 
 .mkt-feats {
   grid-template-columns: repeat(3, 1fr) !important;
@@ -7248,69 +7216,16 @@ select.inp {
   max-width: 70rem;
   margin-inline: auto;
 }
-.mkt-feat,
-.mkt-feats > *:first-child .mkt-feat {
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  min-height: 11rem;
-  padding: 1.35rem 1rem;
-  border: 1px solid #dbeafe;
-  border-radius: 1rem;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-  text-align: center;
-}
-.mkt-feat::before {
-  display: grid;
-  width: 3.5rem;
-  height: 3.5rem;
-  place-items: center;
-  margin-bottom: 0.7rem;
-  border: 0.3rem solid #2563eb;
-  border-radius: 50%;
-  color: #2563eb;
-  content: "✓";
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.mkt-feat:nth-child(2)::before,
-.mkt-feat:nth-child(5)::before { border-color: #0ea5a8; color: #0ea5a8; }
-.mkt-feat:nth-child(3)::before,
-.mkt-feat:nth-child(6)::before { border-color: #65a30d; color: #65a30d; }
-.mkt-feat-t,
-.mkt-feats > *:first-child .mkt-feat-t { color: #172554; font-size: 1.05rem; }
-.mkt-feat-d,
-.mkt-feats > *:first-child .mkt-feat-d { color: #64748b; font-size: 0.88rem; }
+/* بطاقةُ الميزة وأيقونتُها الآن من التعريف الموثَّق أعلاه («ما تملكه»)
+   لا من هذه الهيئة المولَّدة: صندوقٌ أبيضُ متوسِّطٌ وشارةُ صحٍّ دائريّة
+   فوق أيقونةٍ ملوَّنةٍ — بطاقتان لكلّ ميزة، وهو ما رآه المستخدمُ فعلاً
+   وحكم عليه بأنّه غيرُ احترافيّ. */
 
 .mkt-plans { max-width: 70rem; margin-inline: auto; }
-.mkt-plan,
-.mkt-plan.is-hot {
-  border: 1px solid #dbeafe;
-  border-radius: 1.25rem;
-  background: #ffffff;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
-}
-.mkt-plan.is-hot { border-color: #0ea5a8; }
-.mkt-plan-name { color: #172554; }
-.mkt-plan-desc,
-.mkt-plan-cur,
-.mkt-plan-feats li { color: #64748b; }
-.mkt-plan-num { color: #075985; }
-
-.mkt-faqs { max-width: 54rem; margin-inline: auto; }
-.mkt-faq { border-color: #dbeafe; }
-.mkt-faq.is-open { background: #effbfc; box-shadow: inset 3px 0 0 #0ea5a8; }
-.mkt-faq-q { color: #172554; }
-.mkt-faq-a { color: #475569; }
-
-.mkt-final {
-  border: 1px solid #bae6fd;
-  border-radius: 1.5rem;
-  background: linear-gradient(135deg, #f0fdfa, #eff6ff);
-  box-shadow: 0 18px 38px rgba(14, 165, 168, 0.1);
-}
-.mkt-final-h { color: #172554; }
+/* بطاقاتُ الخطط والأسئلة والدعوة الختاميّة: تعريفاتُها الفعليّةُ في
+   أقسامها أعلاه («الأسعار»، «الأسئلة»، «الدعوة الختاميّة») وفي كتلة
+   توحيد اللون قرب نهاية الملفّ — لا حاجةَ لصندوقٍ أبيضَ ثانٍ هنا. */
+.mkt-plan-num { color: var(--mk-parch); }
 
 /* أوزان متدرجة وواضحة لنصوص صفحة إنشاء المنصة. */
 .mkt,
@@ -7363,7 +7278,7 @@ select.inp {
   width: 4.9rem;
   height: 4.9rem;
   place-items: center;
-  border: 0.28rem solid #2563eb;
+  border: 0.28rem solid var(--mk-gold);
   border-radius: 50%;
   background: #ffffff;
   color: #172554;
@@ -7371,18 +7286,13 @@ select.inp {
   font-size: 1.05rem;
   box-shadow: 0 0 0 0.45rem rgba(37, 99, 235, 0.08), 0 8px 18px rgba(15, 23, 42, 0.08);
 }
-.mkt-trust-item:nth-child(2) .mkt-trust-v { border-color: #0ea5a8; }
-.mkt-trust-item:nth-child(3) .mkt-trust-v { border-color: #65a30d; }
 .mkt-trust-l { color: #64748b; font-size: 0.78rem; }
 
 @media (max-width: 54rem) {
-  .mkt-steps { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
-  .mkt-steps::before { display: none; }
   .mkt-feats { grid-template-columns: repeat(2, 1fr) !important; }
 }
 @media (max-width: 38rem) {
   .mkt-feats { grid-template-columns: 1fr !important; }
-  .mkt-step .mkt-seal { width: 4.5rem !important; height: 4.5rem !important; }
 }
 
 @keyframes mkt-float {
@@ -8083,21 +7993,31 @@ select.inp {
   box-shadow: 0 0 0 1.5px rgba(37, 99, 235, 0.62), 0 0 32px 6px rgba(37, 99, 235, 0.5), 0 0 66px 14px rgba(139, 92, 246, 0.3) !important;
 }
 
-/* ── شارات الميزات — أيقونةٌ دائريّةٌ مصمَتةٌ ملوّنةٌ لكلّ بطاقة ── */
+/* ── شارات الميزات — ميداليةٌ ذهبيّةٌ واحدة، لا ستُّ دوائرَ ملوّنة:
+     التمييزُ في الصفحة لونٌ واحد، والفرقُ بين الميزات في الأيقونة
+     نفسِها لا في هويّة الشارة التي تحملها ── */
 .mkt-feat-icon {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3.25rem;
+  height: 3.25rem;
   border-radius: 999px;
-  color: #fff;
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
+  background: radial-gradient(circle at 35% 32%, var(--mk-ink-3), var(--mk-ink-2) 72%);
+  color: var(--mk-gold-2);
+  box-shadow:
+    0 0 0 1px var(--mk-gold),
+    0 0 0 4px var(--mk-ink-2),
+    0 0 0 5px rgba(139, 92, 246, 0.32),
+    0 0 24px 4px rgba(139, 92, 246, 0.26);
 }
-.mkt-feat-icon.tone-blue   { background: #2563eb; box-shadow: 0 0 0 1px #2563eb, 0 0 18px 3px rgba(37, 99, 235, 0.55), 0 0 40px 8px rgba(37, 99, 235, 0.24); }
-.mkt-feat-icon.tone-green  { background: #65a30d; box-shadow: 0 0 0 1px #65a30d, 0 0 18px 3px rgba(101, 163, 13, 0.5), 0 0 40px 8px rgba(101, 163, 13, 0.22); }
-.mkt-feat-icon.tone-cyan   { background: #0891b2; box-shadow: 0 0 0 1px #0891b2, 0 0 18px 3px rgba(8, 145, 178, 0.5), 0 0 40px 8px rgba(8, 145, 178, 0.22); }
-.mkt-feat-icon.tone-navy   { background: #1e3a5f; box-shadow: 0 0 0 1px #1e3a5f, 0 0 18px 3px rgba(30, 58, 95, 0.44), 0 0 40px 8px rgba(30, 58, 95, 0.18); }
-.mkt-feat-icon.tone-orange { background: #ea580c; box-shadow: 0 0 0 1px #ea580c, 0 0 18px 3px rgba(234, 88, 12, 0.5), 0 0 40px 8px rgba(234, 88, 12, 0.22); }
+.mkt-feat-icon.tone-blue,
+.mkt-feat-icon.tone-green,
+.mkt-feat-icon.tone-cyan,
+.mkt-feat-icon.tone-navy,
+.mkt-feat-icon.tone-orange {
+  background: radial-gradient(circle at 35% 32%, var(--mk-ink-3), var(--mk-ink-2) 72%);
+}
 
 /* ── رحلةُ إنشاء المنصّة (أرضٌ داكنة) — تقويةُ رمز التوهّج الموروث،
      لا حاجةَ لِـ`!important`: القيمةُ مُستهلَكةٌ بـ`var()` في مكانٍ

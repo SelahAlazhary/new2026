@@ -7,9 +7,11 @@
  * ما يُثبته:
  *   ١) الجذرُ موقعُ إنشاء المنصّات (لا منصّةَ طالب)، والطالبُ لا يبلغه:
  *      /admin و/student و/login على الجذر تُحوَّل إلى /start.
- *   ٢) دخولُ المدرّس (تطويريّاً) ثم اختيارُ خطّة يُنشئ مسودّة.
- *   ٣) حفظُ الاسم والرابط والتصميم، ثم الإرسال للمراجعة.
- *   ٤) أدمنُ المنصّات يوافق → تُجهَّز المنصّة وتُفعَّل.
+ *   ٢) دخولُ المدرّس (تطويريّاً) ثم اختيارُ خطّة يُنشئ مسودّة (كلُّ الخطط
+ *      مدفوعةٌ بلا تجربة اليوم، فالتحويلُ اليدويُّ يُفعَّل أوّلاً).
+ *   ٣) حفظُ الاسم والرابط والتصميم، ثم الإرسالُ يطلب الدفعَ (٤٠٢)، ثم
+ *      تحويلٌ يدويٌّ يضع فاتورةً بانتظار المراجعة.
+ *   ٤) أدمنُ المنصّات يعتمد الفاتورةَ → تُجهَّز المنصّة وتُفعَّل.
  *   ٥) المدرّسُ يكشف بيانات الدخول مرّةً واحدة، ويدخل لوحتَه بها فعلاً
  *      على نطاق منصّته الفرعيّ.
  *   ٦) والطالبُ يفتح المنصّةَ الجديدة على نطاقها.
@@ -57,6 +59,7 @@ const jarOf = (res, prev = "") => {
 
 let pass = 0, fail = 0;
 const t = (name, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ? "OK  " : "FAIL"} ${name}${ok ? "" : `  ← ${info}`}`); };
+const TINY_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 (async () => {
   console.log("\n== ٠) تسجيل المدرّس بالبريد وكلمة المرور ==");
@@ -77,7 +80,8 @@ const t = (name, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ?
 
   console.log("\n== ١) الجذرُ موقعُ إنشاء المنصّات، والطالبُ لا يبلغه ==");
   const home = await req(ROOT, "GET", "/");
-  t("الجذر يعرض «أنشئ منصّتك»", home.status === 200 && home.text.includes("أنشئ منصّتك"), `status ${home.status}`);
+  /* بلا تشكيل: `withoutHarakat` تُزيل الشدّة من النصّ قبل عرضه (lib/utils/text.ts) */
+  t("الجذر يعرض «أنشئ منصتك»", home.status === 200 && home.text.includes("أنشئ منصتك"), `status ${home.status}`);
   for (const p of ["/admin", "/student", "/login"]) {
     const r = await req(ROOT, "GET", p);
     const toStart = (r.headers.location ?? "").includes("/start");
@@ -85,6 +89,16 @@ const t = (name, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ?
   }
 
   console.log("\n== ٢) دخول المدرّس واختيار خطّة ==");
+  /* الخططُ كلُّها مدفوعةٌ بلا تجربة اليوم (لا خطّة مجانيّة) — فالتحويلُ
+     اليدويُّ يُفعَّل من الإعدادات أوّلاً ليمرّ الدفعُ لاحقاً في القسم ٣. */
+  const su0 = await req(ROOT, "POST", "/api/hub/auth/login", { body: { email: SUPER_EMAIL, password: SUPER_PASS } });
+  const hub = jarOf(su0);
+  t("دخول أدمن المنصّات", su0.status === 200, `status ${su0.status}`);
+  const setSettings = await req(ROOT, "PUT", "/api/hub/settings", { cookie: hub, body: {
+    manualPay: { enabled: true, methods: [{ kind: "wallet", label: "فودافون كاش", number: "01000000000", active: true }] },
+  } });
+  t("تفعيل التحويل اليدوي", setSettings.status === 200, `status ${setSettings.status} ${setSettings.text.slice(0, 120)}`);
+
   const signin = await req(ROOT, "GET", `/api/hub/auth/google?dev=${encodeURIComponent(TEACHER)}&next=/start`);
   const owner = jarOf(signin);
   t("دخول تطويريّ للمدرّس", (signin.status === 307 || signin.status === 302) && owner.includes("hub_owner"), `status ${signin.status}`);
@@ -105,19 +119,16 @@ const t = (name, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ?
   const save2 = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "save", step: "review", presetId: "royal", colors: { primary: "#7a1fa2", gold: "#e0b64a", paper: "#faf6ff" } } });
   t("حفظ التصميم", save2.status === 200 && save2.json?.tenant?.brandPresetId === "royal", `${save2.text.slice(0, 120)}`);
   const submit = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "submit" } });
-  t("الإرسال للمراجعة", submit.status === 200 && (submit.json?.pending || submit.json?.provisioned), `${submit.text.slice(0, 150)}`);
+  t("الإرسال يطلب الدفع قبل التفعيل", submit.status === 402 && submit.json?.needPayment, `status ${submit.status} ${submit.text.slice(0, 150)}`);
+  const pay = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "pay", method: "manual", kind: "wallet", senderNumber: "01111111111", receipt: TINY_IMG } });
+  t("التحويل اليدويّ يُرسل للمراجعة", pay.status === 200 && pay.json?.pending, `${pay.text.slice(0, 150)}`);
 
-  console.log("\n== ٤) موافقة أدمن المنصّات ==");
-  const su = await req(ROOT, "POST", "/api/hub/auth/login", { body: { email: SUPER_EMAIL, password: SUPER_PASS } });
-  const hub = jarOf(su);
-  t("دخول أدمن المنصّات", su.status === 200, `status ${su.status}`);
-  let provisioned = submit.json?.provisioned;
-  if (!provisioned) {
-    const approve = await req(ROOT, "PATCH", "/api/hub/tenants", { cookie: hub, body: { id: tenantId, action: "approve" } });
-    t("القبول والتفعيل", approve.status === 200 && approve.json?.tenant?.status === "active", `status ${approve.status} ${approve.text.slice(0, 150)}`);
-  } else {
-    t("فُعّلت تلقائياً", true);
-  }
+  console.log("\n== ٤) موافقة أدمن المنصّات على الفاتورة ==");
+  const invList = await req(ROOT, "GET", "/api/hub/invoices", { cookie: hub });
+  const inv = invList.json?.invoices?.find((i) => i.tenantId === tenantId && i.status === "pending" && i.provider === "manual");
+  t("الفاتورة تظهر لأدمن المنصّات", Boolean(inv), `count=${invList.json?.invoices?.length}`);
+  const approve = await req(ROOT, "PATCH", "/api/hub/invoices", { cookie: hub, body: { id: inv.id, action: "approve" } });
+  t("اعتماد الفاتورة يفعّل ويجهّز", approve.status === 200, `status ${approve.status} ${approve.text.slice(0, 150)}`);
 
   console.log("\n== ٥) كشف بيانات الدخول والدخول بها ==");
   const reveal = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "reveal", tenantId } });
