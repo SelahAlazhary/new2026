@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getDB, loadDB } from "@/lib/db/db";
 import { isHubRootRequest } from "@/lib/hub/guard-host";
+import { metadataTenant } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 
@@ -31,62 +32,69 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       icons: [{ src: "/api/pwa-icon?size=512", sizes: "512x512", type: "image/png", purpose: "any" }],
     };
   }
-  /* يربط الطلبَ بمنصّته أوّلاً — الملفُّ يُطلب من نطاق كلّ منصّة على حدة */
-  await loadDB();
-  const { content } = getDB();
-  const theme = content.theme;
-  const primary =
-    (theme.preset === "custom" && theme.customPrimary) || PRESET_HEX[theme.preset] || PRESET_HEX.midad;
-  const background = theme.layout === "dark" ? "#080b16" : "#fbf9f5";
+  /*
+    يربط الطلبَ بمنصّته أوّلاً — الملفُّ يُطلب من نطاق كلّ منصّة على حدة.
+    و`manifest.ts` مسارٌ مستقلٌّ لا مكوّنُ خادمٍ ضمن شجرة التخطيطات، فصندوق
+    `cache()` الذي يعتمده `bindTenant()` لا يبلغه — لهذا الربطُ صريحٌ هنا
+    عبر `metadataTenant()` لا `loadDB()` وحدها (انظر توثيقها).
+  */
+  return metadataTenant(async () => {
+    await loadDB();
+    const { content } = getDB();
+    const theme = content.theme;
+    const primary =
+      (theme.preset === "custom" && theme.customPrimary) || PRESET_HEX[theme.preset] || PRESET_HEX.midad;
+    const background = theme.layout === "dark" ? "#080b16" : "#fbf9f5";
 
-  return {
-    id: "/",
-    name: `${content.brand} — ${content.platformSubtitle}`,
-    short_name: content.brand,
-    description: content.teacher.bio,
-    lang: "ar",
-    dir: "rtl",
-    start_url: "/student",
-    scope: "/",
-    display: "standalone",
-    orientation: "portrait",
-    theme_color: primary,
-    background_color: background,
-    categories: ["education"],
-    icons: [
-      { src: "/api/pwa-icon?size=192", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/api/pwa-icon?size=512", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/api/pwa-icon?size=512&maskable=1", sizes: "512x512", type: "image/png", purpose: "maskable" },
-    ],
-    shortcuts: [
-      {
-        name: "كورساتي",
-        short_name: "الكورسات",
-        description: "افتح دروسك وتابع تقدّمك",
-        url: "/student/subjects",
-        icons: [{ src: "/api/shortcut-icon?name=courses&size=192", sizes: "192x192", type: "image/png" }],
-      },
-      {
-        name: "البث المباشر",
-        short_name: "البث",
-        description: "ادخل الحصة المباشرة",
-        url: "/student/live",
-        icons: [{ src: "/api/shortcut-icon?name=live&size=192", sizes: "192x192", type: "image/png" }],
-      },
-      {
-        name: "الاختبارات",
-        short_name: "الاختبارات",
-        description: "اختباراتك المتاحة",
-        url: "/student/exams",
-        icons: [{ src: "/api/shortcut-icon?name=exams&size=192", sizes: "192x192", type: "image/png" }],
-      },
-      {
-        name: "الإشعارات",
-        short_name: "الإشعارات",
-        description: "آخر إعلانات المعلّمة",
-        url: "/student/notifications",
-        icons: [{ src: "/api/shortcut-icon?name=bell&size=192", sizes: "192x192", type: "image/png" }],
-      },
-    ],
-  };
+    return {
+      id: "/",
+      name: `${content.brand} — ${content.platformSubtitle}`,
+      short_name: content.brand,
+      description: content.teacher.bio,
+      lang: "ar",
+      dir: "rtl",
+      start_url: "/student",
+      scope: "/",
+      display: "standalone",
+      orientation: "portrait",
+      theme_color: primary,
+      background_color: background,
+      categories: ["education"],
+      icons: [
+        { src: "/api/pwa-icon?size=192", sizes: "192x192", type: "image/png", purpose: "any" },
+        { src: "/api/pwa-icon?size=512", sizes: "512x512", type: "image/png", purpose: "any" },
+        { src: "/api/pwa-icon?size=512&maskable=1", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      ],
+      shortcuts: [
+        {
+          name: "كورساتي",
+          short_name: "الكورسات",
+          description: "افتح دروسك وتابع تقدّمك",
+          url: "/student/subjects",
+          icons: [{ src: "/api/shortcut-icon?name=courses&size=192", sizes: "192x192", type: "image/png" }],
+        },
+        {
+          name: "البث المباشر",
+          short_name: "البث",
+          description: "ادخل الحصة المباشرة",
+          url: "/student/live",
+          icons: [{ src: "/api/shortcut-icon?name=live&size=192", sizes: "192x192", type: "image/png" }],
+        },
+        {
+          name: "الاختبارات",
+          short_name: "الاختبارات",
+          description: "اختباراتك المتاحة",
+          url: "/student/exams",
+          icons: [{ src: "/api/shortcut-icon?name=exams&size=192", sizes: "192x192", type: "image/png" }],
+        },
+        {
+          name: "الإشعارات",
+          short_name: "الإشعارات",
+          description: "آخر إعلانات المعلّمة",
+          url: "/student/notifications",
+          icons: [{ src: "/api/shortcut-icon?name=bell&size=192", sizes: "192x192", type: "image/png" }],
+        },
+      ],
+    };
+  });
 }

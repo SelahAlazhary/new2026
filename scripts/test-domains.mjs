@@ -64,6 +64,14 @@ const t = (n, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ? "O
     /* ليس لدينا منصّة نشطة — نُنشئ واحدة سريعاً */
     console.log("  SKIP  لا توجد منصّة نشطة لاختبار الدومينات عليها");
   } else {
+    /* الدومينُ المخصّص ميزةٌ تُباع في الخطط — أوّلُ منصّةٍ نشطة قد تكون
+       على خطّةٍ لا تشملها (`starter` مثلاً). نُفعّلها هنا صراحةً لضمان
+       الاختبار بصرف النظر عن خطّة المنصّة، ونعيدها كما كانت في النهاية. */
+    const hadCustomDomain = activeTenant.features?.customDomain !== false;
+    if (!hadCustomDomain) {
+      await req(ROOT, "PATCH", "/api/hub/tenants", { cookie: hub, body: { id: TID, action: "features", features: { customDomain: true } } });
+    }
+
     /* ١) إضافة دومين */
     const testDomain = `test-${Date.now().toString(36).slice(-5)}.example.com`;
     const add = await req(ROOT, "POST", "/api/hub/domains", { cookie: hub, body: { action: "add", tenantId: TID, domain: testDomain } });
@@ -88,6 +96,11 @@ const t = (n, ok, info = "") => { ok ? pass++ : fail++; console.log(`  ${ok ? "O
     if (domId) {
       const del = await req(ROOT, "POST", "/api/hub/domains", { cookie: hub, body: { action: "remove", domainId: domId } });
       t("حذف الدومين", del.status === 200 && del.json?.ok, `status ${del.status}`);
+    }
+
+    /* إعادةُ الحالة كما كانت */
+    if (!hadCustomDomain) {
+      await req(ROOT, "PATCH", "/api/hub/tenants", { cookie: hub, body: { id: TID, action: "features", features: { customDomain: false } } });
     }
   }
 

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPublicDB, loadDB } from "@/lib/db/db";
 import { siteUrl } from "@/lib/utils/seo";
 import { isHubRootRequest } from "@/lib/hub/guard-host";
+import { metadataTenant } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 
@@ -17,17 +18,20 @@ export const dynamic = "force-dynamic";
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (await isHubRootRequest()) return [];
-  await loadDB();
-  const { content } = getPublicDB();
-  const base = await siteUrl(content.url);
-  if (!base) return [];
+  /* ملفٌّ خاصٌّ مستقلٌّ عن شجرة التخطيطات — يحتاج ربطاً صريحاً بمنصّته. */
+  return metadataTenant(async () => {
+    await loadDB();
+    const { content } = getPublicDB();
+    const base = await siteUrl(content.url);
+    if (!base) return [];
 
-  const now = new Date();
+    const now = new Date();
 
-  return [
-    { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
-    { url: `${base}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/legal/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/legal/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-  ];
+    return [
+      { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
+      { url: `${base}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+      { url: `${base}/legal/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+      { url: `${base}/legal/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    ];
+  });
 }

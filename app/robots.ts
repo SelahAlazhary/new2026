@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPublicDB, loadDB } from "@/lib/db/db";
 import { siteUrl } from "@/lib/utils/seo";
 import { isHubRootRequest } from "@/lib/hub/guard-host";
+import { metadataTenant } from "@/lib/hub/context";
 
 export const dynamic = "force-dynamic";
 
@@ -18,18 +19,21 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   if (await isHubRootRequest()) {
     return { rules: [{ userAgent: "*", allow: "/", disallow: ["/hub", "/api/", "/start"] }] };
   }
-  await loadDB();
-  const { content } = getPublicDB();
-  const base = await siteUrl(content.url);
+  /* ملفٌّ خاصٌّ مستقلٌّ عن شجرة التخطيطات — يحتاج ربطاً صريحاً بمنصّته. */
+  return metadataTenant(async () => {
+    await loadDB();
+    const { content } = getPublicDB();
+    const base = await siteUrl(content.url);
 
-  return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/admin", "/admin/", "/student", "/student/", "/api/", "/t/"],
-      },
-    ],
-    ...(base ? { sitemap: `${base}/sitemap.xml`, host: base } : {}),
-  };
+    return {
+      rules: [
+        {
+          userAgent: "*",
+          allow: "/",
+          disallow: ["/admin", "/admin/", "/student", "/student/", "/api/", "/t/"],
+        },
+      ],
+      ...(base ? { sitemap: `${base}/sitemap.xml`, host: base } : {}),
+    };
+  });
 }

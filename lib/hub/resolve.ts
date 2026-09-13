@@ -89,7 +89,7 @@ export function tenantBaseUrl(
 ): string {
   if (tenant.customDomain) return `https://${tenant.customDomain}`;
   const root = cleanHost(rootDomain);
-  if (!root) return `http://localhost:3000/t/${tenant.slug}`;
+  if (!root) return `http://localhost:${process.env.PORT || 3000}/t/${tenant.slug}`;
   return root.endsWith(".vercel.app")
     ? `https://${root}/t/${tenant.slug}`
     : `https://${tenant.slug}.${root}`;

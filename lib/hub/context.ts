@@ -210,3 +210,20 @@ export function tenantRoute<A extends unknown[]>(fn: Handler<A>): (req: Request,
     return als.run(ctx, () => Promise.resolve(fn(req, ...args)));
   };
 }
+
+/**
+ * غلافٌ لملفّات البيانات الوصفية الخاصّة — `manifest.ts` و`sitemap.ts`
+ * و`robots.ts`. Next يبنيها كمساراتٍ مستقلّةٍ لا كمكوّنات خادمٍ ضمن شجرة
+ * التخطيطات، فصندوق `cache()` الذي يعتمده `bindTenant()` (مُعَدٌّ لعمر
+ * رسمِ الصفحة) لا يبلغها: تصل هذه الملفّات فارغةً حتى لو استُدعي
+ * `loadDB()` داخلها، فيبقى كلُّ نداءٍ لاحقٍ يقرأ السياق يرمي
+ * `TenantContextMissing` رغم أنّ المنصّة معروفةٌ من عنوانها بوضوح.
+ *
+ * فتُحلّ المنصّةُ هنا صراحةً من الترويسات ثمّ تُشغَّل الدالّةُ داخل
+ * `als.run()` مباشرةً — نفس الأسلوب الموثوق في `tenantRoute` أعلاه،
+ * لا اعتماد على صندوق `cache()` إطلاقاً.
+ */
+export async function metadataTenant<T>(fn: () => Promise<T>): Promise<T> {
+  const ctx = await resolveFromHeaders(await headers());
+  return als.run(ctx, fn);
+}

@@ -131,14 +131,26 @@ const TINY_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1
   t("اعتماد الفاتورة يفعّل ويجهّز", approve.status === 200, `status ${approve.status} ${approve.text.slice(0, 150)}`);
 
   console.log("\n== ٥) كشف بيانات الدخول والدخول بها ==");
+  /* محلّياً بلا ROOT_DOMAIN: `tenantBaseUrl` تُعيد رابطاً ببادئة `/t/{slug}`
+     (طريقةُ فيرسل بلا نطاقٍ فرعيّ) — والنطاقُ الفرعيُّ `{slug}.localhost`
+     يعمل هو الآخر محلّياً بلا أيّ ضبط (انظر `classifyHost`)، وهو أبسط
+     للاختبار: نطاقٌ مباشرٌ لا بادئةَ مسارٍ تُحفظ في كوكي. */
   const reveal = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "reveal", tenantId } });
   t("كشف بيانات الدخول مرّة واحدة", reveal.status === 200 && reveal.json?.password && reveal.json?.adminEmail === TEACHER, `${reveal.text.slice(0, 150)}`);
-  const password = reveal.json?.password;
-  const studentUrl = reveal.json?.studentUrl ?? "";
-  const tenantHost = studentUrl.replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/:\d+$/, "") + `:${BASE.port}`;
+  const tenantHost = `${slug}.localhost:${BASE.port}`;
 
+  /* الكشفُ الثاني لا يُعيد نفسَ كلمة المرور (حُذفت من التسليم بعد أوّل
+     قراءة) بل **يُصدر واحدةً جديدة** — شبكةُ أمانٍ لصاحب منصّةٍ فاته أن
+     يحفظ الأولى (`resetTenantPassword` في `lib/hub/provision.ts`).
+     فالمقارنةُ الصحيحة: تختلف عن الأولى لا أنّها فارغة. والدخولُ يكون
+     بآخر كلمةٍ صدرت فعلاً. */
   const reveal2 = await req(ROOT, "POST", "/api/start", { cookie: owner, body: { action: "reveal", tenantId } });
-  t("كلمة المرور لا تُكشف مرّتين", reveal2.json?.password === null, `pw=${reveal2.json?.password}`);
+  t(
+    "الكشفُ الثاني يُصدر كلمةَ مرورٍ جديدةً لا نفسَ الأولى",
+    Boolean(reveal2.json?.password) && reveal2.json?.password !== reveal.json?.password,
+    `pw1=${reveal.json?.password} pw2=${reveal2.json?.password}`
+  );
+  const password = reveal2.json?.password;
 
   const adminLogin = await req(tenantHost, "POST", "/api/auth/login", { body: { username: TEACHER, password } });
   t("المدرّس يدخل لوحته بالبيانات المُسلَّمة", adminLogin.status === 200 && adminLogin.json?.role === "admin", `status ${adminLogin.status} ${adminLogin.text.slice(0, 120)}`);

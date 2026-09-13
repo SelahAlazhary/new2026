@@ -22,6 +22,9 @@ const port = process.env.PORT || (mode === "dev" ? "3000" : "3300");
 
 const env = {
   ...process.env,
+  /* منفذُ الطلب متاحٌ للتطبيق نفسه (`process.env.PORT`) — تحتاجه
+     `tenantBaseUrl()` حين تبني رابطَ منصّةٍ محلّياً بلا `ROOT_DOMAIN`. */
+  PORT: port,
   FIREBASE_DATABASE_URL: "",
   FIREBASE_CLIENT_EMAIL: "",
   FIREBASE_PRIVATE_KEY: "",
